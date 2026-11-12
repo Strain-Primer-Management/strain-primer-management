@@ -1,0 +1,47 @@
+# Local development stack: `docker compose up --build` -> http://localhost:8000
+# LEAD-ONLY FILE. Values can be overridden with a local .env file (see .env.example).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-spm}
+      POSTGRES_USER: ${POSTGRES_USER:-spm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spm}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-spm} -d ${POSTGRES_DB:-spm}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    # No published port on purpose: avoids clashes with a PostgreSQL already installed on
+    # someone's PC. Use `docker compose exec db psql -U spm` if you need a SQL shell.
+
+  web:
+    build:
+      context: .
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    # Migrations are applied automatically on every start. After switching to a branch with
+    # different migrations, reset your local DB (README -> "Reset my database").
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app  # your edits appear instantly, the dev server reloads by itself
+    ports:
+      # Localhost only: nobody else on the network can reach your dev server (and the
+      # throw-away dev admin login that setup.sh / setup.ps1 create).
+      - "127.0.0.1:8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-insecure-dev-only-key-do-not-use-in-production}
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${POSTGRES_DB:-spm}
+      POSTGRES_USER: ${POSTGRES_USER:-spm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spm}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

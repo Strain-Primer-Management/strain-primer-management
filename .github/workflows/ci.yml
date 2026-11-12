@@ -1,0 +1,135 @@
+# Runs on every pull request and on pushes to main. LEAD-ONLY FILE.
+# A PR cannot be merged until the "checks" job is green (enforced by branch protection,
+# see docs/LEAD_SETUP.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# The workflow only needs to READ the code. Without this block GitHub may hand the job a token that
+# can also write (push, edit releases...), which a compromised dependency could abuse.
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: spm
+          POSTGRES_USER: spm
+          POSTGRES_PASSWORD: spm
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U spm -d spm"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      POSTGRES_HOST: localhost
+      POSTGRES_DB: spm
+      POSTGRES_USER: spm
+      POSTGRES_PASSWORD: spm
+    steps:
+      # Full history so the guard below can compare the PR with its base branch.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Only for pull requests: fails fast when a non-lead author changes lead-only files
+      # (AGENTS.md section 3). The author name goes through env, never inline in the script.
+      - name: Lead-only files are untouched
+        if: github.event_name == 'pull_request'
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          ALLOWED_AUTHORS: "Nour833 dependabot[bot]"
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check_lead_only.sh "$BASE_SHA" "$HEAD_SHA"
+      # Only for pull requests: new or changed AI-log entries must be short and general (the
+      # repository is public). See docs/ai-log/README.md.
+      - name: AI-log entries are short and general
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bash .github/scripts/check_ai_log.sh "$BASE_SHA" "$HEAD_SHA"
+      # Only for pull requests: no AI tool credited as author or co-author in commits, PR title or body.
+      - name: No AI agent is credited as author or co-author
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          git log --format=%B "$BASE_SHA..$HEAD_SHA" | sh .github/scripts/check_no_ai_credit.sh
+          printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" | sh .github/scripts/check_no_ai_credit.sh
+          git log --format='%an <%ae>%n%cn <%ce>' "$BASE_SHA..$HEAD_SHA" | sh .github/scripts/check_no_ai_credit.sh ident
+      # Only for pull requests: no secrets or real e-mail addresses in added lines (the repository is
+      # public). Same script as the local pre-commit hook, so skipping the hook does not help.
+      - name: No secrets or private e-mail addresses are added
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --no-color --unified=0 --diff-filter=AM "$BASE_SHA...$HEAD_SHA" \
+            -- . ':!LICENSE' ':!docs/TEAM_HANDBOOK.pdf' | sh .github/scripts/check_sensitive.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements/*.txt
+      - run: pip install -r requirements/dev.txt
+
+      - name: Python lint
+        run: ruff check .
+      - name: Python formatting
+        run: ruff format --check .
+      - name: Template lint
+        run: djlint templates --lint
+
+      - name: Django system check
+        run: python manage.py check
+      # Fails if a model changed without a committed migration, OR if two branches
+      # created conflicting migrations (see CONTRIBUTING.md -> Migrations).
+      - name: Migrations are complete and conflict-free
+        run: python manage.py makemigrations --check --dry-run
+      - name: Tests
+        run: python manage.py test
+
+  # Proves what every teammate runs through setup.sh / setup.ps1: the Docker image builds and the
+  # real stack (web + PostgreSQL, migrations included) starts and serves the login page. The
+  # "checks" job above cannot catch a broken Dockerfile or docker-compose.yml; this job can.
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker-compose.yml is valid
+        run: docker compose config --quiet
+      - name: Build the image and start the stack
+        run: docker compose up -d --build
+      - name: The app answers on the login page
+        run: |
+          for i in $(seq 1 45); do
+            if curl -fsS -o /dev/null http://localhost:8000/accounts/login/; then
+              echo "app is up after $((i * 2)) seconds"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "the app did not start in time"
+          exit 1
+      - name: Show the logs if something failed
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Stop the stack
+        if: always()
+        run: docker compose down -v

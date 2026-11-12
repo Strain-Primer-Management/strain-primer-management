@@ -1,0 +1,4 @@
+# Runtime dependencies. Versions are pinned so everyone runs the exact same thing.
+# Adding or upgrading a package needs lead approval: its own ticket and PR, nothing else in it.
+Django==5.2.19  # LTS release, security fixes until April 2028
+psycopg[binary]==3.3.8  # PostgreSQL driver

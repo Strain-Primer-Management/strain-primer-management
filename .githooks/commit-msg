@@ -1,0 +1,7 @@
+#!/bin/sh
+# Safety net (enabled by setup.sh / setup.ps1): no AI tool as author or co-author (AGENTS.md section 5).
+# LEAD-ONLY FILE. There is no override: the rule is absolute.
+[ -f .github/scripts/check_no_ai_credit.sh ] || exit 0
+sh .github/scripts/check_no_ai_credit.sh < "$1" || exit 1
+git var GIT_AUTHOR_IDENT 2>/dev/null | sh .github/scripts/check_no_ai_credit.sh ident || exit 1
+exit 0

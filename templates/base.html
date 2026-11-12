@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Strain DB{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {# Page-specific CSS: static/css/pages/<page>.css, loaded via this block #}
+    {% block extra_css %}{% endblock extra_css %}
+  </head>
+  <body>
+    {# PLACEHOLDER layout. The frontend team owns and replaces everything in this file. #}
+    {% include "components/navbar.html" %}
+    <main>
+      {% include "components/messages.html" %}
+      {% block content %}{% endblock content %}
+    </main>
+    <script src="{% static 'js/app.js' %}" defer></script>
+    {% block extra_js %}{% endblock extra_js %}
+  </body>
+</html>

@@ -1,0 +1,7 @@
+/* PLACEHOLDER: proves the static-files pipeline works. The frontend team replaces this
+   file with the real base styles (tokens, layout, components). Page-specific CSS goes
+   in static/css/pages/. */
+body {
+  font-family: system-ui, sans-serif;
+  margin: 1rem 2rem;
+}

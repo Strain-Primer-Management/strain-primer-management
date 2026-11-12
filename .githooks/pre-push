@@ -1,0 +1,12 @@
+#!/bin/sh
+# Safety net (enabled by setup.sh / setup.ps1): no pushes that update main on GitHub.
+# Push your feature branch and open a pull request instead (see CONTRIBUTING.md).
+# LEAD-ONLY FILE. Lead override: ALLOW_MAIN_PUSH=1 git push ...
+# Git passes one line per ref on stdin: <local ref> <local sha> <remote ref> <remote sha>
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] && [ -z "$ALLOW_MAIN_PUSH" ]; then
+    echo "Blocked: pushing to 'main' is not allowed. Push your feature branch and open a pull request." >&2
+    exit 1
+  fi
+done
+exit 0

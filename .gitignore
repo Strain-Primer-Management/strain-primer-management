@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# Secrets & local config: NEVER commit
+.env
+.env.*
+!.env.example
+
+# Real lab data must never be committed (client approval pending). Only anonymised,
+# approved sample data may be added, by the lead, to data/sample/.
+data/private/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

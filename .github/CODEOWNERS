@@ -1,0 +1,49 @@
+# Automatically requests reviews and, once "Require review from Code Owners" is switched on in the
+# "Protect main" ruleset, makes them mandatory. The LAST matching pattern wins.
+# Keep in sync with docs/TEAM.md and the "Lead-only" row in AGENTS.md (section 3).
+#
+# Only Nour's GitHub handle is known today. As soon as the teammates' usernames are known, fill in
+# the placeholders at the bottom and switch that setting on (docs/LEAD_SETUP.md): that is what makes
+# the zone rules mechanical instead of relying on people and AIs behaving.
+#
+# There is deliberately NO catch-all "*" line. Unlisted paths (apps/, templates/, static/) stay
+# unowned until their group lines below are filled in, so switching the setting on cannot make Nour
+# a bottleneck for every PR.
+
+# Lead-only files
+/config/                            @Nour833
+/requirements/                      @Nour833
+/.github/                           @Nour833
+/.githooks/                         @Nour833
+/docs/                              @Nour833
+/docs/ai-log/                       # no owner on purpose: every developer adds their own log file
+/data/                              @Nour833
+/tools/                             @Nour833
+/Dockerfile                         @Nour833
+/docker-compose.yml                 @Nour833
+/pyproject.toml                     @Nour833
+/manage.py                          @Nour833
+/setup.sh                           @Nour833
+/setup.ps1                          @Nour833
+/.gitignore                         @Nour833
+/.gitattributes                     @Nour833
+/.editorconfig                      @Nour833
+/.dockerignore                      @Nour833
+/.env.example                       @Nour833
+/AGENTS.md                          @Nour833
+/CLAUDE.md                          @Nour833
+/GEMINI.md                          @Nour833
+/CONTRIBUTING.md                    @Nour833
+/README.md                          @Nour833
+/LICENSE                            @Nour833
+/SECURITY.md                        @Nour833
+
+# Backend: Nour and Lina share all apps and can approve each other's pull requests.
+/apps/                              @Nour833 @linamrayeh-sudo
+
+# Frontend: Eya, Zahraa and Judy share all frontend files, no lead.
+# Eya, Zahraa and Judy can approve each other's pull requests (an author can never approve their own).
+# @Nour833 and @linamrayeh-sudo are listed last as rescue / backup reviewers: a frontend pull request is
+# never stuck when the frontend owners are away or are the author.
+/templates/                         @eya-bm @Zhayraa101 @JudyW12 @Nour833 @linamrayeh-sudo
+/static/                            @eya-bm @Zhayraa101 @JudyW12 @Nour833 @linamrayeh-sudo

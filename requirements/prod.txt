@@ -1,0 +1,3 @@
+-r base.txt
+gunicorn==27.0.0  # production web server
+whitenoise==6.12.0  # serves static files from gunicorn

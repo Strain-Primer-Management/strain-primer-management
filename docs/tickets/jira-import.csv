@@ -1,0 +1,1650 @@
+Issue id,Summary,Issue Type,Parent,Description,Labels,Labels,Labels,Labels,Component/s,Sprint
+1,Verify the setup on every operating system the team uses,Task,,"Plan ID: L-1 (wave 0)
+
+Zone: Team
+Depends on: nothing
+
+In plain words (for beginners)
+The setup instructions were written and tested on one Linux machine. Before real work starts we must know they also work on Windows and macOS. Every person follows docs/ONBOARDING.md on their own computer and reports what went wrong.
+
+What
+- Each teammate follows docs/ONBOARDING.md (or the PDF handbook) from step 1 to step 6 on their own computer.
+- Write down every step that was unclear or failed (system, step number, the error text, a screenshot).
+- Nour fixes the docs and scripts (setup.ps1, setup.sh, the winget/brew/apt commands) from the reports.
+
+Acceptance criteria
+- ☐ Windows, macOS and Linux each completed steps 1 to 6 at least once.
+- ☐ Every reported problem is either fixed in the docs/scripts or has a ticket.
+- ☐ The helper menu (tools/git-helper) starts on each system and option 2 (""Is my setup right?"") is all green.",wave-0,l-1,team,,,
+2,Practice run (SCRUM-0) for every teammate,Task,,"Plan ID: L-2 (wave 0)
+
+Zone: Team
+Depends on: Verify the setup on every operating system
+
+In plain words (for beginners)
+Before the first real ticket, everybody does one fake ticket from start to finish: Claude Code creates a branch, a tiny file, a pull request, and we close it. This teaches the whole routine with nothing at stake.
+
+What
+- Follow the ""Practice run"" section of docs/ONBOARDING.md with Claude Code.
+- Say ""go"", look at the changes, say ""ship it"", ask a teammate to review, watch the checks, then CLOSE the pull request without merging.
+
+Acceptance criteria
+- ☐ Each person opened and closed one practice pull request.
+- ☐ Each person can explain what ""go"" and ""ship it"" mean and what the six checks are.
+- ☐ Anything confusing was written down for Nour (feeds the docs).",wave-0,l-2,team,,,
+3,Invite everyone and complete CODEOWNERS,Task,,"Plan ID: L-3 (wave 0)
+
+Zone: Lead
+Depends on: nothing (run as soon as each username is known)
+Files allowed (optional): .github/CODEOWNERS, docs/TEAM.md, docs/LEAD_SETUP.md
+
+In plain words (for beginners)
+CODEOWNERS is a file saying who must approve changes to which folders. Each time a person joins we add their GitHub name, and remove the temporary placeholders.
+
+What
+- Invite Lina, Zahraa and Judy as collaborators with Write access (Settings > Collaborators). Confirm each accepted. DONE for all (Eya, Lina, Zahraa, Judy).
+- /apps/ has Nour and Lina (done). /templates/ and /static/ have Eya, Zahraa and Judy, with Nour and Lina as backup reviewers (done).
+- Add the handles to the table in docs/TEAM.md.
+- After merging, open GitHub's CODEOWNERS page for the repo: there must be no errors.
+
+Acceptance criteria
+- ☐ All five people are collaborators with Write (not Admin).
+- ☐ A test pull request touching /templates/ asks for review from the frontend owners (Nour and Lina only as backup).
+- ☐ CODEOWNERS shows no errors on GitHub.",wave-0,l-3,lead,,Lead,
+4,"GitHub settings round (alerts, required checks, review of the rules)",Task,,"Plan ID: L-4 (wave 0)
+
+Zone: Lead
+Depends on: Invite everyone and complete CODEOWNERS
+
+In plain words (for beginners)
+Some safety settings can only be switched on in the GitHub website. This ticket is the checklist for them.
+
+What
+- Settings > Code security: turn on Dependabot alerts (free). DONE 2026-11-11.
+- Settings > Rules > Protect main: add the `docker` job next to `checks` under ""Require status checks"" once it has passed at least 10 times. DONE 2026-11-11.
+- Decide whether to remove the admin bypass from the ruleset now that others can approve (if yes: remember your own PRs then need a teammate's approval).
+- Confirm the workflow permissions are read-only (Settings > Actions > General).
+- Confirm ""Automatically delete head branches"" and squash-only merging are still on.
+
+Acceptance criteria
+- ☐ Each item done or consciously decided (decision written in docs/DECISIONS.md).",wave-0,l-4,lead,,Lead,
+5,"Jira setup (template, workflow, board, rhythm)",Task,,"Plan ID: L-5 (wave 0)
+
+Zone: Lead (with Eya, who owns the Jira site)
+Depends on: nothing
+
+In plain words (for beginners)
+Jira is our to-do board. A little setup makes tickets easy to write and easy to follow.
+
+What
+- Description template with the lines: Zone, Files allowed (optional), Contract, Acceptance criteria, Out of scope, Depends on (see docs/LEAD_SETUP.md).
+- Columns: To Do, In Progress, In Review, Done. Components: Backend, Frontend, Lead.
+- Labels per area: accounts, strains, plasmids, primers, search, import, backup, deploy.
+- One sprint per wave (Wave 0, Wave 2, ...), as in `docs/tickets/README.md`. Client demos stay every two weeks, whatever sprint is running.
+- Optional: try the GitHub-for-Jira link (Eya installs the app, Nour approves on GitHub); if a personal GitHub account is not supported, skip it.
+- A rule everyone follows: move your ticket to In Progress when you start and to In Review when the pull request is open.
+
+Acceptance criteria
+- ☐ A new ticket created from the template looks right.
+- ☐ The board shows the four columns and the components.",wave-0,l-5,lead,,Lead,
+6,Collect the open client questions and record the answers,Task,,"Plan ID: L-6 (wave 0)
+
+Zone: Lead
+Depends on: nothing
+
+In plain words (for beginners)
+Some decisions are not ours: they belong to the client (the lab). We ask them once, in one message, and write the answers down so nobody has to ask again.
+
+What
+Send ONE message to the client (Max / Mateusz) with these questions, then record each answer in docs/DECISIONS.md:
+1. Primer melting temperature (Tm): which formula should we use?
+2. Primer sequences: only A, C, G, T, or also ambiguity letters (N, R, Y, ...)?
+3. Should ""purpose"" (Sequencing, PCR, Cloning, ...) be a fixed list or free text? Which values?
+4. Biosafety level: which values do they use (BSL-1, BSL-2, ...)?
+5. Backups: answered by the client's e-mail (automatic backups; an admin copies them to another system by hand). Still to ask: how often, how long to keep them, who restores?
+6. Import: what format can the Word files be exported to (CSV/Excel)? Can they provide 20-50 anonymised sample records (after asking the professor)? (They already sent excerpts of the three Word files; those stay out of Git.)
+7. SnapGene: may we test ""click to open"" on one lab PC? Is the Hessenbox folder synced on the lab computer that will host the app?
+8. Hosting: the group wants its own hardware and suggests a NAS server (bring pros and cons to the next meeting). Which machine (lab computer or NAS), operating system, is it on 24/7, who restarts it, what is its network name?
+9. Who may see which data: may students export data? Is any data confidential?
+10. Licence and ownership: answered. The client confirmed by e-mail that open source is fine; students keep the rights to their own code (course rules); the team chose AGPL-3.0-or-later (D14).
+11. How should demos and change requests be collected (every two weeks)?
+
+Acceptance criteria
+- ☐ The message is sent; every answer (or ""not decided yet"") is in docs/DECISIONS.md.
+- ☐ Tickets that were waiting for an answer are updated.",wave-0,l-6,lead,,Lead,
+7,Claude accounts: everyone can use Claude Code,Task,,"Plan ID: L-7 (wave 0)
+
+Zone: Lead
+Depends on: nothing
+
+In plain words (for beginners)
+Claude Code needs a Claude account. Sharing one personal account between several people is probably not allowed, so we need a proper plan.
+
+What
+- Check Anthropic's terms for team use; decide the plan (individual subscriptions, a team plan, or API access) and who pays.
+- Make sure each teammate can run `claude` and sign in.
+- Record the decision in docs/DECISIONS.md.
+
+Acceptance criteria
+- ☐ All five people can start Claude Code in the project folder.
+- ☐ The decision is written down.",wave-0,l-7,lead,,Lead,
+8,Review and trim AGENTS.md after the first week,Task,,"Plan ID: L-8 (wave 0)
+
+Zone: Lead
+Depends on: Practice run for every teammate (plus about a week of real tickets)
+Files allowed (optional): AGENTS.md, docs/PROMPTING_GUIDE.md, docs/SYNC_WITH_MAIN.md
+
+In plain words (for beginners)
+AGENTS.md is the rulebook Claude Code follows. It is long. After a week we look at what actually happened and keep only what helps.
+
+What
+- Read the docs/ai-log/ files and the closed/merged pull requests. List the rules that were broken, ignored or caused friction.
+- Shorten wording, remove rules nobody needs, add rules for real problems.
+- Check that all documents still agree with each other.
+
+Acceptance criteria
+- ☐ AGENTS.md is shorter (target under 300 lines) with no lost safety rule.
+- ☐ A list ""what we changed and why"" is in the pull request.",wave-0,l-8,lead,,Lead,
+9,Bi-weekly client demo and change-request routine,Task,,"Plan ID: L-9 (wave 0)
+
+Zone: Lead (recurring ticket, one per demo)
+Depends on: nothing
+
+In plain words (for beginners)
+The client wants a demo every two weeks. We prepare the same way each time, and every new wish becomes a ticket we can prioritise.
+
+What (each demo)
+- Two days before: pick what to show, run it from a fresh clone on one PC (the demo machine), seed fake data (never real data).
+- Write a short demo script (5 to 10 steps) and test it once.
+- During the demo: one person drives, one person writes down every wish and question.
+- After the demo: turn each wish into a Jira ticket labelled ""change-request"" and ask the client to order them by priority.
+
+Acceptance criteria
+- ☐ Demo ran from a clean setup. Every wish is a ticket or an answered question.",wave-0,l-9,lead,,Lead,
+10,Team working agreements,Task,,"Plan ID: L-10 (wave 0)
+
+Zone: Team
+Depends on: nothing
+
+In plain words (for beginners)
+A few simple team promises prevent waiting around and surprises.
+
+What (agree, then write it in docs/TEAM.md)
+- Review turnaround: a pull request gets its first review within one working day.
+- Who reviews whom (rotation), so nobody is always waiting for the same person.
+- A short daily check-in (chat message: what I did, what I will do, where I am stuck).
+- When stuck for more than 30 minutes: ask in the team chat, with the report from the helper menu (option 18).
+- Definition of done: tests added, six checks green, ticket moved, documentation updated if behaviour changed.
+
+Acceptance criteria
+- ☐ Everyone agreed; the text is in docs/TEAM.md (lead PR).",wave-0,l-10,team,,,
+11,"Shared view helpers in apps/core (page size, audit fields, messages)",Task,,"Plan ID: W2-B1 (wave 2)
+
+Zone: Backend (SHARED: apps/core, announce to the team first)
+Depends on: Database schema v1, Roles and permissions
+Files allowed (optional): apps/core/ (views mixins, constants, tests)
+
+In plain words (for beginners)
+Strain pages, plasmid pages and primer pages all need the same boring things: the same page size, ""remember who saved this record"", ""show a success message"". We write those ONCE here so the three apps do not each invent their own version.
+
+What
+- PAGE_SIZE = 25 constant.
+- AuditedFormMixin: on save sets created_by (first save) and updated_by (every save) from request.user.
+- A small mixin that adds a success message after create/update/delete (text supplied by each view).
+- A base class or mixin combining: login (already global), permission check, pagination, the `page_obj` and `object_list` context names.
+- Tests for each helper using a tiny test model inside the tests package.
+
+Contract for others (docstrings)
+- How to use each mixin in three lines with an example.
+
+Acceptance criteria
+- ☐ Tests for each helper; six checks green.
+Out of scope: any real entity view.",wave-2,w2-b1,backend,,Backend,
+12,"Primer pages: list, detail, create, edit",Task,,"Plan ID: W2-B2 (wave 2)
+
+Zone: Backend
+Depends on: Shared view helpers, Database schema v1
+Files allowed (optional): apps/primers/ (views.py, forms.py, urls.py, tests/)
+
+In plain words (for beginners)
+This makes the primers usable in the website. A ""view"" answers a web address; a ""form"" checks what a person typed. The pretty pages come from the frontend tickets; here we provide the data and the rules.
+
+What
+- URL names primers:list, primers:detail, primers:create, primers:update (delete comes in the delete ticket).
+- List: all primers, newest first, 25 per page.
+- Detail: the primer, and the plasmids it is linked to (with orientation and position).
+- Form (strict): primer_id and sequence required; purpose, freezer_location optional; the sequence is cleaned by the model rules; length and Tm are shown read-only after saving; extra_data is edited later (extra-fields ticket), not here.
+- The purpose field offers suggestions from a list defined in ONE place in the form (a datalist), but accepts other text.
+- Permissions: viewing needs primers.view_primer, create needs add, edit needs change.
+
+Contract for the frontend (also in the view docstrings)
+- list: context `page_obj`, `object_list`, `is_paginated`. Each row: id, primer_id, sequence, purpose, freezer_location, length_bp, melting_temp_tm.
+- detail: context `object` (the primer) and `links` (rows with plasmid, orientation, binding_position).
+- create/update: context `form`, fields primer_id, sequence, purpose, freezer_location, and `object` on update. Server messages through the messages framework.
+
+Acceptance criteria
+- ☐ Tests per view: anonymous -> login; permitted user -> 200 with the expected content; user without permission -> 403; the form rejects invalid sequence letters and a duplicate primer_id (any capitalisation); created_by/updated_by are set.
+- ☐ Six checks green.
+Out of scope: delete, search, templates (frontend tickets).",wave-2,w2-b2,backend,,Backend,
+13,"Plasmid pages: list, detail, create, edit",Task,,"Plan ID: W2-B3 (wave 2)
+
+Zone: Backend
+Depends on: Shared view helpers, Database schema v1
+Files allowed (optional): apps/plasmids/ (views.py, forms.py, urls.py, tests/)
+
+In plain words (for beginners)
+Same idea as the primer pages, for plasmids (small circles of DNA). A plasmid can have primers and can be carried by strains.
+
+What
+- URL names plasmids:list, plasmids:detail, plasmids:create, plasmids:update.
+- List: plasmid_name, size_bp, resistance_markers, copy_number.
+- Detail: all fields, the primers linked to it (orientation, binding_position), and the strains that carry it.
+- Form (strict): plasmid_name required; size_bp a positive whole number when given; copy_number a dropdown (High, Medium, Low, or empty); sequence_file and hessenbox_path are plain text boxes (the SnapGene ticket later makes them clickable); description optional.
+- Permissions as in the primer ticket.
+
+Contract for the frontend
+- list: `page_obj`, `object_list`. detail: `object`, `primer_links`, `strains`. form: `form` with the field names above.
+
+Acceptance criteria
+- ☐ Same test set as the primer pages (login, permission, content, validation, duplicate names, audit fields).
+- ☐ Six checks green.
+Out of scope: delete, search, templates.",wave-2,w2-b3,backend,,Backend,
+14,"Strain pages: list, detail, create, edit",Task,,"Plan ID: W2-B4 (wave 2)
+
+Zone: Backend
+Depends on: Shared view helpers, Database schema v1
+Files allowed (optional): apps/strains/ (views.py, forms.py, urls.py, tests/)
+
+In plain words (for beginners)
+The strain is the heart of the database: a bacterial line with its genetics and where it is stored. A strain can carry plasmids and can descend from another strain (its ""parent"").
+
+What
+- URL names strains:list, strains:detail, strains:create, strains:update.
+- List: strain_id, host_organism, genotype (shortened), culturing_temp, culturing_medium, freezer_location.
+- Detail: all fields, the plasmids it carries, its parent strain and its child strains.
+- Form (strict): strain_id required; culturing_temp a number in a sensible range (set the range in ONE constant); parent_strain a dropdown of other strains that cannot be the strain itself; biosafety_level offers suggestions from a list in one place but accepts other text.
+- Permissions as in the other entities.
+
+Contract for the frontend
+- list: `page_obj`, `object_list`. detail: `object`, `plasmid_links`, `parent`, `children`. form: `form`.
+
+Acceptance criteria
+- ☐ Tests: the usual set, plus ""a strain cannot be its own parent"", ""a loop of parents is rejected"", ""a strain without plasmids or parent saves fine"".
+- ☐ Six checks green.
+Out of scope: delete, search, templates.",wave-2,w2-b4,backend,,Backend,
+15,Link plasmids to strains and primers to plasmids,Task,,"Plan ID: W2-B5 (wave 2)
+
+Zone: Backend
+Depends on: Primer pages, Plasmid pages, Strain pages
+Files allowed (optional): apps/strains/, apps/plasmids/ (views, forms, urls, tests)
+
+In plain words (for beginners)
+A strain carries plasmids; a plasmid binds primers. This ticket lets a person add and remove those connections from a detail page. Remember the rule: a record never has to have links, and removing a link NEVER deletes either record.
+
+What
+- On a strain's page: add a plasmid (pick from a list, optional note) and remove a plasmid link. URL names strains:link_plasmid, strains:unlink_plasmid.
+- On a plasmid's page: add a primer (pick the primer, orientation, binding position, note) and remove a primer link. URL names plasmids:link_primer, plasmids:unlink_primer.
+- The same pair cannot be linked twice (friendly error message, not a crash).
+- Needs the change permission of the page's record; unlinking is a POST request with a CSRF token.
+
+Contract for the frontend
+- Link forms as `link_form` in the detail page context, with the field names; unlink buttons post to the unlink URL with the link row's id.
+
+Acceptance criteria
+- ☐ Tests: link, duplicate link, unlink, unlinking keeps both records, permissions (student cannot link), the page works for a record with no links.
+- ☐ Six checks green.",wave-2,w2-b5,backend,,Backend,
+16,Delete with a choice (shared helper and all three apps),Task,,"Plan ID: W2-B6 (wave 2)
+
+Zone: Backend (the helper lives in apps/core, a SHARED area: announce first)
+Depends on: Link management
+Files allowed (optional): apps/core/, apps/strains/, apps/plasmids/, apps/primers/ (views, urls, tests)
+
+In plain words (for beginners)
+Deleting a record that is connected to others is risky. Decision D8: we always ask. The confirmation page lists what is linked and lets the person choose: delete only this record (its links disappear, the others stay), or also delete the linked records, but only those that are not linked to anything else.
+
+What
+- One shared delete view/mixin in apps/core, used by the three apps: URL names primers:delete, plasmids:delete, strains:delete.
+- GET shows the confirmation (context below); POST performs the choice, with a CSRF token.
+- ""Also delete linked records"" is offered only for linked records that nothing else is linked to. A plasmid carried by another strain is NEVER deleted by this option.
+- Needs the delete permission (Admin only by default).
+- A success message says exactly what was deleted.
+
+Contract for the frontend
+- Context: `object`, `linked_exclusive` (linked records that nothing else uses), `linked_shared` (linked records that something else also uses), form field `delete_linked` (checkbox).
+
+Acceptance criteria
+- ☐ Tests: delete only this record keeps the others; also-delete removes only exclusive ones; shared ones stay; no permission -> 403; a record without links deletes simply; nothing else is deleted in any case.
+- ☐ Six checks green.",wave-2,w2-b6,backend,,Backend,
+17,Home dashboard data and the admin approvals page,Task,,"Plan ID: W2-B7 (wave 2)
+
+Zone: Backend
+Depends on: Accounts v1, Strain pages (for the counts)
+Files allowed (optional): apps/core/views.py, apps/core/urls.py, apps/accounts/ (views, urls, tests)
+
+In plain words (for beginners)
+The home page should say something useful: how many records exist, what changed recently, and (for admins) who is waiting for approval. Admins should be able to approve new sign-ups on a normal page without learning the Django admin.
+
+What
+- core:home context: counts of strains, plasmids, primers; the 5 most recently changed records of each kind; for users with the permission, `pending_users` (sign-ups waiting).
+- accounts:approvals (Admin only): list of pending sign-ups with their signup_note; POST actions approve (with a role dropdown: Student, Staff or Admin) and reject. Approving sets approval_status, is_active, approved_by, approved_at and adds the chosen group.
+
+Contract for the frontend
+- Home: `counts` (dict), `recent` (lists), `pending_users` (or empty). Approvals page: `pending_users`, a form with `user_id` and `role`, POST to accounts:approve and accounts:reject.
+
+Acceptance criteria
+- ☐ Tests: counts are right; recent lists are ordered; pending_users only for admins; approve gives the chosen role; reject deactivates; a Student gets 403 on the approvals page.
+- ☐ Six checks green.",wave-2,w2-b7,backend,,Backend,
+18,"Browse, create and edit records (parent)",Task,,"Plan ID: W2-F-MAIN (wave 2)
+
+Zone: Frontend
+
+In plain words (for beginners)
+This is where the lab's data becomes visible and usable: tables to browse, pages to read one record, forms to add and change records, and a clear way to link and delete. You build on what the backend tickets publish (URL names and context variables in the view docstrings). If a variable you need is missing, ask on the backend ticket; never edit apps/.
+
+Sub-tasks (Jira sub-tasks; each its own PR)
+  1. W2-F1 Shared list layout (table, empty state, pagination)       (SHARED FILES)
+  2. W2-F2 Primer pages: list, detail, form
+  3. W2-F3 Plasmid pages: list, detail, form
+  4. W2-F4 Strain pages: list, detail (with lineage), form
+  5. W2-F5 Link management on the detail pages
+  6. W2-F6 Delete confirmation page
+  7. W2-F7 Home dashboard
+  8. W2-F8 Admin approvals page
+  9. W2-F9 Permission-aware buttons and final polish
+
+Definition of done for the parent
+A Staff user can find, read, create, edit and link records; a Student can only read and sees no edit buttons; an Admin can delete with a clear choice; every page has loading-free empty, error and success states.
+
+Things to take care of (apply to every sub-task)
+- Everything from the F-MAIN checklist of wave 1 still applies (plain CSS, no CDN, no inline styles, CSRF, labels, no-JS, keyboard, English only).
+- Tables: real <table> with header cells (scope=""col""), sensible column widths, long text (genotype, sequence) shortened with the full text on the detail page.
+- DNA sequences use the monospace style and may wrap anywhere.
+- Never show a button the user may not use (check the permissions the backend provides, e.g. \{% if perms.strains.change_strain %\}).
+- Links between records are real links (deep links), keyboard reachable.
+- Show friendly empty states (""No primers yet"") and a ""Create"" button only for those allowed.
+- Every PR: screenshots (list, detail, form, an error state) and the browser checklist.",wave-2,w2-f-main,frontend,,Frontend,
+19,"Shared list layout: table, empty state, pagination",Sub-task,18,"Plan ID: W2-F1 (wave 2)
+
+Zone: Frontend (SHARED FILES: announce first)
+Depends on: Design foundation, Form and feedback components
+Files allowed (optional): templates/components/, static/css/base.css
+
+In plain words (for beginners)
+All three list pages (strains, plasmids, primers) look alike: a title, a button, a table, page numbers. Build that frame once as components.
+
+What
+- components/page_header.html (title + optional action button), components/table.html pattern or CSS (zebra rows, hover, sticky header if easy), components/empty_state.html, components/pagination.html using `page_obj`.
+Acceptance criteria
+- ☐ Used by the first list page that follows; states: normal, empty, one page, many pages.
+- ☐ Browser checklist, screenshot.",wave-2,w2-f1,frontend,,Frontend,
+20,"Primer pages: list, detail, form",Sub-task,18,"Plan ID: W2-F2 (wave 2)
+
+Zone: Frontend
+Depends on: Primer pages (backend), Shared list layout
+Files allowed (optional): templates/primers/, static/css/pages/primers-*.css
+
+In plain words (for beginners)
+The primer is a short piece of DNA, written as a row of letters. Show the letters in a monospace font so they line up and are easy to read.
+
+What
+- list.html: columns primer_id (link to detail), sequence (monospace, shortened), purpose, length, Tm, freezer location.
+- detail.html: all fields, the linked plasmids (links to their pages with orientation and position), Edit button for those who may.
+- form.html: the form using the shared components; help text under sequence (""letters A, C, G, T; 5'- and -3' are removed automatically""); read-only length and Tm shown after saving.
+Acceptance criteria
+- ☐ States: empty list, one page/many pages, a primer with no links, validation errors, success message, permission-less view (no buttons).",wave-2,w2-f2,frontend,,Frontend,
+21,"Plasmid pages: list, detail, form",Sub-task,18,"Plan ID: W2-F3 (wave 2)
+
+Zone: Frontend
+Depends on: Plasmid pages (backend), Shared list layout
+Files allowed (optional): templates/plasmids/, static/css/pages/plasmids-*.css
+
+What
+- list.html: plasmid_name (link), size_bp, resistance_markers, copy_number.
+- detail.html: all fields; two sections ""Primers"" (orientation and position) and ""Carried by strains""; sequence_file and hessenbox_path shown as plain text for now (becomes a button later).
+- form.html: shared components; copy_number dropdown; size_bp number input with a min value.
+Acceptance criteria
+- ☐ Same states as the primer pages, plus a plasmid with no primers and no strains.",wave-2,w2-f3,frontend,,Frontend,
+22,"Strain pages: list, detail with lineage, form",Sub-task,18,"Plan ID: W2-F4 (wave 2)
+
+Zone: Frontend
+Depends on: Strain pages (backend), Shared list layout
+Files allowed (optional): templates/strains/, static/css/pages/strains-*.css
+
+In plain words (for beginners)
+""Lineage"" means where a strain came from: its parent, and the strains made from it. Show it simply as two small lists with links.
+
+What
+- list.html: strain_id (link), host_organism, genotype (shortened), culturing temperature (with the unit °C), medium, freezer location.
+- detail.html: all fields; sections ""Plasmids"" (links), ""Parent strain"" (link or ""none"") and ""Child strains"" (links).
+- form.html: shared components; temperature input with step 0.1; parent dropdown with a clear ""none"" option.
+Acceptance criteria
+- ☐ States: empty, validation errors, a strain with no plasmids and no parent, a strain with several plasmids and children.",wave-2,w2-f4,frontend,,Frontend,
+23,Link management on the detail pages,Sub-task,18,"Plan ID: W2-F5 (wave 2)
+
+Zone: Frontend
+Depends on: Link management (backend), Strain pages, Plasmid pages (frontend)
+Files allowed (optional): templates/strains/, templates/plasmids/, templates/components/link_form.html, static/css/pages/*-links.css
+
+In plain words (for beginners)
+On a strain page you add or remove the plasmids it carries; on a plasmid page you add or remove its primers. Removing a link only removes the connection, never the records, and the page must say so.
+
+What
+- Small ""add"" form (a dropdown plus optional fields) and a ""remove"" button per row (a POST form with a CSRF token) on the two detail pages, shown only to users who may change the record.
+- Clear wording under remove: ""This only removes the link. Both records stay.""
+Acceptance criteria
+- ☐ States: no links, many links, duplicate-link error, success message, a read-only user sees no add/remove controls.",wave-2,w2-f5,frontend,,Frontend,
+24,Delete confirmation page,Sub-task,18,"Plan ID: W2-F6 (wave 2)
+
+Zone: Frontend
+Depends on: Delete with a choice (backend)
+Files allowed (optional): templates/core/confirm_delete.html (or per-app folders), static/css/pages/delete.css
+
+In plain words (for beginners)
+Deleting is permanent, so the page must be calm and clear. It names the record, lists what is linked to it, and offers the choice from decision D8.
+
+What
+- A page showing the record, the linked records that nothing else uses (can be deleted too) and the linked records others still use (will stay).
+- A checkbox ""Also delete the linked records that nothing else uses"" (unchecked by default), a red Delete button, and a Cancel link back to the record.
+Acceptance criteria
+- ☐ States: no links; only exclusive links; shared links; the cancel path; keyboard use.",wave-2,w2-f6,frontend,,Frontend,
+25,Home dashboard,Sub-task,18,"Plan ID: W2-F7 (wave 2)
+
+Zone: Frontend
+Depends on: Dashboard data and admin approvals page (backend), Design foundation
+Files allowed (optional): templates/core/home.html, static/css/pages/core-home.css
+
+What
+- Three count cards (Strains, Plasmids, Primers) linking to the lists; ""Recently changed"" lists; for admins a ""N people are waiting for approval"" notice linking to the approvals page.
+Acceptance criteria
+- ☐ States: empty database, normal, admin with pending users, student view.",wave-2,w2-f7,frontend,,Frontend,
+26,Admin approvals page,Sub-task,18,"Plan ID: W2-F8 (wave 2)
+
+Zone: Frontend
+Depends on: Dashboard data and admin approvals page (backend)
+Files allowed (optional): templates/accounts/approvals.html, static/css/pages/accounts-approvals.css
+
+What
+- A table of pending sign-ups (name, username, email, note, date) with a role dropdown and Approve and Reject buttons per row (POST forms with CSRF).
+- Empty state ""Nobody is waiting"".
+Acceptance criteria
+- ☐ States: empty, one pending, many pending; success and error messages; only admins can open it (403 page otherwise).",wave-2,w2-f8,frontend,,Frontend,
+27,Permission-aware buttons and final polish of wave 2,Sub-task,18,"Plan ID: W2-F9 (wave 2)
+
+Zone: Frontend
+Depends on: all W2-F tickets above
+
+What
+- Go through every page as Student, Staff and Admin: hide anything the role cannot use, make wording consistent (Create / Edit / Delete), consistent page titles, breadcrumbs or ""back to list"" links, same spacing everywhere.
+- Fix duplicated markup by moving it into components (rule of two).
+Acceptance criteria
+- ☐ A short table in the PR: page x role, with a screenshot or ""ok"" for each.
+- ☐ No page has unstyled areas or copy-pasted blocks.",wave-2,w2-f9,frontend,,Frontend,
+28,"Search and filter methods for primers, plasmids and strains",Task,,"Plan ID: W3-B1 (wave 3)
+
+Zone: Backend
+Depends on: Primer pages, Plasmid pages, Strain pages
+Files allowed (optional): apps/primers/, apps/plasmids/, apps/strains/ (models/querysets, forms, tests)
+
+In plain words (for beginners)
+A ""queryset"" is Django's way of asking the database a question. We write the questions (""find primers whose name or sequence contains this text"") once, as methods with clear names, and the views simply call them. That keeps the pages short and the rules in one place.
+
+What
+- Per entity a queryset method `search(text)`: case-insensitive ""contains"" on the main text fields
+  - primers: primer_id, purpose, sequence, freezer_location
+  - plasmids: plasmid_name, resistance_markers, description
+  - strains: strain_id, host_organism, genotype, freezer_location
+  Several words mean ALL words must match (AND). A word may match in any of the fields.
+- Per entity filter methods, one per filter, each ignoring an empty value:
+  - primers: purpose, has_plasmid (yes/no)
+  - plasmids: resistance marker, copy number, size range (min/max)
+  - strains: host organism, biosafety level, culturing temperature range, plasmid (strain carries plasmid X), parent strain
+- A FilterForm per entity (Django form, not required fields) that validates the GET parameters and returns the filtered queryset.
+- Wrong input (letters in a size box) shows a form error and is ignored, it never crashes the page.
+
+Contract for the frontend (view docstrings)
+- Parameters: `q`, the filter names above, `sort`, `page`.
+- Context: `filter_form` (fields to render), `result_count`, `active_filters` (list of label + value + the address that removes it).
+
+Acceptance criteria
+- ☐ Tests for every search field and every filter, empty input, wrong input, multi-word search, capital letters.
+- ☐ A test with 3 records shows that only the right ones come back.
+- ☐ Six checks green.
+Out of scope: templates, JavaScript, global search.",wave-3,w3-b1,backend,,Backend,
+29,Sorting and pagination that keep search and filters,Task,,"Plan ID: W3-B2 (wave 3)
+
+Zone: Backend (the helper lives in apps/core: SHARED, announce first)
+Depends on: Search and filter methods
+Files allowed (optional): apps/core/, the three list views, tests
+
+In plain words (for beginners)
+If you search for ""pET"", go to page 2 and the search disappears, that is a bug. Also people want to click a column title to sort. This ticket makes page numbers and sorting remember the search.
+
+What
+- A shared helper that takes the current GET parameters and builds new addresses: ""page 3"", ""sort by size"", ""remove this filter"" (always keeping the other parameters).
+- Allowed sort columns are a fixed list per entity (a whitelist). Any other `sort` value is ignored (safety: never pass raw text to the database).
+- Default sort: newest first (or by name, decide once and write it in the docstring).
+- Context for the frontend: `querystring_without_page`, `sort_links` (column -> address, current direction).
+
+Acceptance criteria
+- ☐ Tests: page 2 keeps `q` and filters; unknown sort ignored; descending sort works; going out of range gives the last page, not an error.
+- ☐ Six checks green.",wave-3,w3-b2,backend,,Backend,
+30,"Global search page across strains, plasmids and primers",Task,,"Plan ID: W3-B3 (wave 3)
+
+Zone: Backend (SHARED: apps/core, announce to the other backend dev first)
+Depends on: Search and filter methods
+Files allowed (optional): apps/core/views.py, apps/core/urls.py, apps/core/tests/
+
+In plain words (for beginners)
+A person looking for ""pUC19"" often does not know whether it is a plasmid or the name inside a strain. One search box in the top bar searches everything and shows results grouped by kind.
+
+What
+- URL name `core:search`, parameter `q`. Uses the three `search()` methods (never new query code here).
+- At most 10 results per kind, with a ""see all N"" address into the full list page with the same `q`.
+- Needs the view permission of each kind: kinds the user may not view are skipped.
+- Fewer than 2 characters: no search, a friendly hint.
+
+Contract for the frontend
+- Context: `q`, `results` = list of groups (kind label, items, total, list_url), `too_short`.
+
+Acceptance criteria
+- ☐ Tests: results grouped correctly; empty and short search; a user without a permission does not see that group; capital letters.
+- ☐ Six checks green.",wave-3,w3-b3,backend,,Backend,
+31,Live search JSON endpoint,Task,,"Plan ID: W3-B4 (wave 3)
+
+Zone: Backend (SHARED: apps/core, announce to the other backend dev first)
+Depends on: Global search page
+Files allowed (optional): apps/core/api.py, apps/core/urls.py, apps/core/tests/
+
+In plain words (for beginners)
+""Live search"" shows suggestions while you type, without reloading the page. The browser asks a small web address and gets JSON back (JSON is just structured text a program can read). This ticket builds that address; the frontend ticket builds the typing box.
+
+What
+- URL name `core:search_api`, GET only, parameter `q`, login required like everything else.
+- Returns JSON with the SAME grouping rules as the global search but small: at most 5 results per kind.
+- Uses Django's JsonResponse. Never build JSON by hand.
+- Wrong or empty input returns an empty result, never an error page.
+
+Contract for the frontend (this exact shape, also in the docstring)
+  \{ ""q"": ""puc"",
+    ""groups"": \[
+      \{ ""kind"": ""plasmid"", ""label"": ""Plasmids"", ""total"": 12,
+        ""items"": \[ \{ ""id"": 7, ""title"": ""pUC19"", ""subtitle"": ""2686 bp, AmpR"", ""url"": ""/plasmids/7/"" \} \] \}
+    \] \}
+
+Acceptance criteria
+- ☐ Tests: shape is exactly as above; anonymous request is redirected or refused (never data); permission skipping; at most 5 per kind.
+- ☐ Six checks green.",wave-3,w3-b4,backend,,Backend,
+32,Search performance: indexes and query count,Task,,"Plan ID: W3-B5 (wave 3)
+
+Zone: Backend
+Depends on: Search and filter methods, Global search page
+Files allowed (optional): apps/*/models.py (Meta indexes), apps/*/migrations/ (follow the migration rules!), apps/*/tests/, apps/core/management/commands/
+
+In plain words (for beginners)
+With 50 records everything is fast. With 5000 it can become slow if the database has to look at every row. An ""index"" is like the index of a book: it lets the database jump straight to the answer. We measure first, then add only the indexes we need.
+
+What
+- Extend the fake data command with a bigger size (for example `--size large`: 5000 strains, 2000 plasmids, 5000 primers, with links). Development only.
+- Add tests that assert the number of database queries on each list page and the detail pages (use `assertNumQueries`), fixing N+1 problems with select_related / prefetch_related.
+- Measure the search with the large data set. If a search takes longer than 200 ms, add the indexes (or trigram indexes with the Postgres pg_trgm extension, which needs a lead-approved migration step) and show before/after numbers in the pull request.
+- Follow the migration rules: one open migration pull request for the app, never edit a merged migration.
+
+Acceptance criteria
+- ☐ Query counts are fixed and tested (do not grow with the number of rows).
+- ☐ Before/after timings in the pull request.
+- ☐ Six checks green.",wave-3,w3-b5,backend,,Backend,
+33,Search and filter experience (parent),Task,,"Plan ID: W3-F-MAIN (wave 3)
+
+Zone: Frontend
+
+In plain words (for beginners)
+This is the feature the lab will use every day: type a few letters, find the strain. It must feel fast, clear and forgiving. You build on the backend contract (parameters and context variables in the view docstrings).
+
+Sub-tasks
+  1. W3-F1 Search bar component in the top bar                  (SHARED FILES)
+  2. W3-F2 Filter panel component and per-entity filter layouts
+  3. W3-F3 Sortable column headers and active-filter chips
+  4. W3-F4 Global search results page
+  5. W3-F5 Live search dropdown (JavaScript)
+  6. W3-F6 Search states: empty, loading, error, too short, no results
+
+Definition of done for the parent
+From any page a person can search, open a result, narrow a list with filters, share the address of the result, and everything still works without JavaScript.
+
+Things to take care of
+- Search is a normal <form method=""get"">; JavaScript only adds speed.
+- Keep what the user typed in the box after searching; show the number of results.
+- Labels for every input; the search input has type=""search"" and an accessible name.
+- Matches may be highlighted with the <mark> element (done in the template filter, never with innerHTML on user text).
+- All earlier frontend rules apply (plain CSS, no CDN, no inline styles, keyboard use, English only).",wave-3,w3-f-main,frontend,,Frontend,
+34,Search bar component in the top bar,Sub-task,33,"Plan ID: W3-F1 (wave 3)
+
+Zone: Frontend (SHARED FILES: announce first)
+Depends on: Global search page (backend), Design foundation
+Files allowed (optional): templates/components/search_bar.html, templates/base.html (nav part only), static/css/base.css
+
+What
+- A search form in the top navigation on every page (GET to core:search, input name `q`), keeping the current text on the results page.
+- On small screens it moves below the menu (no horizontal scroll).
+Acceptance criteria
+- ☐ Works with keyboard only (Tab, Enter); a screenshot at desktop and phone width.",wave-3,w3-f1,frontend,,Frontend,
+35,Filter panel and filter layouts for the three lists,Sub-task,33,"Plan ID: W3-F2 (wave 3)
+
+Zone: Frontend
+Depends on: Search and filter methods (backend), Shared list layout (wave 2)
+Files allowed (optional): templates/components/filter_panel.html, templates/primers/, templates/plasmids/, templates/strains/, static/css/pages/*-filters.css
+
+In plain words (for beginners)
+Filters are small controls above the table (dropdowns, number boxes) that shrink the list. One generic panel component draws the fields the backend gives us; each list page only chooses which fields appear.
+
+What
+- components/filter_panel.html rendering `filter_form`, with an ""Apply"" button and a ""Clear all"" link.
+- Collapsible on narrow screens using <details>/<summary> (no JavaScript needed).
+- Range filters (size, temperature) as ""from"" and ""to"" boxes side by side.
+Acceptance criteria
+- ☐ Used on all three lists; keeps values after submitting; form errors shown next to the field; works without JavaScript.",wave-3,w3-f2,frontend,,Frontend,
+36,Sortable column headers and active-filter chips,Sub-task,33,"Plan ID: W3-F3 (wave 3)
+
+Zone: Frontend
+Depends on: Sorting and pagination that keep search (backend), Filter panel
+Files allowed (optional): templates/components/, static/css/pages/ (list-page CSS; shared look goes in base.css only via a shared ticket)
+
+What
+- Column titles are links using `sort_links`; the current column shows an arrow and an accessible text (""sorted ascending"").
+- A row of ""chips"" for the active filters; each has a small remove link (`active_filters`) with an accessible label (""Remove filter host: E. coli"").
+- Page numbers use `querystring_without_page` so they never lose the search.
+Acceptance criteria
+- ☐ Keyboard and screen-reader text checked; sorting and paging keep search and filters on all three lists.",wave-3,w3-f3,frontend,,Frontend,
+37,Global search results page,Sub-task,33,"Plan ID: W3-F4 (wave 3)
+
+Zone: Frontend
+Depends on: Global search page (backend), Search bar component
+Files allowed (optional): templates/core/search.html, static/css/pages/core-search.css
+
+What
+- Groups with headings (Strains, Plasmids, Primers), each result a link with title and subtitle, a ""see all N"" link per group, the count of results, the typed text kept in the box.
+- States: nothing typed, too short (hint), no results (helpful text: check the spelling, try fewer letters), results.
+Acceptance criteria
+- ☐ All states shown in the pull request; matches highlighted safely.",wave-3,w3-f4,frontend,,Frontend,
+38,Live search dropdown while typing,Sub-task,33,"Plan ID: W3-F5 (wave 3)
+
+Zone: Frontend
+Depends on: Live search JSON endpoint (backend), Search bar component
+Files allowed (optional): static/js/pages/core-live-search.js, static/css/pages/core-live-search.css, templates/components/search_bar.html (SHARED: announce first)
+
+In plain words (for beginners)
+While the user types, a small box under the input shows the best matches. JavaScript sends the text to the JSON address and draws the answer. ""Debounce"" means waiting about 250 ms after the last key so we do not ask the server on every single letter.
+
+What
+- Plain JavaScript file (no libraries, no CDN). Debounce 250 ms; cancel the previous request when a new one starts (AbortController).
+- Draw results with textContent (never innerHTML with user text, to avoid XSS).
+- Accessibility: role=""listbox""/""option"" or a simple list with aria-live=""polite"" announcing ""N results""; arrow keys move, Enter opens, Escape closes; focus never trapped.
+- If JavaScript fails or the address errors: the normal form submit still works and a short message appears.
+Acceptance criteria
+- ☐ Works with the mouse and keyboard only; slow network and error states checked (browser dev tools ""Slow 3G"", offline).
+- ☐ No console errors; the page works with JavaScript disabled.",wave-3,w3-f5,frontend,,Frontend,
+39,"Search states: empty, loading, error, too short",Sub-task,33,"Plan ID: W3-F6 (wave 3)
+
+Zone: Frontend
+Depends on: Live search dropdown, Global search results page
+
+What
+- A short consistent wording and style for each state, reused by the list pages, the global page and the dropdown (components, no copy-paste).
+- Loading indicator in plain CSS (no GIF); respects ""reduce motion"".
+Acceptance criteria
+- ☐ Screenshot of each state; the same component used everywhere.",wave-3,w3-f6,frontend,,Frontend,
+40,SnapGene spike: can the browser open a .dna file on a lab PC?,Task,,"Plan ID: W4-L1 (wave 4)
+
+Zone: Lead (with the client)
+Depends on: client answers to the SnapGene and Hessenbox questions (ticket L-6)
+
+In plain words (for beginners)
+SnapGene is the program biologists use to look at plasmid maps. The client wants one click in our website to open a plasmid file in SnapGene. Browsers are strict about opening local programs, so we first TRY the possible ways on a real lab PC before anyone builds anything. A ""spike"" is a short experiment that ends with a decision, not with finished code.
+
+What
+Try on one lab PC (Windows, SnapGene installed, Hessenbox folder synced) and write down what works:
+1. Plain download: the website serves the .dna file as a download; the browser opens it with SnapGene (file type association).
+2. A link to the synced file path (file:// links are usually blocked from web pages: confirm).
+3. A custom link scheme if SnapGene offers one (check SnapGene documentation).
+4. A link to the file in the Hessenbox/Nextcloud web page.
+Record per option: works yes/no, number of clicks, what the user sees, any security warning.
+
+Output
+- Decision in docs/DECISIONS.md (lead pull request): which option we build, and what the database must store (a path relative to a folder, or a full link).
+- The hessenbox_path field format (what a valid value looks like) is written into docs/DOMAIN.md.
+
+Acceptance criteria
+- ☐ Tested on at least one real lab PC with the client's help.
+- ☐ A decision is written; W4-B1 and W4-F1 can be updated with it.",wave-4,w4-l1,lead,waiting-client,Lead,
+41,Serve or link plasmid files so SnapGene can open them,Task,,"Plan ID: W4-B1 (wave 4)
+
+Zone: Backend (the mounted folder in docker-compose.yml is a LEAD change: see W4-L2)
+Depends on: SnapGene spike (decision), Plasmid pages (backend)
+Files allowed (optional): apps/plasmids/ (views, urls, tests)
+
+In plain words (for beginners)
+Depending on the spike's decision, either (a) our server hands the .dna file to the browser as a download, or (b) the page just shows a link. This ticket is written for option (a), the most likely one; adjust it after the spike.
+
+What (option a)
+- URL name `plasmids:snapgene_file` (GET only, login required, permission plasmids.view_plasmid).
+- Reads the file named by the plasmid's `sequence_file`/`hessenbox_path` from ONE configured base folder (setting name defined by the lead in W4-L2). Nothing outside that folder can ever be read:
+  - reject absolute paths, `..`, and symbolic links that leave the folder;
+  - only allow the extensions the client uses (.dna, .gb, .fa ...), defined once as a constant.
+- Sends the file with Django's FileResponse as an attachment with a safe file name; a missing file shows a friendly 404 page, not a crash.
+- Never logs file contents.
+
+Contract for the frontend
+- Plasmid detail context gets `snapgene_url` (the address above) or None when the plasmid has no file.
+
+Acceptance criteria
+- ☐ Tests: file served for a valid name; `../` and absolute path rejected; missing file -> 404; no permission -> 403; no file set -> `snapgene_url` is None.
+- ☐ Reviewer guide in the pull request names the path-safety code as the place needing most attention.
+- ☐ Six checks green.
+Out of scope: Docker volume, template.",wave-4,w4-b1,backend,,Backend,
+42,"Sequence helper functions: reverse complement, GC content, cleaning",Task,,"Plan ID: W4-B2 (wave 4)
+
+Zone: Backend (SHARED: apps/core, announce first)
+Depends on: Database schema v1 (and the client's answer about Tm formula and allowed letters, for the two marked items)
+Files allowed (optional): apps/core/sequence.py, apps/core/tests/test_sequence.py
+
+In plain words (for beginners)
+DNA is written as a string of the letters A, C, G and T. Biologists constantly need small calculations on those strings. We write them as plain Python functions with clear tests, once, so models, forms and pages all use the same ones.
+
+What (each a small, pure function with a docstring)
+- clean_sequence(text): uppercase, remove spaces/newlines/digits, remove 5'- and -3' markers; raise a clear error for letters that are not allowed.
+- reverse_complement(seq): A<->T, C<->G, reversed.
+- gc_content(seq): percentage of G and C (rounded to 1 decimal).
+- melting_temperature(seq): ONLY after the client confirms the formula (a function with the chosen formula named in its docstring).
+- format_blocks(seq, size=10): ""ACGTACGTAC GTACGTACGT ..."" for display.
+Acceptance criteria
+- ☐ Unit tests with hand-checked values (write the calculation in a comment next to each test); wrong letters raise the expected error; empty input handled.
+- ☐ The existing models/forms are NOT changed in this ticket (a follow-up small ticket switches them to these helpers if they have their own copies).
+- ☐ Six checks green.",wave-4,w4-b2,backend,,Backend,
+43,Warn about duplicate IDs and duplicate sequences when saving,Task,,"Plan ID: W4-B3 (wave 4)
+
+Zone: Backend
+Depends on: Primer pages, Plasmid pages, Strain pages, Sequence helpers
+Files allowed (optional): apps/primers/forms.py, apps/plasmids/forms.py, apps/strains/forms.py, tests
+
+In plain words (for beginners)
+Two people entering the same primer twice is the most common data problem in a lab database. Identical IDs are already blocked (that is a hard rule, any capitalisation). Two DIFFERENT IDs with the SAME sequence is allowed but suspicious, so we show a warning with a link to the existing record and let the person continue.
+
+What
+- On the primer form: if another primer has the same cleaned sequence, show a non-blocking warning (""Primer P-017 has the same sequence"") naming the records, with links.
+- The user can still save (an explicit tick box ""Save anyway"").
+- Same idea for plasmids with the same name ignoring spaces and capitals (""pUC19"" vs ""puc 19"").
+Contract for the frontend
+- Form context: `duplicate_warnings` (list of: message, record label, record url) and the field `confirm_duplicate`.
+Acceptance criteria
+- ☐ Tests: warning shown, can save with confirmation, cannot save without it, no warning for unique data, own record not counted when editing.
+- ☐ Six checks green.",wave-4,w4-b3,backend,,Backend,
+44,Strain lineage: ancestors and descendants,Task,,"Plan ID: W4-B4 (wave 4)
+
+Zone: Backend
+Depends on: Strain pages (backend)
+Files allowed (optional): apps/strains/ (models methods, views, tests)
+
+In plain words (for beginners)
+""Lineage"" is the family tree of a strain: its parent, grandparent, and so on, and the strains made from it. The strain page already shows the direct parent and children; this ticket adds the full chain, safely (a data mistake must never freeze the page in an endless loop).
+
+What
+- Methods `ancestors()` and `descendants()` (lists, with the depth number), written with a loop and a visited-set so a cycle in bad data stops cleanly; limit depth to 20.
+- Detail view context: `ancestors` (nearest first) and `descendants` (tree order with depth).
+- No new database columns (uses the existing parent link).
+Contract for the frontend
+- `ancestors`: list of \{strain, depth\}. `descendants`: list of \{strain, depth\}.
+Acceptance criteria
+- ☐ Tests: chain of 3, branching children, no parent/no children, a deliberate loop does not hang, query count stays small (use assertNumQueries).
+- ☐ Six checks green.",wave-4,w4-b4,backend,,Backend,
+45,"Suggestion lists for free-text fields (host organism, medium, location, markers)",Task,,"Plan ID: W4-B5 (wave 4)
+
+Zone: Backend (the helper in apps/core is SHARED: announce first)
+Depends on: Strain pages, Plasmid pages, Primer pages
+Files allowed (optional): apps/core/, apps/strains/forms.py, apps/plasmids/forms.py, apps/primers/forms.py, tests
+
+In plain words (for beginners)
+Fields like ""host organism"" are free text (so scientists are never blocked), but typing ""E.coli"", ""E. coli"" and ""Escherichia coli"" for the same thing makes searching messy. A suggestion list (an HTML <datalist>) offers the values already used, so people usually pick an existing one. This is decision D-permissive-database + strict-forms in practice: we guide, we do not block.
+
+What
+- One shared helper that returns the distinct existing values of a field, most used first, limited to 50.
+- Used by the forms for: host_organism, culturing_medium, biosafety_level, freezer_location (strains/primers), resistance_markers (plasmids), purpose (primers, together with the fixed starter list from the client).
+- The form exposes them as `suggestions` for each field.
+Acceptance criteria
+- ☐ Tests: ordering by use, empty database gives an empty list, a value typed outside the list still saves.
+- ☐ Query count tested (one query per field at most).
+- ☐ Six checks green.",wave-4,w4-b5,backend,,Backend,
+46,Mount the Hessenbox/SnapGene folder into the web container (read-only),Task,,"Plan ID: W4-L2 (wave 4)
+
+Zone: Lead
+Depends on: SnapGene spike (decision)
+Files allowed (optional): docker-compose.yml, .env.example, config/settings/base.py, docs/DECISIONS.md, docs/ONBOARDING.md
+
+In plain words (for beginners)
+The website runs inside a Docker container that cannot see the computer's folders unless we say so. We ""mount"" the plasmid-file folder into the container as read-only, so the website can read the files but can never change or delete them.
+
+What
+- A volume in docker-compose.yml mapping a host folder (from an environment variable, default an empty example folder inside the repo's data/ that is git-ignored) to a fixed path in the container, mounted read-only.
+- A setting (for example PLASMID_FILES_ROOT) read from the environment, documented in .env.example.
+- ONBOARDING note: developers do NOT need the real folder; the default example folder is enough.
+Acceptance criteria
+- ☐ `docker compose up` still works for everybody without extra steps (no real folder needed).
+- ☐ The container cannot write into the folder (try `touch` inside, it fails).",wave-4,w4-l2,lead,,Lead,
+47,Lab features on the pages (parent),Task,,"Plan ID: W4-F-MAIN (wave 4)
+
+Zone: Frontend
+
+In plain words (for beginners)
+These pieces make the pages feel made for biologists: reading sequences comfortably, opening SnapGene with a click, seeing the family tree of a strain, and getting gentle hints while typing.
+
+Sub-tasks
+  1. W4-F1 SnapGene button on the plasmid page
+  2. W4-F2 Sequence display component (blocks, copy button, counts)
+  3. W4-F3 Lineage section on the strain page
+  4. W4-F4 Duplicate warning and suggestion lists in the forms
+  5. W4-F5 Live sequence tools on the primer form (length, GC%, reverse complement while typing)
+  6. W4-F6 Print-friendly detail pages
+
+Definition of done for the parent
+A biologist can open a plasmid in SnapGene from its page, read and copy a sequence without errors, understand a strain's family tree at a glance, and is warned before creating a duplicate.
+
+Things to take care of
+- Everything from the earlier frontend rules still applies (plain CSS, no CDN, no inline styles, no frameworks, English only, works without JavaScript, textContent not innerHTML).
+- DNA letters use the monospace tokens from the design foundation; the optional colouring of A/C/G/T must not rely on colour alone and must keep readable contrast.",wave-4,w4-f-main,frontend,,Frontend,
+48,SnapGene button on the plasmid page,Sub-task,47,"Plan ID: W4-F1 (wave 4)
+
+Zone: Frontend
+Depends on: Serve or link plasmid files (backend), Plasmid pages (frontend)
+Files allowed (optional): templates/plasmids/ (detail), static/css/pages/plasmids-*.css
+
+What
+- If `snapgene_url` exists: a clear button ""Open in SnapGene"" (a normal link), with a small help text (""Your browser downloads the file; open it with SnapGene"").
+- If not: a calm text ""No sequence file stored"" (no broken button); users with the edit permission see a link to the edit form.
+Acceptance criteria
+- ☐ States: with file, without file, read-only user; keyboard use; screenshot.",wave-4,w4-f1,frontend,,Frontend,
+49,"Sequence display component: blocks, copy button, counts",Sub-task,47,"Plan ID: W4-F2 (wave 4)
+
+Zone: Frontend (SHARED FILES: components, announce first)
+Depends on: Sequence helpers (backend), Design foundation
+Files allowed (optional): templates/components/sequence.html, static/js/app.js (only if a shared helper is needed; otherwise static/js/pages/), static/css/base.css (shared look)
+
+In plain words (for beginners)
+Long DNA strings are hard to read. We show them in groups of 10 letters, with the length, and a ""Copy"" button.
+
+What
+- components/sequence.html used with `\{% include ""components/sequence.html"" with sequence=... %\}`: monospace, grouped by 10 (the backend helper `format_blocks`, passed in or a template filter owned by backend), line numbers every 60 letters on long sequences, length shown.
+- A ""Copy"" button (JavaScript, navigator.clipboard with a fallback that selects the text) that copies the plain letters WITHOUT spaces; works without JavaScript by showing selectable text.
+- Used on primer and plasmid detail pages (replace the plain text there; one small PR touching only the include lines).
+Acceptance criteria
+- ☐ States: empty, short (20), long (3000) sequence; copy gives clean letters; no horizontal page scroll; screenshot.",wave-4,w4-f2,frontend,,Frontend,
+50,Lineage section on the strain page,Sub-task,47,"Plan ID: W4-F3 (wave 4)
+
+Zone: Frontend
+Depends on: Strain lineage data (backend), Strain pages (frontend)
+Files allowed (optional): templates/strains/ (detail or a new partial), static/css/pages/strains-lineage.css
+
+In plain words (for beginners)
+Show the family tree as an indented list: ancestors above the strain (oldest first), then the strain highlighted, then its descendants indented by depth. Each name is a link.
+
+What
+- Indentation by `depth` using CSS classes (no inline style).
+- Marks the current strain; ""No parent"" and ""No child strains"" states.
+- Long trees (more than 30 entries) collapse in a <details> element.
+Acceptance criteria
+- ☐ States: none, only parents, only children, both, a long tree; keyboard; screenshot.",wave-4,w4-f3,frontend,,Frontend,
+51,Duplicate warnings and suggestion lists in the forms,Sub-task,47,"Plan ID: W4-F4 (wave 4)
+
+Zone: Frontend
+Depends on: Duplicate warnings (backend), Suggestion lists (backend), Form and feedback components
+Files allowed (optional): templates/primers/form.html, templates/plasmids/form.html, templates/strains/form.html, templates/components/form_field.html (SHARED: announce first if it needs a change), static/css/pages/*
+
+What
+- Warning box (using the shared message/alert component) above the form listing `duplicate_warnings` with links, plus the ""Save anyway"" checkbox.
+- <datalist> for the suggestion fields; the input stays free text.
+Acceptance criteria
+- ☐ States: no warning, warning, saved after confirmation; suggestion list shown and a custom value accepted.",wave-4,w4-f4,frontend,,Frontend,
+52,Live sequence tools on the primer form,Sub-task,47,"Plan ID: W4-F5 (wave 4)
+
+Zone: Frontend
+Depends on: Primer pages (frontend), Sequence display component
+Files allowed (optional): static/js/pages/primers-form.js, templates/primers/form.html, static/css/pages/primers-form.css
+
+In plain words (for beginners)
+While the person types a primer, show instantly: how long it is, the GC percentage, and the reverse complement. This is only a convenience: the server recalculates and validates everything when saving (the numbers shown are never trusted by the server).
+
+What
+- Plain JavaScript that reads the sequence box and updates three small read-only outputs (use textContent). Invalid letters are highlighted with text, not only colour.
+- The formulas are written once in the JS file with a comment pointing to the Python helper they mirror; a short test list of 3 example sequences with expected results goes in the pull request (no automated JS tests, decision D9).
+- No melting temperature in JavaScript; Tm appears only after saving (server value).
+Acceptance criteria
+- ☐ Results equal the backend helper for the example sequences; empty, very long (5000 letters) and invalid input checked; page works without JavaScript.",wave-4,w4-f5,frontend,,Frontend,
+53,Print-friendly detail pages,Sub-task,47,"Plan ID: W4-F6 (wave 4)
+
+Zone: Frontend
+Depends on: Primer, Plasmid and Strain pages (frontend)
+Files allowed (optional): static/css/pages/ (a print stylesheet per page type) or one shared print block in base.css via a shared ticket
+
+In plain words (for beginners)
+Labs print labels and sheets. A ""print"" style hides the menu and buttons and keeps the record readable on paper.
+
+What
+- `@media print` rules: hide navigation, search bar, buttons and messages; black on white; keep sequences from being cut mid-line; show the URL of the record at the bottom.
+Acceptance criteria
+- ☐ Print preview screenshots (Chrome and Firefox) for one primer, one plasmid, one strain.",wave-4,w4-f6,frontend,,Frontend,
+54,"Backups: schedule, storage, retention and a restore drill",Task,,"Plan ID: W5-L1 (wave 5)
+
+Zone: Lead
+Depends on: client answers about backups (ticket L-6, question 5), Management commands to back up and restore the database
+Files allowed (optional): docker-compose.yml, tools/, docs/BACKUP.md (new), docs/DECISIONS.md, .env.example
+
+In plain words (for beginners)
+A backup is a copy of the whole database kept somewhere else. The rule of thumb: a backup you have never restored is only a hope. So this ticket ends with a REAL restore test on a clean machine.
+
+What
+- Decide with the client: how often (suggestion: every night), how long we keep them (suggestion: 14 daily + 12 monthly). The client has already decided the rest: the backup runs automatically on the server, and an admin copies it to another system by hand.
+- A script in tools/ (works on the lab PC: Windows with Docker) that calls the backup command from W5-B3, names the file with the date, writes it to the backup folder on the server and deletes old ones by the retention rule.
+- A scheduled task (Windows Task Scheduler, or cron on Linux) that runs it, with the exact steps in docs/BACKUP.md and a screenshot checklist for the person who sets it up.
+- docs/BACKUP.md: how to restore, step by step, with copy-paste commands, for someone who has never done it. It also describes the admin's manual copy to another system: who does it, how often, and how to check it worked.
+- THE RESTORE DRILL: on a different computer, take last night's backup, restore it, log in, and check that the record counts match. Write the date and result in docs/BACKUP.md.
+
+Acceptance criteria
+- ☐ A backup runs by itself at the scheduled time and appears in the server's backup folder; the manual copy to another system is documented and was done once in the drill.
+- ☐ Old backups are removed by the retention rule (tested with fake dates).
+- ☐ The restore drill succeeded and is recorded.
+- ☐ Failure is noticed: the script writes a log and the checklist says who looks at it weekly.",wave-5,w5-l1,lead,waiting-client,Lead,
+55,"Import command for strains, plasmids and primers (CSV)",Task,,"Plan ID: W5-B1 (wave 5)
+
+Zone: Backend
+Depends on: Database schema v1, Agree the import format with the client and write it down, Sequence helper functions: reverse complement, GC content, cleaning
+Files allowed (optional): apps/core/management/commands/import_data.py (SHARED: announce first), apps/core/importing.py, apps/core/tests/, apps/core/tests/fixtures/
+
+In plain words (for beginners)
+The lab's data is in Word tables today. Somebody exports them to CSV (a plain text table that Excel and Python both read). This command reads the CSV files and creates the records, and the links between them. It must be safe to run twice: running it again updates existing records instead of making duplicates.
+
+What
+- `python manage.py import_data --strains strains.csv --plasmids plasmids.csv --primers primers.csv \[--dry-run\]`
+- Each row is validated with the SAME form/model rules as the website (never a second set of rules): wrong rows are collected into a report, good rows are still imported (unless `--strict`, which imports nothing when any row is wrong).
+- Match existing records by their ID (case-insensitive): found = update, not found = create. Counts of created / updated / skipped are printed.
+- Links by ID columns (for example a strain row lists its plasmid names separated by `;`; a plasmid row lists primers with orientation). A link to an ID that does not exist is a reported error, not a crash and not a silently created empty record.
+- The whole import runs in one database transaction: a crash halfway leaves nothing half-imported.
+- `--dry-run`: does everything, rolls back, prints the report.
+- The report: a text file next to the input (`import-report-<date>.txt`) listing row number, ID, and the problem in plain English.
+- Sets created_by/updated_by to a configured ""import"" user (created if missing), so it is visible in the audit fields.
+- UTF-8 (with or without BOM) and both comma and semicolon separators (Excel in Germany uses semicolons).
+
+Acceptance criteria
+- ☐ Tests with small FAKE CSV files: clean import; dry-run changes nothing; re-import updates not duplicates; bad rows reported; unknown link target reported; transaction rolls back on failure; semicolon file; BOM file; capital letters in IDs.
+- ☐ No real data in the repository.
+- ☐ Six checks green.
+Out of scope: web upload page, Word (.docx) parsing.",wave-5,w5-b1,backend,waiting-client,Backend,
+56,Export lists as CSV and everything as one download,Task,,"Plan ID: W5-B2 (wave 5)
+
+Zone: Backend (shared helper in apps/core: announce first)
+Depends on: Search and filter methods (wave 3), Roles and permissions
+Files allowed (optional): apps/core/export.py, apps/strains/views.py, apps/plasmids/views.py, apps/primers/views.py, apps/strains/urls.py, apps/plasmids/urls.py, apps/primers/urls.py, tests
+
+In plain words (for beginners)
+People want their data out: for a paper, for Excel, for safety. Two things: (1) ""download this list as CSV"", respecting the current search and filters, and (2) one button for admins that downloads everything.
+
+What
+- `<app>:export_csv` (GET): the CURRENT filtered list as CSV, all rows (not just page 1), UTF-8 with BOM (so German Excel shows umlauts correctly), semicolon-safe quoting. Columns = the list columns plus all fields and the audit dates. `extra_data` is written as one JSON text column.
+- `core:export_all` (GET, admins only, permission-based): a zip with the three CSV files plus a JSON dump with all the links.
+- Needs a specific permission (for example `strains.export_strain`); whether Students get it is a client question (L-6 question 9). Default: staff and admin only.
+- Uses streaming (StreamingHttpResponse) so a big table does not fill memory.
+- Cells that start with `=`, `+`, `-` or `@` are prefixed with an apostrophe (protects Excel users from formula injection).
+
+Contract for the frontend
+- Context on list pages: `export_url` (with the current query string) or None when not allowed.
+
+Acceptance criteria
+- ☐ Tests: filtered export contains only the matches; permission check; BOM present; formula-injection cells escaped; zip contains the expected files; JSON links correct.
+- ☐ Six checks green.",wave-5,w5-b2,backend,,Backend,
+57,Management commands to back up and restore the database,Task,,"Plan ID: W5-B3 (wave 5)
+
+Zone: Backend (command in apps/core: SHARED, announce first)
+Depends on: Database schema v1
+Files allowed (optional): apps/core/management/commands/backup_db.py, apps/core/management/commands/restore_db.py, apps/core/tests/
+
+In plain words (for beginners)
+These are the two buttons the lead's script (W5-L1) presses. A command is a program you run with `python manage.py <name>`. `pg_dump` is PostgreSQL's own tool that writes the database to a file; we just call it correctly and safely.
+
+What
+- `backup_db --output <folder>`: runs pg_dump (custom format, compressed) using the database settings, writes `strain-db-YYYY-MM-DD-HHMM.dump`, prints the file name and size, exits with an error code if anything failed. The database password is passed through the environment, NEVER on the command line and never printed.
+- `restore_db <file> --yes-really`: refuses to run without the flag, and refuses when DEBUG is off unless a second flag `--production` is given; shows what database it will overwrite and asks to type its name.
+- The Docker image must contain the postgres client tools (this needs a Dockerfile change: a LEAD ticket W5-L3; until then tests mock the subprocess).
+- Tests mock the subprocess and assert the exact command line; one slow test (marked) runs a real dump and restore only when pg_dump exists.
+
+Acceptance criteria
+- ☐ Tests: arguments, file naming, failure exit code, password not in the printed output, restore refuses without the flags.
+- ☐ Six checks green.",wave-5,w5-b3,backend,,Backend,
+58,Extra fields: definitions and forms for the flexible columns (extra_data),Task,,"Plan ID: W5-B4 (wave 5)
+
+Zone: Backend (new model = migration: follow the migration rules)
+Depends on: Database schema v1, Strain/Plasmid/Primer pages, decision D6
+Files allowed (optional): apps/core/ (SHARED: models, forms), apps/*/forms.py, apps/*/migrations/ (ONE app's migration only), tests
+
+In plain words (for beginners)
+The client said ""we want the database to be flexible in the columns"". Every record has an `extra_data` box (JSON) for extra attributes. But a JSON box is useless if nobody knows which keys exist or what they mean. So admins DEFINE extra fields (""Gel band size"", a number, for primers) and the forms then show them as normal inputs. No new database column is ever needed.
+
+What
+- A model `ExtraFieldDefinition`: applies_to (strain / plasmid / primer), key (short, letters/digits/underscore, unique per kind, never changed after creation), label, type (text, number, yes/no, date, one-of-list), choices (for one-of-list), required (False by default), help_text, order, active. Follows the project model rules (audited, no `choices=` on growing lists).
+- Forms: for each active definition of the kind, add a field to the create/edit form and store the value under `extra_data\[key\]`. Existing records without the key stay valid.
+- Deactivating a definition hides the field but NEVER deletes stored values.
+- Validation by the field type; wrong value -> a normal form error.
+- Admin screen to manage the definitions (Django admin is fine for version 1).
+
+Contract for the frontend
+- Forms: extra fields appear as ordinary `form` fields named `extra__<key>`, in order, after the fixed fields. Detail pages get `extra_values` (list of label + value).
+
+Acceptance criteria
+- ☐ Tests: each type validates; saving stores the key; editing a record without the key works; deactivate hides but keeps; duplicate key rejected; key format enforced.
+- ☐ Exactly one new migration file, in ONE app, announced to the other backend developer first.
+- ☐ Six checks green.",wave-5,w5-b4,backend,,Backend,
+59,Change history: who changed what and when,Task,,"Plan ID: W5-B5 (wave 5)
+
+Zone: Backend (migration: follow the migration rules)
+Depends on: Strain/Plasmid/Primer pages, Delete with a choice
+Files allowed (optional): apps/core/ (SHARED: model, signals or mixin, views, tests), apps/core/migrations/
+
+In plain words (for beginners)
+The created_by / updated_by columns tell you who touched a record LAST. A change history keeps EVERY change: ""Anna changed freezer location from F2 to F5 on 3 May"". Labs need this when something goes missing or a value looks wrong. We write it ourselves in a few lines (no extra package, per the project rules).
+
+What
+- A model `ChangeLogEntry`: what kind of record, its id, a text label (so it stays readable after deletion), who, when, action (created / changed / deleted / linked / unlinked) and a small JSON with the changed fields \{name: \[old, new\]\}. Never stores passwords or personal data beyond the username.
+- Recorded in the shared view mixins (create/update/delete/link views), not with hidden magic, so it is easy to read and to test. Import and the Django admin are covered too (document how).
+- A page `core:history` (admins and staff): newest first, filter by record kind, user and date, paginated.
+- A per-record ""History"" section on the detail page context: `history` (last 20 entries).
+- Entries are never editable or deletable through the website.
+
+Contract for the frontend
+- `history_entries`: list of \{when, who, action, summary, changes\}. The summary text is built by the backend in English.
+
+Acceptance criteria
+- ☐ Tests: create/update/delete/link each produce one entry with the right fields; unchanged save produces none; deleted record's history survives; no secrets in entries; permissions.
+- ☐ Six checks green.",wave-5,w5-b5,backend,,Backend,
+60,Data quality report: find records that need attention,Task,,"Plan ID: W5-B6 (wave 5)
+
+Zone: Backend
+Depends on: Strain/Plasmid/Primer pages, Sequence helpers
+Files allowed (optional): apps/core/ (SHARED: view, checks module, tests)
+
+In plain words (for beginners)
+After importing old Word data there will be gaps and oddities. This page lists them so the lab can clean up: it is a to-do list for the data, not an error screen.
+
+What
+- URL name `core:data_quality`, for users with the change permission. Sections, each with a count and links to the records:
+  - primers without a freezer location; plasmids without a size; strains without a host organism;
+  - primers whose stored length or Tm does not match the sequence (should be impossible, but import can bypass forms);
+  - sequences with letters that are not allowed;
+  - records that are not linked to anything (informational only, since standalone records are allowed);
+  - possible duplicates (same sequence, or same name ignoring spaces and capitals).
+- Every check is a small function in one module, easy to add to.
+- Read-only: it never changes data.
+
+Contract for the frontend
+- `sections`: list of \{title, description, count, items (record label + url)\}.
+
+Acceptance criteria
+- ☐ Tests: each check finds its planted case and ignores clean records; a user without permission gets 403.
+- ☐ Six checks green.",wave-5,w5-b6,backend,,Backend,
+61,Anonymised client sample records as development data,Task,,"Plan ID: W5-B7 (wave 5)
+
+Zone: Lead (data) + Backend (loader)
+Depends on: client permission and sample file (ticket L-6, question 6), Import command
+Files allowed (optional): data/sample/ (lead only), apps/core/management/commands/ (extend the fake data command)
+
+In plain words (for beginners)
+Fake data is easy but unrealistic. If the client allows 20 to 50 anonymised real records, we can test the import and the pages against real shapes and real mess (typos, odd units, empty cells).
+
+What
+- The lead stores the anonymised file in data/sample/ ONLY after written permission from the client and checking that it contains no personal or confidential data.
+- The fake-data command gets `--sample` to load it via the import command.
+- Tests that need realistic shapes use a tiny fake copy with the same columns.
+
+Acceptance criteria
+- ☐ Permission recorded in docs/DECISIONS.md. If the answer is no, this ticket is closed without work.",wave-5,w5-b7,backend,,Backend,
+62,Agree the import format with the client and write it down,Task,,"Plan ID: W5-L2 (wave 5)
+
+Zone: Lead
+Depends on: client answers (ticket L-6, question 6)
+Files allowed (optional): docs/DOMAIN.md, docs/IMPORT_FORMAT.md (new)
+
+In plain words (for beginners)
+Before anybody writes the import code, we need an exact description of the file: which columns, in which order, what a cell may contain. We write that description first and let the client confirm it.
+
+What
+- One table per record kind: column header, meaning, required or optional, example (fake), allowed values.
+- How links are written (for example ""pUC19;pET28a"").
+- Which separator and encoding to expect; how empty cells and ""n/a"" are treated.
+- A tiny example file for each kind, with fake data, in docs/.
+- The client confirms by reply or in the demo.
+
+Acceptance criteria
+- ☐ docs/IMPORT_FORMAT.md exists, the client confirmed it, W5-B1 is updated with any differences.",wave-5,w5-l2,lead,waiting-client,Lead,
+63,Add the PostgreSQL client tools to the web image,Task,,"Plan ID: W5-L3 (wave 5)
+
+Zone: Lead
+Depends on: nothing
+Files allowed (optional): Dockerfile, .github/workflows/ci.yml (only if the image test needs it), docs/ARCHITECTURE.md
+
+What
+- Install the postgresql-client package matching the database version (16) in the web image so pg_dump and pg_restore exist inside the container.
+- The docker CI job still builds and starts the stack.
+Acceptance criteria
+- ☐ `docker compose exec web pg_dump --version` prints version 16.
+- ☐ CI is green.",wave-5,w5-l3,lead,,Lead,
+64,"Export buttons, history, extra fields and data quality pages (parent)",Task,,"Plan ID: W5-F-MAIN (wave 5)
+
+Zone: Frontend
+
+In plain words (for beginners)
+Most of this wave is behind the scenes, but a few parts need pages: buttons to download data, a history list, a list of data problems, and the extra fields inside the forms.
+
+Sub-tasks
+  1. W5-F1 Export buttons on the list pages and the ""download everything"" page
+  2. W5-F2 Extra fields in the forms and detail pages
+  3. W5-F3 History section on detail pages and the global history page
+  4. W5-F4 Data quality page
+
+Things to take care of
+- Everything from the earlier frontend rules still applies.
+- Buttons for actions the user is not allowed to do are not shown.
+- Wording is plain English a lab person understands (""Download as CSV (opens in Excel)"").",wave-5,w5-f-main,frontend,,Frontend,
+65,Export buttons on the lists and the download-everything page,Sub-task,64,"Plan ID: W5-F1 (wave 5)
+
+Zone: Frontend
+Depends on: Export (backend), Shared list layout
+Files allowed (optional): templates/components/ (the list header: SHARED, announce first), templates/core/export.html, static/css/pages/core-export.css
+
+What
+- ""Download as CSV"" button next to the filters on the three lists (uses `export_url`; says ""includes all N results, not only this page"").
+- A small page for admins: ""Download everything"" with a short explanation of what is in the zip and a warning that it contains all lab data.
+Acceptance criteria
+- ☐ States: allowed, not allowed (no button), zero results (button disabled with a reason).",wave-5,w5-f1,frontend,,Frontend,
+66,Extra fields in the forms and on the detail pages,Sub-task,64,"Plan ID: W5-F2 (wave 5)
+
+Zone: Frontend
+Depends on: Extra fields (backend), Form and feedback components
+Files allowed (optional): templates/*/form.html, templates/*/detail.html, templates/components/form_field.html (SHARED: only if it needs a change)
+
+What
+- Extra fields render through the SAME field component as fixed ones (no special markup), under a heading ""Additional information"".
+- Detail pages list `extra_values` as label/value rows; empty values are hidden.
+Acceptance criteria
+- ☐ States: no extra fields defined (no heading shown), several types, validation errors.",wave-5,w5-f2,frontend,,Frontend,
+67,History section on detail pages and the global history page,Sub-task,64,"Plan ID: W5-F3 (wave 5)
+
+Zone: Frontend
+Depends on: Change history (backend)
+Files allowed (optional): templates/components/history_list.html (SHARED), templates/core/history.html, static/css/pages/core-history.css
+
+What
+- Component listing entries (who, when in a readable form, action word, summary, a collapsible ""details"" with old -> new values), used on the three detail pages.
+- Global history page with the filter form (kind, user, date range) and pagination.
+Acceptance criteria
+- ☐ States: no history, many entries (pagination), deleted record entries; keyboard use.",wave-5,w5-f3,frontend,,Frontend,
+68,Data quality page,Sub-task,64,"Plan ID: W5-F4 (wave 5)
+
+Zone: Frontend
+Depends on: Data quality report (backend)
+Files allowed (optional): templates/core/data_quality.html, static/css/pages/core-data-quality.css
+
+What
+- One card per section with a count badge, a short plain-language description, and the list of records (links); sections with count 0 show a friendly ""Nothing to fix"" line; long lists collapse.
+Acceptance criteria
+- ☐ States: all clean, some problems, many problems (collapsing).",wave-5,w5-f4,frontend,,Frontend,
+69,"Permission matrix tests: who can do what, on every page",Task,,"Plan ID: W6-B1 (wave 6)
+
+Zone: Backend
+Depends on: Roles and permissions, wave 2 pages merged
+Files allowed (optional): apps/core/tests/test_permission_matrix.py (SHARED: announce first)
+
+In plain words (for beginners)
+We promised three roles (Student, Staff, Admin) and ""not logged in = nothing"". A matrix test checks every page for every role in one table, so a future change that accidentally opens a page fails loudly in CI.
+
+What
+- A table in the test file: URL name x role -> expected result (200, 302 to login, 403).
+- Loops over every named URL of the project (a test fails if a new URL is added without a row, so nobody can forget).
+- Covers: anonymous, pending (not yet approved) user, Student, Staff, Admin, deactivated user.
+Acceptance criteria
+- ☐ All current URLs are in the table; adding a URL without a row makes the test fail with a clear message.
+- ☐ Six checks green.",wave-6,w6-b1,backend,,Backend,
+70,Security review of the project and fix list,Task,,"Plan ID: W6-B2 (wave 6)
+
+Zone: Backend (review) with the lead (config changes are lead-only)
+Depends on: waves 2 and 3 merged
+Files allowed (optional): none for the review itself; findings become tickets
+
+In plain words (for beginners)
+We check the usual web mistakes one by one. Each check below has an expected answer; anything different becomes a ticket.
+
+Checklist (tick each, or write the problem)
+- Django's own check: run `manage.py check --deploy` with the production settings and read every warning.
+- Login required everywhere except login, register, password reset pages (list them).
+- Every POST form has a CSRF token; no view is exempt (search for csrf_exempt: should be zero results).
+- Cross-site scripting: no `|safe`, no `mark_safe` on user text, no innerHTML with data (search the repo).
+- SQL injection: no raw SQL or string-built queries with user input (search for `.raw(`, `.extra(`, `cursor.execute`).
+- File access: the SnapGene file view cannot read outside its folder (try `../` by hand).
+- Redirects: the login `next` parameter only allows our own addresses.
+- Sessions: lifetime decided (for example 12 hours), cookies are HttpOnly, and Secure/SameSite are set for production.
+- Passwords: Django's validators on, minimum length decided, the dev admin/admin account does NOT exist in production.
+- Error pages: DEBUG off in production, a custom 403/404/500 page shows no technical details.
+- Secrets: SECRET_KEY and the database password come from the environment, none is in Git history (run a secret scan over the history).
+- Dependencies: pip audit (or GitHub Dependabot alerts) shows no known serious problems.
+- Rate limiting of login attempts: see W6-L1.
+Acceptance criteria
+- ☐ Every line of the checklist has a result in the pull request; each failure has a ticket.",wave-6,w6-b2,backend,,Backend,
+71,Friendly error pages and useful logs,Task,,"Plan ID: W6-B3 (wave 6)
+
+Zone: Backend (settings parts are lead-only: ask via ticket W6-L2)
+Depends on: wave 2 merged
+Files allowed (optional): apps/core/views.py, apps/core/tests/ (SHARED: announce first)
+
+In plain words (for beginners)
+When something breaks, a lab user should see a calm page that says what to do, and the team should find the cause in a log, without ever showing technical details to the user.
+
+What
+- Views for 400, 403, 404 and 500 (names and the 500 handler as Django expects), using the 403, 404 and 500 templates from wave 1 and a minimal stub for the new 400 page (the frontend ticket ""Complete the error pages"" fills it in).
+- The 500 view must not depend on the database (it must work even when the database is down).
+- Log one line per unexpected error with the request path, the username and the error (never passwords, never POST data).
+Contract for the frontend
+- Templates `403.html`, `404.html` and `500.html` already exist (wave 1); `400.html` is created by backend as a minimal STUB (new file only) and completed by the frontend.
+Acceptance criteria
+- ☐ Tests: each error status renders its template with the right status code; the 500 page works with the database connection closed.",wave-6,w6-b3,backend,,Backend,
+72,Test coverage review: find and close the gaps,Task,,"Plan ID: W6-B4 (wave 6)
+
+Zone: Backend
+Depends on: waves 2 and 3 merged
+Files allowed (optional): apps/*/tests/ (new test files only)
+
+In plain words (for beginners)
+""Coverage"" shows which lines of our code no test ever runs. We do not chase 100 percent; we look for important code (permissions, delete behaviour, validation, import) with no test.
+
+What
+- Run the tests with coverage in the container (the tool is installed only for this check, NOT added to requirements without a lead decision; use a temporary install inside the container).
+- List files under 80 percent; for the important ones write the missing tests (new files only, never edit others' tests).
+- Write the list of what is deliberately not tested and why.
+Acceptance criteria
+- ☐ Permissions, delete choice, forms, import and export each have tests for their error paths.
+- ☐ The summary table is in the pull request.",wave-6,w6-b4,backend,,Backend,
+73,Performance test with a large data set,Task,,"Plan ID: W6-B5 (wave 6)
+
+Zone: Backend
+Depends on: Search performance and indexes (wave 3)
+Files allowed (optional): apps/core/tests/ (a slow-test file), the large fake-data command
+
+What
+- With the large data set (5000 strains, 2000 plasmids, 5000 primers, with links): measure list pages, detail pages, search, export and the dashboard; write the numbers in the pull request.
+- Any page over 500 ms or over 30 database queries becomes a ticket.
+Acceptance criteria
+- ☐ Table of timings and query counts; every slow item has a follow-up ticket or an explanation.",wave-6,w6-b5,backend,,Backend,
+74,Limit repeated failed logins,Task,,"Plan ID: W6-L1 (wave 6)
+
+Zone: Lead (decision) then Backend
+Depends on: Login page (wave 1)
+Files allowed (optional): docs/DECISIONS.md, requirements/, config/settings/, apps/accounts/
+
+In plain words (for beginners)
+Without a limit, a person (or program) can try thousands of passwords. Inside a lab network the risk is small but real. Options: (a) do nothing, because the app is on the internal network only, (b) a small in-house counter, (c) a package such as django-axes. Packages need the lead's approval.
+
+What
+- The lead decides and records the choice with the reason in docs/DECISIONS.md.
+- If (b) or (c): a ticket with tests (5 wrong tries -> locked for 15 minutes, a message on the login page, the admin can unlock).
+Acceptance criteria
+- ☐ Decision written. If implemented: tests for lock, unlock and message.",wave-6,w6-l1,backend,,Backend,
+75,"Production settings review (HTTPS flags, hosts, sessions, logging)",Task,,"Plan ID: W6-L2 (wave 6)
+
+Zone: Lead
+Depends on: Security review
+Files allowed (optional): config/settings/prod.py, config/settings/base.py, .env.example, docs/DECISIONS.md
+
+What
+- Go through the output of `manage.py check --deploy` and the security review; set ALLOWED_HOSTS from the environment, session lifetime, cookie flags (Secure only if HTTPS is used: see W7-L2), CSRF trusted origins, logging to a file and the console, static file serving.
+- Document each setting and its reason in a comment.
+Acceptance criteria
+- ☐ `manage.py check --deploy` has no warnings that are not explained in docs/DECISIONS.md.",wave-6,w6-l2,lead,,Lead,
+76,Keep dependencies and Docker images up to date,Task,,"Plan ID: W6-L3 (wave 6)
+
+Zone: Lead
+Depends on: nothing (repeat every month)
+Files allowed (optional): requirements/, Dockerfile, docker-compose.yml, .github/dependabot.yml
+
+What
+- Review the Dependabot pull requests (one per package, small); read the changelog for breaking changes; merge only when CI is green.
+- Check Django 5.2 security releases monthly; update within a week for security fixes.
+- Update the postgres and python base images to the newest patch versions.
+Acceptance criteria
+- ☐ A short note per month in docs/DECISIONS.md or the pull request: what was updated, what was skipped and why.",wave-6,w6-l3,lead,,Lead,
+77,"CI improvements (speed, extra checks, required docker job)",Task,,"Plan ID: W6-L4 (wave 6)
+
+Zone: Lead
+Depends on: CI has run at least 10 times
+Files allowed (optional): .github/workflows/ci.yml, docs/LEAD_SETUP.md
+
+What
+- Pip and Docker layer caching if the checks take more than 3 minutes.
+- (The ""lead-only files"" guard already exists: `.github/scripts/check_lead_only.sh`, a step of the `checks` job. Keep its path list in sync with AGENTS.md section 3 whenever the lead-only list changes.)
+- Optional: a check that the migrations folder has no more than one new migration per app per pull request.
+- Make the `docker` job required (also in wave 0 ticket L-4).
+Acceptance criteria
+- ☐ Each change proven on a test pull request; the average CI time is written down before and after.",wave-6,w6-l4,lead,,Lead,
+78,Compile the AI usage log for the course supervisor,Task,,"Plan ID: W6-L5 (wave 6)
+
+Zone: Lead
+Depends on: about half of the project done, then again at the end
+Files allowed (optional): docs/ai-log/ (read), docs/AI_USAGE_SUMMARY.md (new)
+
+In plain words (for beginners)
+The client allows AI code if it is documented and human-reviewed. Every ticket already has its own log file. The supervisor wants the overview: how much AI was used, for what, and how it was reviewed.
+
+What
+- Read all files in docs/ai-log/ and summarise: number of tickets, kinds of tasks, tools used, typical problems found in review, what was changed by humans.
+- A one-page summary with a table (ticket, person, what the AI did, reviewer, result).
+Acceptance criteria
+- ☐ The summary exists, is accurate (spot-check 5 log files), and was shown to the supervisor.",wave-6,w6-l5,lead,,Lead,
+79,Centralization pass: find and remove duplicates,Task,,"Plan ID: W6-L6 (wave 6)
+
+Zone: Lead (with one backend and one frontend dev)
+Depends on: waves 2 and 3 merged
+Files allowed (optional): split into small tickets, one per duplicate found
+
+In plain words (for beginners)
+Our rule is ""one place for each thing"". After a few weeks, copies creep in anyway. This ticket is a hunt: find each copy, and make a SMALL ticket to move it to its home.
+
+What
+- Search for repeated template blocks, repeated CSS values (colours, spacings not using tokens), repeated JS helpers, repeated queryset code in views, repeated labels or choices in several files.
+- One ticket per duplicate, each tiny (the shared-piece rule: announced to the team).
+Acceptance criteria
+- ☐ A list of what was found and the tickets created; no big-bang refactor.",wave-6,w6-l6,frontend,,Frontend,
+80,Accessibility audit of every page,Task,,"Plan ID: W6-F1 (wave 6)
+
+Zone: Frontend
+Depends on: wave 2 merged (re-check after wave 3 and 5)
+Files allowed (optional): none for the audit; findings become tickets
+
+In plain words (for beginners)
+Accessibility means people who use only the keyboard, a screen reader, a big font or poor eyesight can use the site. It also makes the site better for everyone. We check every page against a short list.
+
+Checklist per page (tick in a table: page x item)
+- Everything works with the keyboard only; the Tab order follows the visual order; focus is always visible.
+- Every input has a label; errors are described in text and linked to the field (aria-describedby).
+- Headings in order (one h1, then h2...); landmarks (header, nav, main, footer); ""skip to content"" link.
+- Colour contrast at least 4.5:1 for text (check with the browser's tools); information is never shown by colour alone.
+- Images have alt text (decorative ones empty alt); icon-only buttons have an accessible name.
+- Zoom to 200 percent without losing content; no horizontal scroll at 1280 px width.
+- Tables have header cells and a caption or accessible name.
+- Messages that appear without a page load use aria-live.
+Acceptance criteria
+- ☐ The completed table is in the pull request; every failure has a ticket.",wave-6,w6-f1,frontend,,Frontend,
+81,Complete the error pages: add 400 and make 500 independent of the database,Task,,"Plan ID: W6-F2 (wave 6)
+
+Zone: Frontend
+Depends on: Error pages 403, 404, 500 (wave 1), Friendly error pages and useful logs (backend)
+Files allowed (optional): templates/400.html, templates/500.html, static/css/pages/errors.css (and small fixes to the wave 1 403/404 pages if the review finds problems)
+
+In plain words (for beginners)
+Wave 1 already created the 403, 404 and 500 pages. This ticket does NOT redo them: it adds the missing 400 page and checks all four against the rules below, fixing only what is wrong.
+
+What
+- Calm and short: what happened, what to do (go to the home page, search, contact the admin), a link home.
+- 403 explains ""you do not have permission; ask an admin if you need it"" and does not reveal which permission.
+- 500 must not use anything that needs the database (no menus that load data, no username), and no technical details.
+Acceptance criteria
+- ☐ Screenshots of the four pages; the 500 page still renders when the database is stopped (the backend's test covers the status; check visually).",wave-6,w6-f2,frontend,,Frontend,
+82,"Manual check in Chrome, Edge and Firefox at three screen sizes",Task,,"Plan ID: W6-F3 (wave 6)
+
+Zone: Frontend (a team task, share the work)
+Depends on: waves 2 to 5 pages merged
+Files allowed (optional): none; findings become tickets
+
+In plain words (for beginners)
+The lab uses Windows PCs with Chrome, Edge and Firefox. Pages can look different between them. We open every page in all three and write down differences.
+
+What
+- Pages: login, register, home, the three lists, the three details, the three forms, delete confirmation, search results, approvals, error pages.
+- Browsers: Chrome, Edge, Firefox (latest version). Sizes: 1920, 1366 (a common lab laptop), 800 pixels wide.
+- Check: layout, fonts, forms, date and number inputs, print preview, copy button, live search.
+Acceptance criteria
+- ☐ A table (page x browser) with ok or a screenshot of the problem; each problem is a ticket.",wave-6,w6-f3,frontend,,Frontend,
+83,"Frontend polish pass: spacing, wording, consistency",Task,,"Plan ID: W6-F4 (wave 6)
+
+Zone: Frontend
+Depends on: Manual check in Chrome, Edge and Firefox at three screen sizes
+Files allowed (optional): decided by the ticket list; split into small tickets
+
+What
+- One person reads every page like a new user: wording consistent (Create / Edit / Delete / Cancel), same capitalisation, same button order and colours, same empty states, no placeholder text left, favicon and page titles set.
+- Findings are tiny tickets, each its own pull request.
+Acceptance criteria
+- ☐ The list of findings is done or ticketed.",wave-6,w6-f4,frontend,,Frontend,
+84,User manual for lab members,Task,,"Plan ID: W6-D1 (wave 6)
+
+Zone: Lead (writing) with Frontend (screenshots)
+Depends on: waves 2 to 5 merged
+Files allowed (optional): docs/USER_MANUAL.md (new), docs/img/ (new, fake data only)
+
+In plain words (for beginners)
+The people who will use the tool are biologists, not programmers. They need short instructions with pictures: how to sign up, how to find a strain, how to add one, how to link a plasmid, how to export.
+
+What
+- Sections: first login and sign-up; finding things (search and filters); adding and editing a record; linking records; deleting safely; opening a plasmid in SnapGene; downloading data; what the roles mean; who to ask for help.
+- Every screenshot uses FAKE data. Plain sentences, no jargon.
+- Review by one person who has not seen the tool before (they follow it and write down where they got stuck).
+Acceptance criteria
+- ☐ A newcomer completed ""add a strain with a plasmid"" using only the manual.",wave-6,w6-d1,frontend,,Frontend,
+85,"Admin manual: approving users, extra fields, backups, updates",Task,,"Plan ID: W6-D2 (wave 6)
+
+Zone: Lead
+Depends on: waves 2 to 5 merged
+Files allowed (optional): docs/ADMIN_MANUAL.md (new)
+
+What
+- Approving or rejecting sign-ups; changing a role; deactivating a person who left the lab; resetting a password; defining extra fields; reading the history; running and checking backups (link to docs/BACKUP.md); updating the app (link to the update guide, W7-L4); what to do if the app does not start.
+Acceptance criteria
+- ☐ A lab admin followed it for three tasks without help.",wave-6,w6-d2,lead,,Lead,
+86,Refresh developer documentation to match the real code,Task,,"Plan ID: W6-D3 (wave 6)
+
+Zone: Lead
+Depends on: waves 2 to 5 merged
+Files allowed (optional): docs/ARCHITECTURE.md, docs/DOMAIN.md, docs/DECISIONS.md, README.md, CONTRIBUTING.md
+
+What
+- Folder map, URL list, model diagram, the JSON endpoint contracts, the list of settings and environment variables, the decisions made along the way.
+- Remove anything that no longer matches (ask: is this still true?).
+Acceptance criteria
+- ☐ A new developer can set up, run the tests and find any file using only the docs.",wave-6,w6-d3,lead,,Lead,
+87,Final project report,Task,,"Plan ID: W6-D4 (wave 6)
+
+Zone: Team (lead coordinates)
+Depends on: wave 7 mostly done
+Files allowed (optional): docs/FINAL_REPORT.md (new)
+
+What
+- Goals and client requirements and how each was met; architecture in one page; the workflow with AI (rules, logs, what worked and what did not); testing; deployment; what remains open; lessons learned. Each member writes the part about their own work.
+Acceptance criteria
+- ☐ Reviewed by the supervisor before the deadline.",wave-6,w6-d4,lead,,Lead,
+88,"Production Docker Compose setup (gunicorn, restart policy, volumes, secrets)",Task,,"Plan ID: W7-L1 (wave 7)
+
+Zone: Lead
+Depends on: Production settings review (HTTPS flags, hosts, sessions, logging), Add the PostgreSQL client tools to the web image
+Files allowed (optional): docker-compose.prod.yml (new), Dockerfile, .env.example, .env.prod.example (new), docs/DEPLOYMENT.md (new), config/settings/prod.py
+
+In plain words (for beginners)
+On a developer PC we start the app with Django's built-in test server and visible secrets. On the lab computer it must run with a real web server (gunicorn), restart by itself after a reboot, keep its database safe in a Docker volume, and read secrets from a file that only exists on that computer.
+
+What
+- A production compose file (separate from the developer one): web (gunicorn, not runserver), db (Postgres with a named volume), `restart: unless-stopped`, ports only on the interface the lab network needs.
+- A production environment file template with every variable explained (no real values). The real file is created on the server by hand.
+- Static files collected and served by whitenoise (already configured), media/files folder mounted read-only (W4-L2).
+- Migrations run on start only after a backup (the update procedure W7-L4 does this explicitly; document why).
+- docs/DEPLOYMENT.md: first installation from zero, step by step.
+
+Acceptance criteria
+- ☐ A second person installs from the document on a clean machine (a virtual machine is fine) and reaches the login page.
+- ☐ After rebooting the machine the app comes back by itself.
+- ☐ `manage.py check --deploy` is clean inside the production container.",wave-7,w7-l1,lead,,Lead,
+89,"Decide how users reach the app: HTTP or HTTPS, and the address",Task,,"Plan ID: W7-L2 (wave 7)
+
+Zone: Lead (with the client's IT)
+Depends on: client answers about hosting (ticket L-6, question 8)
+Files allowed (optional): docs/DECISIONS.md, docker-compose.prod.yml, config/settings/prod.py, docs/DEPLOYMENT.md
+
+In plain words (for beginners)
+HTTPS encrypts the traffic between browser and server and is the normal standard. On a closed lab network plain HTTP is common, but passwords travel readable. We decide with the client's IT based on what is possible: a university certificate, an internal certificate authority, a reverse proxy such as Caddy with an internal certificate, or plain HTTP with the risk accepted in writing.
+
+What
+- Ask: what is the server's network name or address, can IT issue a certificate, will users come only from inside the university network or also via VPN?
+- Choose one option and write the reason. If HTTPS: add the proxy, set the Secure cookie flags and the ""trusted origins"" settings, redirect HTTP to HTTPS. If HTTP: write that decision and keep session cookies non-Secure (otherwise login stops working).
+- Test login from a second computer on the network.
+
+Acceptance criteria
+- ☐ Decision recorded; login works from a lab PC with the final address; no browser warnings (or the warning is explained to users in the manual).",wave-7,w7-l2,lead,waiting-client,Lead,
+90,"Prepare the lab computer (Docker autostart, fixed address, firewall, power)",Task,,"Plan ID: W7-L3 (wave 7)
+
+Zone: Lead (with the client's IT)
+Depends on: Production Docker setup
+Files allowed (optional): docs/DEPLOYMENT.md, tools/ (helper scripts)
+
+In plain words (for beginners)
+The best software is useless if the computer sleeps at night or changes its network address. We set the machine up to be a small reliable server.
+
+What (details depend on the machine and operating system the client names: a lab PC or a NAS)
+- Docker Desktop (Windows) or Docker Engine (Linux) installed and starting automatically at boot, before any user logs in if possible (document what is possible with Docker Desktop and WSL2).
+- Sleep and hibernate off; automatic Windows restarts scheduled outside lab hours; who gets a note when it restarts.
+- A fixed address or DNS name from IT, so the bookmark in everyone's browser keeps working.
+- Firewall: only the web port is open, only to the university network.
+- A named person (""the machine's keeper"") and a rule for what to do if it is switched off.
+- A UPS (battery) or at least a clean shutdown routine is discussed with the client.
+
+Acceptance criteria
+- ☐ The machine survives a reboot test and a power-off test without data loss and the app returns by itself.
+- ☐ The address works from three other computers.",wave-7,w7-l3,lead,,Lead,
+91,Procedure to update the app and to roll back,Task,,"Plan ID: W7-L4 (wave 7)
+
+Zone: Lead
+Depends on: Production Docker setup, Backup and restore setup (W5-L1)
+Files allowed (optional): docs/UPDATE_GUIDE.md (new), tools/update-prod.sh (new, optional)
+
+In plain words (for beginners)
+Updating a live system is where most accidents happen. We write the safe routine once and follow it every time: back up, update, check, and know exactly how to go back.
+
+What
+- Steps: announce a short maintenance window; take a backup and check the file exists; fetch the new version (a tagged release, never an unreviewed branch); build the new image; apply migrations; start; run the smoke checklist (login page, a list page, a search, an export); announce done.
+- Rollback: how to return to the previous image AND the previous database (restore the backup taken in the first step), with the exact commands, and when each is needed (a migration that already ran needs the database restore).
+- Version tags: how the lead creates a release (a tag and a short change list) after merging.
+- A short ""what changed"" note for users after each update.
+
+Acceptance criteria
+- ☐ The guide was followed for one real update on the test machine and one deliberate rollback, both timed and recorded.",wave-7,w7-l4,lead,,Lead,
+92,"Health endpoint, simple monitoring and log rotation",Task,,"Plan ID: W7-L5 (wave 7)
+
+Zone: Lead (health endpoint is a small Backend ticket, announced)
+Depends on: Production Docker setup
+Files allowed (optional): apps/core/views.py (SHARED: health view and test), docker-compose.prod.yml, docs/DEPLOYMENT.md
+
+In plain words (for beginners)
+We want to notice problems before the users complain: the app down, the disk almost full, the backup not running.
+
+What
+- A `core:health` page (no login, tells only ""ok"" or ""database error"", no details) used by Docker's healthcheck so a stuck container is restarted.
+- A weekly 5-minute checklist for the keeper: app opens, last backup date is today or yesterday, disk space above 20 percent, log folder not huge.
+- Log rotation (Docker's json-file driver with a size and file limit) so logs never fill the disk.
+- Optional: a free uptime checker from the university network or a small script that emails or messages the lead.
+
+Acceptance criteria
+- ☐ Stopping the database makes the health page fail and Docker mark the container unhealthy; starting it fixes that.
+- ☐ The checklist is in docs/ADMIN_MANUAL.md.",wave-7,w7-l5,backend,,Backend,
+93,Restore drill on the production setup,Task,,"Plan ID: W7-L6 (wave 7)
+
+Zone: Lead
+Depends on: Production Docker setup, Backup and restore setup (W5-L1)
+Files allowed (optional): docs/BACKUP.md
+
+What
+- Take a real backup of the production database (with test records), restore it onto a different machine with the production setup, log in, and compare counts and a few records by hand.
+- Repeat after any change to the backup routine.
+
+Acceptance criteria
+- ☐ Date, person and result written in docs/BACKUP.md; any problem fixed and the drill repeated.",wave-7,w7-l6,lead,,Lead,
+94,Import the real lab data into production,Task,,"Plan ID: W7-L7 (wave 7)
+
+Zone: Lead (with the client)
+Depends on: Import command, Data quality report, Production restore drill, client approval
+Files allowed (optional): none in the repository (real data never goes into Git); the report goes to the client
+
+In plain words (for beginners)
+This is the moment the real strains, plasmids and primers go in. We do it with care, in rehearsal first.
+
+What
+- Rehearsal on a COPY of the production setup using the client's real export: run with --dry-run, read the whole report with the client, agree how to fix each class of problem (fix the source file, or accept and clean up in the app).
+- Take a backup, run the real import on production, then open the data quality page and walk through it with the client.
+- Compare numbers: rows in the source files versus records in the app (written in the report).
+- Keep the original files safe and untouched.
+
+Acceptance criteria
+- ☐ The client signs off the record counts in writing (an email is fine).
+- ☐ A backup from just before and just after the import exists.",wave-7,w7-l7,lead,,Lead,
+95,Create the first accounts and run an onboarding session with the lab,Task,,"Plan ID: W7-L8 (wave 7)
+
+Zone: Lead (with the client)
+Depends on: Production data in place, User manual
+Files allowed (optional): docs/USER_MANUAL.md (corrections)
+
+What
+- Create the admin accounts for the lab's chosen administrators (strong passwords, shared in person or through the university's password tool, never by chat). Make sure the temporary dev admin does not exist.
+- Everyone else signs up themselves and is approved by an admin; check that the approval flow works with real people.
+- A 30-minute session with the lab: demo of the five main tasks, then each person does one task alone; collect questions and confusing points as tickets.
+
+Acceptance criteria
+- ☐ Every lab member who needs access has an approved account with the right role.
+- ☐ Feedback list is turned into tickets (label: change-request or bug).",wave-7,w7-l8,lead,,Lead,
+96,Go-live checklist and a full rehearsal,Task,,"Plan ID: W7-L9 (wave 7)
+
+Zone: Lead (team helps)
+Depends on: all tickets above
+
+What
+- One checklist, tick every line, with owner and date:
+  - Production started from a tagged release; `manage.py check --deploy` clean.
+  - Secrets exist only on the server; no dev accounts; DEBUG off; error pages show no details.
+  - Backup ran last night and was restored in a drill; the admin's manual copy to another system exists and its procedure is written down.
+  - The monitoring checklist and the keeper are named; the lab knows who to call.
+  - Data imported and signed off; user and admin manuals in the lab's hands.
+  - Update and rollback guide tested.
+  - Client's decisions all recorded (licence, hosting, backups, who may export).
+- A rehearsal: someone who did not build the system performs the first install on a clean machine from docs/DEPLOYMENT.md only.
+
+Acceptance criteria
+- ☐ Every line ticked or consciously accepted by the client in writing.",wave-7,w7-l9,lead,,Lead,
+97,Support and change-request process after go-live,Task,,"Plan ID: W7-L10 (wave 7)
+
+Zone: Lead
+Depends on: Go-live checklist
+
+In plain words (for beginners)
+Once people depend on the tool, ""who do I tell when something is wrong?"" must have a clear answer.
+
+What
+- One place to report problems (an email address or a form) and one person who reads it every working day.
+- Severity levels: ""cannot log in or data wrong"" (same day), ""something is annoying"" (next sprint), ""wish"" (change request, prioritised with the client).
+- A rule for emergency changes: smallest possible fix, still through a pull request and review, then the update procedure.
+- A 2-week hypercare period after go-live: a short daily check of the logs and the health page.
+
+Acceptance criteria
+- ☐ The process is in docs/ADMIN_MANUAL.md and the lab knows where to report.",wave-7,w7-l10,lead,,Lead,
+98,"Licence, ownership and handover package",Task,,"Plan ID: W7-L11 (wave 7)
+
+Zone: Lead
+Depends on: the licence decision (D14, done) and the repository ownership
+Files allowed (optional): LICENSE, README.md, docs/HANDOVER.md (new)
+
+In plain words (for beginners)
+When the course ends the team leaves, but the lab keeps using the tool. We must say who owns the code, what licence it has, and give the lab everything needed to keep it running.
+
+What
+- The LICENSE file (AGPL-3.0-or-later, D14) already exists: check that the README states it and that the handover document names the copyright holders (the student authors, who keep their rights) and the lab's right to use the software.
+- docs/HANDOVER.md: where the code lives and who has admin rights on the repository (transfer or add the client's account), where the server is and who has access, where the secrets are kept, the backup location and the last drill, the list of open tickets and known problems, and who to ask.
+- Remove team members' personal access that the client does not want to keep; transfer repository ownership if agreed; hand over Jira export if wanted.
+- A closing meeting with the client: walk through the handover document.
+
+Acceptance criteria
+- ☐ The client can run, update, back up and restore the tool using only the handover documents, shown in the closing meeting.",wave-7,w7-l11,lead,,Lead,

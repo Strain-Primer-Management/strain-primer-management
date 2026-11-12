@@ -1,0 +1,13 @@
+# Force LF line endings for everyone. Windows checkouts with CRLF break files inside the
+# Linux Docker container and make whole-file diffs that cause merge conflicts.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.dna binary

@@ -1,0 +1,13 @@
+{# PLACEHOLDER navigation (unstyled). Frontend team replaces. #}
+<nav>
+  <a href="{% url 'core:home' %}">Home</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'strains:index' %}">Strains</a>
+    <a href="{% url 'plasmids:index' %}">Plasmids</a>
+    <a href="{% url 'primers:index' %}">Primers</a>
+    <form method="post" action="{% url 'accounts:logout' %}">
+      {% csrf_token %}
+      <button type="submit">Log out ({{ user.get_username }})</button>
+    </form>
+  {% endif %}
+</nav>
