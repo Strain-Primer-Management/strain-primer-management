@@ -11,7 +11,10 @@ from django.views import View
 from apps.core.mixins import PermissionRequiredMixin
 
 DOMAIN_MODELS = ["strain", "strainplasmid", "plasmid", "plasmidprimerlink", "primer"]
-USER_PERMISSIONS = {f"accounts.{action}_user" for action in ("view", "add", "change", "delete")}
+USER_PERMISSIONS = {
+    f"accounts.{action}_user" for action in ("view", "add", "change", "delete", "approve")
+}
+STAFF_USER_PERMISSIONS = {"accounts.view_user", "accounts.approve_user"}
 
 
 def domain_permissions(*actions):
@@ -70,10 +73,13 @@ class SetupRolesTest(TestCase):
     def test_student_may_only_view(self):
         self.assertEqual(group_permissions("Student"), domain_permissions("view"))
 
-    def test_staff_may_view_add_and_change(self):
-        self.assertEqual(group_permissions("Staff"), domain_permissions("view", "add", "change"))
+    def test_staff_may_view_add_and_change_and_approve_signups(self):
+        self.assertEqual(
+            group_permissions("Staff"),
+            domain_permissions("view", "add", "change") | STAFF_USER_PERMISSIONS,
+        )
 
-    def test_admin_may_also_delete_and_manage_users(self):
+    def test_admin_may_also_delete_manage_users_and_approve(self):
         self.assertEqual(
             group_permissions("Admin"),
             domain_permissions("view", "add", "change", "delete") | USER_PERMISSIONS,

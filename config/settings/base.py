@@ -111,6 +111,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # --- Auth ---------------------------------------------------------------------------
 # Custom user model from day one (impossible to change cleanly later).
 AUTH_USER_MODEL = "accounts.User"
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.AllowAllUsersModelBackend"]
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:home"
 LOGOUT_REDIRECT_URL = "accounts:login"
