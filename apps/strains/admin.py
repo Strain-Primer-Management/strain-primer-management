@@ -1,1 +1,6 @@
-# Register Strain with the admin site here once the model exists.
+from django.contrib import admin
+
+from .models import Strain, StrainPlasmid
+
+admin.site.register(Strain)
+admin.site.register(StrainPlasmid)
