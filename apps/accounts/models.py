@@ -36,6 +36,10 @@ class User(AbstractUser):
     signup_note = models.TextField(blank=True)
 
     class Meta(AbstractUser.Meta):
+        # Extra permission "accounts.approve_user": who may approve or reject sign-up
+        # requests (Staff and Admin). It is separate from change_user on purpose, so
+        # approving never lets someone edit other accounts (groups, superuser flag).
+        permissions = [("approve_user", "Can approve or reject sign-up requests")]
         constraints = [
             models.UniqueConstraint(
                 Lower("email"),
