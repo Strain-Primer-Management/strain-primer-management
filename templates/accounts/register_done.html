@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Request sent · Strain DB{% endblock title %}
+{% block content %}
+  {# STUB (SCRUM-3): backend placeholder. Frontend restyles it. #}
+  <h1>Request sent</h1>
+  <p>Your account is waiting for approval. You can log in once an admin has approved it.</p>
+  <p>
+    <a href="{% url 'accounts:login' %}">Back to log in</a>
+  </p>
+{% endblock content %}

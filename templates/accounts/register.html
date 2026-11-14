@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Request an account · Strain DB{% endblock title %}
+{% block content %}
+  {# STUB (SCRUM-3): backend placeholder. Frontend restyles it; keep the form fields and csrf_token. #}
+  <h1>Request an account</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Request account</button>
+  </form>
+  <p>
+    <a href="{% url 'accounts:login' %}">Back to log in</a>
+  </p>
+{% endblock content %}
