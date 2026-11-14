@@ -1,1 +1,6 @@
-# Register Plasmid with the admin site here once the model exists.
+from django.contrib import admin
+
+from .models import Plasmid, PlasmidPrimerLink
+
+admin.site.register(Plasmid)
+admin.site.register(PlasmidPrimerLink)
