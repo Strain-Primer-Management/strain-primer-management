@@ -31,6 +31,12 @@ PLASMIDS = [
     ("pEX-04", 5100, "Ampicillin", "high", "T7"),
     ("pEX-05", 6020, "Spectinomycin", "medium", "lac"),
     ("pEX-06", 7300, "Kanamycin", "low", "constitutive"),
+    ("pEX-07", 3890, "Ampicillin, Kanamycin", "medium", "tac"),
+    ("pEX-08", 4750, "Tetracycline", "low", "araBAD"),
+    ("pEX-09", 8120, "Hygromycin", "medium", "GAL1"),
+    ("pEX-10", 2950, "Ampicillin", "high", "T7"),
+    ("pEX-11", 5600, "Gentamicin", "low", "rhaBAD"),
+    ("pEX-12", 6400, "", "", ""),
 ]
 
 # (primer_id, sequence, purpose): invented sequences.
@@ -45,6 +51,18 @@ PRIMERS = [
     ("P-008", "TCGATCGATCGACTGACTG", "PCR"),
     ("P-009", "GCTAGCTAGGATCCTAGGC", "Sequencing"),
     ("P-010", "GCCTAGGATCCTAGCTAGC", "Sequencing"),
+    ("P-011", "AAGCTTGGCACTGGCCGTC", "Colony PCR"),
+    ("P-012", "GACGGCCAGTGCCAAGCTT", "Colony PCR"),
+    ("P-013", "TAATACGACTCACTATAGGG", "Sequencing"),
+    ("P-014", "GCTAGTTATTGCTCAGCGG", "Sequencing"),
+    ("P-015", "CGCGGATCCATGAAAGCTATT", "Cloning"),
+    ("P-016", "CCGCTCGAGTTAGCCGTTAAC", "Cloning"),
+    ("P-017", "GTAAAACGACGGCCAGT", "Sequencing"),
+    ("P-018", "CAGGAAACAGCTATGAC", "Sequencing"),
+    ("P-019", "TGACCATGATTACGCCAAGC", "Mutagenesis"),
+    ("P-020", "GCTTGGCGTAATCATGGTCA", "Mutagenesis"),
+    ("P-021", "ACCGTAGCTTAGGCT", "qPCR"),
+    ("P-022", "AGCCTAAGCTACGGT", "qPCR"),
 ]
 
 # (strain_id, host_organism, genotype, temp, medium, parent index or None, [plasmid indexes])
@@ -57,9 +75,23 @@ STRAINS = [
     ("Example-006", "B. subtilis 168", "trpC2, amyE", "37.0", "M9", 4, [2, 4]),
     ("Example-007", "S. cerevisiae S288C", "MATalpha", "30.0", "YPD", None, []),
     ("Example-008", "E. coli K-12", "recA1", "37.0", "LB", 1, [5]),
+    ("Example-009", "E. coli DH5alpha", "deoR, recA1, endA1", "37.0", "LB", None, [6, 9]),
+    ("Example-010", "E. coli DH10B", "mcrA, araD139", "37.0", "SOB", None, [7]),
+    ("Example-011", "E. coli Top10", "mcrA, lacZdeltaM15", "37.0", "LB", 9, [6]),
+    ("Example-012", "P. putida KT2440", "wild type", "30.0", "LB", None, [10]),
+    ("Example-013", "P. putida KT2440", "deltapvdD", "30.0", "M9", 11, [10, 2]),
+    ("Example-014", "S. cerevisiae BY4741", "his3, leu2, met15, ura3", "30.0", "SC-Ura", None, [8]),
+    ("Example-015", "S. cerevisiae BY4741", "his3, leu2, ura3, gal1", "30.0", "YPD", 13, [8]),
+    ("Example-016", "C. glutamicum ATCC 13032", "wild type", "30.0", "BHI", None, []),
+    ("Example-017", "E. coli MG1655", "ilvG, rph-1", "37.0", "M9", None, [9]),
+    ("Example-018", "E. coli MG1655", "ilvG, rph-1, deltalacZ", "37.0", "M9", 16, [9, 0]),
+    ("Example-019", "B. subtilis 168", "trpC2, deltasigF", "37.0", "LB", 5, [4]),
+    ("Example-020", "Vibrio natriegens", "wild type", "37.0", "LB3", None, [3]),
+    ("Example-021", "E. coli BL21", "ompT, lon, lacI", "25.0", "TB", 3, [1, 6]),
+    ("Example-022", "S. cerevisiae S288C", "MATa, deltaade2", "30.0", "YPD", 6, []),
 ]
 
-# (plasmid index, primer index, orientation, binding_position)
+# (plasmid index, primer index, orientation, binding_position). Some primers are not linked.
 LINKS = [
     (0, 0, "forward", "100-118"),
     (0, 1, "reverse", "900-918"),
@@ -71,6 +103,20 @@ LINKS = [
     (4, 7, "reverse", "880-898"),
     (5, 8, "forward", "60-78"),
     (5, 9, "reverse", "2100-2118"),
+    (6, 10, "forward", "510-528"),
+    (6, 11, "reverse", "1330-1348"),
+    (7, 12, "forward", "20-39"),
+    (7, 13, "reverse", "1880-1898"),
+    (8, 14, "forward", "700-720"),
+    (8, 15, "reverse", "2400-2420"),
+    (9, 16, "forward", "150-166"),
+    (9, 17, "reverse", "420-436"),
+    (9, 12, "forward", "40-59"),
+    (10, 18, "forward", "930-949"),
+    (10, 19, "reverse", "960-979"),
+    (1, 12, "forward", "15-34"),
+    (0, 16, "forward", "2500-2516"),
+    (4, 14, "forward", "3100-3120"),
 ]
 
 
@@ -147,7 +193,7 @@ class Command(BaseCommand):
                 staff_user,
                 sequence=sequence,
                 purpose=purpose,
-                freezer_location=f"Oligo Box {i // 5 + 1}, Pos {'ABCDE'[i % 5]}{i + 1}",
+                freezer_location=f"Oligo Box {i // 6 + 1}, Pos {'ABCDEF'[i % 6]}{i % 12 + 1}",
             )
             for i, (primer_id, sequence, purpose) in enumerate(PRIMERS)
         ]
@@ -163,8 +209,8 @@ class Command(BaseCommand):
                     genotype=genotype,
                     culturing_temp=Decimal(temp),
                     culturing_medium=medium,
-                    freezer_location=f"Freezer {i % 3 + 1}, Box {i + 1}",
-                    biosafety_level="BSL-1",
+                    freezer_location=f"Freezer {i % 4 + 1}, Box {i % 9 + 1}",
+                    biosafety_level="BSL-2" if i % 7 == 6 else "BSL-1",
                     parent_strain=strains[parent] if parent is not None else None,
                 )
             )
