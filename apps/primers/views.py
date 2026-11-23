@@ -17,18 +17,24 @@ URL name -> context:
   `form.purpose_suggestions`) and, on update only, `object`. A valid POST redirects to the
   detail page. Create needs primers.add_primer, update needs primers.change_primer.
 Anonymous visitors go to the login page; a logged-in user without the permission gets a 403.
+- primers:delete (/primers/<id>/delete/): the shared "delete with a choice" page, see
+  apps/core/delete.py (context `object`, `linked_exclusive`, `linked_shared`, `form`). The linked
+  records of a primer are its plasmids; a plasmid is "exclusive" when this primer is its only
+  link (no other primer, no strain). Needs primers.delete_primer.
 (primers:index is the old placeholder page and is left unchanged.)
 """
 
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
 
+from apps.core.delete import DeleteWithChoiceView
 from apps.core.mixins import (
     AuditedFormMixin,
     PermissionRequiredMixin,
     RecordListView,
     SuccessMessageMixin,
 )
+from apps.plasmids.models import Plasmid
 
 from .forms import PrimerForm
 from .models import Primer
@@ -94,3 +100,24 @@ class PrimerUpdateView(PermissionRequiredMixin, PrimerFormMixin, UpdateView):
 
     def get_success_message(self):
         return f"Primer {self.object.primer_id} was saved."
+
+
+class PrimerDeleteView(DeleteWithChoiceView):
+    """Delete a primer; optionally also the plasmids that only this primer is linked to."""
+
+    model = Primer
+    permission_required = "primers.delete_primer"
+    success_url = reverse_lazy("primers:list")
+
+    def get_linked_records(self):
+        """The plasmids this primer binds."""
+        return list(
+            Plasmid.objects.filter(plasmidprimerlink__primer=self.object)
+            .distinct()
+            .order_by("plasmid_name")
+        )
+
+    def is_exclusive(self, plasmid):
+        """A plasmid with another primer or any strain is shared."""
+        other_primers = plasmid.plasmidprimerlink_set.exclude(primer=self.object).exists()
+        return not (other_primers or plasmid.strainplasmid_set.exists())

@@ -28,20 +28,28 @@ URL name -> context:
   `primer_links`. Redirects to the detail page. Needs plasmids.change_plasmid. Both link URLs
   accept POST only (send the CSRF token).
 Anonymous visitors go to the login page; a logged-in user without the permission gets a 403.
+- plasmids:delete (/plasmids/<id>/delete/): the shared "delete with a choice" page, see
+  apps/core/delete.py (context `object`, `linked_exclusive`, `linked_shared`, `form`). The linked
+  records of a plasmid are its primers and the strains that carry it. A primer is "exclusive"
+  when this plasmid is its only link; a strain is exclusive when this plasmid is the only one
+  it carries and it has no parent or child strain. Needs plasmids.delete_plasmid.
 (plasmids:index is the old placeholder page and is left unchanged.)
 """
 
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, TemplateView, UpdateView, View
 
+from apps.core.delete import DeleteWithChoiceView
 from apps.core.mixins import (
     AuditedFormMixin,
     PermissionRequiredMixin,
     RecordListView,
     SuccessMessageMixin,
 )
+from apps.primers.models import Primer
+from apps.strains.models import Strain
 
 from .forms import PlasmidForm, PlasmidPrimerLinkForm
 from .models import Plasmid, PlasmidPrimerLink
@@ -151,3 +159,28 @@ class PlasmidUnlinkPrimerView(PermissionRequiredMixin, View):
         link.delete()
         messages.success(request, f"Primer {link.primer} is no longer linked to this plasmid.")
         return redirect("plasmids:detail", pk=pk)
+
+
+class PlasmidDeleteView(DeleteWithChoiceView):
+    """Delete a plasmid; optionally also the primers and strains only this plasmid is linked to."""
+
+    model = Plasmid
+    permission_required = "plasmids.delete_plasmid"
+    success_url = reverse_lazy("plasmids:list")
+
+    def get_linked_records(self):
+        """The primers bound to this plasmid and the strains that carry it."""
+        primers = Primer.objects.filter(plasmidprimerlink__plasmid=self.object)
+        strains = Strain.objects.filter(strainplasmid__plasmid=self.object)
+        return [
+            *primers.distinct().order_by("primer_id"),
+            *strains.distinct().order_by("strain_id"),
+        ]
+
+    def is_exclusive(self, record):
+        """A primer or strain linked to anything besides this plasmid is shared."""
+        if isinstance(record, Primer):
+            return not record.plasmidprimerlink_set.exclude(plasmid=self.object).exists()
+        has_other_plasmid = record.strainplasmid_set.exclude(plasmid=self.object).exists()
+        has_lineage = record.parent_strain_id is not None or record.child_strains.exists()
+        return not (has_other_plasmid or has_lineage)
