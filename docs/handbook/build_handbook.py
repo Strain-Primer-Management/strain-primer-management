@@ -643,17 +643,18 @@ def build_story():
             "Tell Git your name",
             code(
                 'git config --global user.name "Your Name"\n'
-                'git config --global user.email "12345678+yourusername@users.noreply.github.com"',
+                'git config --global user.email "you@example.com"',
                 STEP_INNER_W,
             )
             + [
                 P(
-                    "Replace <b>Your Name</b> with the name you want shown on your work (the repository is public, "
-                    "so it is public). The email must be <b>GitHub's no-reply address</b>: copy it from "
-                    "<font face='Courier'>github.com/settings/emails</font> (it looks like "
-                    "<font face='Courier'>12345678+yourusername@users.noreply.github.com</font>) and tick "
-                    "<i>Keep my email addresses private</i> there. The project's commit hook refuses any other "
-                    "email, so your real address never becomes public. <b>Keep the quotes.</b>"
+                    "Replace <b>Your Name</b> with the name you want shown on your work and "
+                    "<b>you@example.com</b> with the email you want on your commits. The repository is public, "
+                    "so both are visible to everyone and cannot be removed once pushed. Use your personal email "
+                    "if you are fine with that. If you would rather keep it private, use <b>GitHub's no-reply "
+                    "address</b> instead (copy it from <font face='Courier'>github.com/settings/emails</font>; it "
+                    "looks like <font face='Courier'>12345678+yourusername@users.noreply.github.com</font>). "
+                    "<b>Keep the quotes.</b>"
                 )
             ],
             see="Nothing is printed. That is normal.",

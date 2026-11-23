@@ -71,9 +71,9 @@ jobs:
           git log --format=%B "$BASE_SHA..$HEAD_SHA" | sh .github/scripts/check_no_ai_credit.sh
           printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" | sh .github/scripts/check_no_ai_credit.sh
           git log --format='%an <%ae>%n%cn <%ce>' "$BASE_SHA..$HEAD_SHA" | sh .github/scripts/check_no_ai_credit.sh ident
-      # Only for pull requests: no secrets or real e-mail addresses in added lines (the repository is
-      # public). Same script as the local pre-commit hook, so skipping the hook does not help.
-      - name: No secrets or private e-mail addresses are added
+      # Only for pull requests: no secrets or keys in added lines (the repository is public).
+      # Same script as the local pre-commit hook, so skipping the hook does not help.
+      - name: No secrets or keys are added
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
