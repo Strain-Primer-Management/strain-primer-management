@@ -1,0 +1,13 @@
+{% comment %}
+  Remove-link button component (SCRUM-123): one row's "Remove" button on a detail page. It posts
+  to the unlink address and only removes the connection, never the two records.
+  Use: {% url 'strains:unlink_plasmid' object.pk link.pk as unlink_url %}
+       {% include "components/link_remove_form.html" with action_url=unlink_url label=link.plasmid %}
+  - action_url: the POST address (strains:unlink_plasmid or plasmids:unlink_primer).
+  - label: the name of the linked record; only screen readers hear it ("Remove link to ...").
+  Show it only to users who may change the record.
+{% endcomment %}
+<form method="post" action="{{ action_url }}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-secondary">Remove<span class="visually-hidden"> link to {{ label }}</span></button>
+</form>

@@ -1,0 +1,26 @@
+{% comment %}
+  Link form component (SCRUM-123): the small "add a link" form on a detail page, e.g. add a
+  plasmid to a strain or a primer to a plasmid. It shows every field of the form it is given,
+  so the same file works for both pages.
+  Use: {% include "components/link_form.html" with form=link_form action_url=link_url heading="Add a plasmid" submit_label="Add plasmid" %}
+  - form: the `link_form` from the view (the backend sets it to None for users who may not change
+    the record, so include this component only inside a permission check).
+  - action_url: the POST address, from {% url %} (strains:link_plasmid or plasmids:link_primer).
+  - A link that exists already is not a field error: the backend puts it in
+    form.non_field_errors, shown in the red box on top.
+{% endcomment %}
+<form class="link-form" method="post" action="{{ action_url }}">
+  {% csrf_token %}
+  <h3>{{ heading }}</h3>
+  {% if form.non_field_errors %}
+    <ul class="messages">
+      {% for error in form.non_field_errors %}<li class="message message-error" role="alert">{{ error }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+  {% for field in form.visible_fields %}
+    {% include "components/form_field.html" with field=field %}
+  {% endfor %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+  </div>
+</form>
