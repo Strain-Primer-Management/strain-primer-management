@@ -1,0 +1,38 @@
+/* Plasmid detail page (templates/plasmids/plasmid_detail.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+/* The detail card is wider than a form card because it holds a table */
+.plasmid-detail {
+  max-width: none;
+}
+
+/* Field names on the left, values on the right */
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-5);
+  margin: 0 0 var(--space-5);
+}
+
+.detail-list dt {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+/* Long file paths and descriptions wrap instead of stretching the page */
+.detail-text {
+  overflow-wrap: anywhere;
+}
+
+.detail-links {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.detail-empty {
+  color: var(--color-text-muted);
+}

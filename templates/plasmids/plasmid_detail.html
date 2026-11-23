@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Plasmid {{ object.plasmid_name }} · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/plasmids-detail.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Plasmid detail (SCRUM-121). Context from plasmids:detail: `object` (the plasmid),
+    `primer_links` (one row per linked primer with `primer`, `orientation`, `binding_position`
+    and `notes`) and `strains` (the strains that carry it). Both lists are empty when nothing is
+    linked. The Edit button is only shown to users with the change permission; the view itself
+    also checks it. sequence_file and hessenbox_path are plain text for now (a later ticket makes
+    them a button). `link_form` is for the link-management ticket and is not used here.
+  {% endcomment %}
+  {% url 'plasmids:update' object.pk as edit_url %}
+  {% with page_title="Plasmid "|add:object.plasmid_name %}
+    {% if perms.plasmids.change_plasmid %}
+      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
+    {% else %}
+      {% include "components/page_header.html" with title=page_title %}
+    {% endif %}
+  {% endwith %}
+  <div class="card plasmid-detail">
+    <dl class="detail-list">
+      <dt>Plasmid name</dt>
+      <dd>{{ object.plasmid_name }}</dd>
+      <dt>Size (bp)</dt>
+      <dd>{{ object.size_bp|default_if_none:"–" }}</dd>
+      <dt>Resistance markers</dt>
+      <dd>{{ object.resistance_markers|default:"–" }}</dd>
+      <dt>Copy number</dt>
+      <dd>{{ object.get_copy_number_display|default:"–" }}</dd>
+      <dt>Promoter type</dt>
+      <dd>{{ object.promoter_type|default:"–" }}</dd>
+      <dt>Sequence file</dt>
+      <dd class="detail-text">{{ object.sequence_file|default:"–" }}</dd>
+      <dt>Hessenbox path</dt>
+      <dd class="detail-text">{{ object.hessenbox_path|default:"–" }}</dd>
+      <dt>Description</dt>
+      <dd class="detail-text">{{ object.description|default:"–"|linebreaksbr }}</dd>
+      <dt>Created</dt>
+      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
+      <dt>Last changed</dt>
+      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+    </dl>
+    <h2>Primers</h2>
+    {% if primer_links %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Primer</th>
+            <th scope="col">Orientation</th>
+            <th scope="col">Binding position</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for link in primer_links %}
+            <tr>
+              <td>
+                <a href="{% url 'primers:detail' link.primer.pk %}">{{ link.primer }}</a>
+              </td>
+              <td>{{ link.get_orientation_display|default:"–" }}</td>
+              <td>{{ link.binding_position|default:"–" }}</td>
+              <td>{{ link.notes|default:"–" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="detail-empty">No primers are linked to this plasmid yet.</p>
+    {% endif %}
+    <h2>Carried by strains</h2>
+    {% if strains %}
+      <ul class="detail-links">
+        {% for strain in strains %}
+          <li>
+            <a href="{% url 'strains:detail' strain.pk %}">{{ strain }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="detail-empty">No strain carries this plasmid yet.</p>
+    {% endif %}
+  </div>
+  <p>
+    <a href="{% url 'plasmids:list' %}">Back to all plasmids</a>
+  </p>
+{% endblock content %}
