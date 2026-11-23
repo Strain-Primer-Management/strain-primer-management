@@ -1,0 +1,61 @@
+/* Error pages (403, 404, 500): a centred card with a big status code and two buttons.
+   Only tokens from base.css are used; nothing is hard-coded here. */
+
+.error-card {
+  max-width: 32rem;
+  margin: var(--space-7) auto;
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.error-code {
+  margin: 0 0 var(--space-3);
+  color: var(--color-primary);
+  font-size: calc(var(--font-size-h1) * 3);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.error-text {
+  color: var(--color-text-muted);
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.error-button {
+  padding: var(--space-2) var(--space-5);
+  border: var(--border-width) solid var(--color-primary);
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Main action: filled. Second action: outlined. */
+.error-button-primary {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.error-button-primary:hover {
+  background: var(--color-primary-dark);
+  color: var(--color-surface);
+}
+
+.error-button-secondary {
+  background: transparent;
+  color: var(--color-primary-dark);
+}
+
+.error-button-secondary:hover {
+  background: var(--color-primary-soft);
+}

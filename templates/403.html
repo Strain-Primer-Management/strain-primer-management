@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Not allowed · Strain DB</title>
+    <!-- Standalone on purpose (like 500.html): it must render even when URL names or the base layout are unavailable, so it uses plain paths. -->
+    <!-- djlint:off D004,D018 -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/pages/core-error.css">
+  </head>
+  <body>
+    <main class="container">
+      <section class="error-card">
+        <p class="error-code">403</p>
+        <h1>You are not allowed to do this</h1>
+        <p class="error-text">Your account does not have permission for this page. If you think this is a mistake, ask a lab admin.</p>
+        <div class="error-actions">
+          <a class="error-button error-button-primary" href="/">Back to home</a>
+          {% if not user.is_authenticated %}
+            <a class="error-button error-button-secondary" href="/accounts/login/">Log in</a>
+          {% endif %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

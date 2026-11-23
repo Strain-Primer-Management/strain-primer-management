@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Page not found · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/core-error.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  <section class="error-card">
+    <p class="error-code">404</p>
+    <h1>Page not found</h1>
+    <p class="error-text">This page does not exist. The address may be wrong, or the page may have been moved.</p>
+    <div class="error-actions">
+      <a class="error-button error-button-primary" href="{% url 'core:home' %}">Back to home</a>
+    </div>
+  </section>
+{% endblock content %}
