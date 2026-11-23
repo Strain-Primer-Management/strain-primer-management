@@ -507,3 +507,45 @@ pre,
   gap: var(--space-4);
   margin-top: var(--space-5);
 }
+
+/* ---- Detail pages and forms (SCRUM-122): field list, note under a field, button row ---- */
+
+/* Detail page: field names on the left, values on the right (use on a <dl class="detail-list">) */
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-5);
+  margin: 0 0 var(--space-5);
+}
+
+.detail-list dt {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+/* Text shown instead of an empty list on a detail page, e.g. "No plasmids are linked yet." */
+.detail-empty {
+  color: var(--color-text-muted);
+}
+
+/* A form field with an extra note right under it: wrap the field include and a
+   <p class="form-help"> in <div class="field-with-note"> */
+.field-with-note .form-field {
+  margin-bottom: var(--space-1);
+}
+
+.field-with-note .form-help {
+  margin-bottom: var(--space-4);
+}
+
+/* Row of buttons at the bottom of a form, e.g. Save and Cancel */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
