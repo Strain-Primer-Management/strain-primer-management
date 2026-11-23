@@ -1,14 +1,40 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Request an account · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts-register.css' %}">
+{% endblock extra_css %}
 {% block content %}
-  {# STUB (SCRUM-3): backend placeholder. Frontend restyles it; keep the form fields and csrf_token. #}
-  <h1>Request an account</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Request account</button>
-  </form>
-  <p>
-    <a href="{% url 'accounts:login' %}">Back to log in</a>
-  </p>
+  {% comment %}
+    Register page (SCRUM-10). Context from accounts:register: `form` with username, email,
+    first_name, last_name, signup_note, password1, password2. Each field is the shared
+    components/form_field.html, so its errors show under it. A duplicate email is NOT a field
+    error: the backend puts it in form.non_field_errors, shown in the red box at the top.
+    Password fields are never filled in again by Django after an error.
+  {% endcomment %}
+  <div class="card register-card">
+    <h1>Request an account</h1>
+    <p class="register-intro">
+      Fill in this form to ask for access. You can log in once an admin has approved your request.
+    </p>
+    {% if form.non_field_errors %}
+      <ul class="messages">
+        {% for error in form.non_field_errors %}<li class="message message-error" role="alert">{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "components/form_field.html" with field=form.username %}
+      {% include "components/form_field.html" with field=form.email %}
+      {% include "components/form_field.html" with field=form.first_name %}
+      {% include "components/form_field.html" with field=form.last_name %}
+      {% include "components/form_field.html" with field=form.signup_note %}
+      {% include "components/form_field.html" with field=form.password1 %}
+      {% include "components/form_field.html" with field=form.password2 %}
+      <button type="submit" class="btn btn-primary register-submit">Request account</button>
+    </form>
+    <p class="register-login">
+      Already have an account? <a href="{% url 'accounts:login' %}">Back to log in</a>
+    </p>
+  </div>
 {% endblock content %}

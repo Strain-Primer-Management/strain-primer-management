@@ -1,0 +1,30 @@
+/* Register and "waiting for approval" pages (templates/accounts/register*.html):
+   a card in the middle of the page. Colours and fonts come from the tokens and classes
+   in base.css; only what is unique to these pages is here. */
+
+.register-card {
+  margin: var(--space-6) auto;
+}
+
+.register-intro {
+  color: var(--color-text-muted);
+}
+
+.register-submit {
+  width: 100%;
+}
+
+.register-login {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Password rules arrive from Django as a <ul>. The browser moves it out of the <p class="form-help">
+   of the shared field component, so it is styled like help text here. */
+.register-card .form-field > ul:not(.form-errors) {
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-5);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
