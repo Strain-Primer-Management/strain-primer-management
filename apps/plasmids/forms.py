@@ -1,8 +1,11 @@
 """The plasmid form. Choices and uniqueness rules live on the model."""
 
 from django import forms
+from django.core.exceptions import ValidationError
 
-from .models import Plasmid
+from apps.primers.models import Primer
+
+from .models import Plasmid, PlasmidPrimerLink
 
 
 class PlasmidForm(forms.ModelForm):
@@ -34,3 +37,42 @@ class PlasmidForm(forms.ModelForm):
             "description",
         ]
         widgets = {"description": forms.Textarea(attrs={"rows": 4})}
+
+
+class PlasmidPrimerLinkForm(forms.ModelForm):
+    """
+    "This primer binds this plasmid": the small form on a plasmid's detail page.
+
+    Fields: primer (a dropdown of all primers, required), orientation (Forward / Reverse or
+    empty), binding_position (text such as "1240-1260") and notes.
+    Create it with `PlasmidPrimerLinkForm(plasmid=plasmid)`; the plasmid is not a form field.
+    The exact same link (same primer, orientation and position) twice is an error in
+    form.non_field_errors, not a crash. The same primer may bind the same plasmid at another
+    position or in the other orientation.
+    """
+
+    class Meta:
+        model = PlasmidPrimerLink
+        fields = ["primer", "orientation", "binding_position", "notes"]
+        widgets = {"notes": forms.Textarea(attrs={"rows": 2})}
+
+    def __init__(self, *args, plasmid, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plasmid = plasmid
+        self.fields["primer"].queryset = Primer.objects.order_by("primer_id")
+
+    def clean(self):
+        """Reject a link that exists already with the same primer, orientation and position."""
+        cleaned = super().clean()
+        primer = cleaned.get("primer")
+        if (
+            primer
+            and PlasmidPrimerLink.objects.filter(
+                plasmid=self.plasmid,
+                primer=primer,
+                orientation=cleaned.get("orientation", ""),
+                binding_position=cleaned.get("binding_position", ""),
+            ).exists()
+        ):
+            raise ValidationError("This exact plasmid-primer link already exists.")
+        return cleaned
