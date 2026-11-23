@@ -1,6 +1,15 @@
-{# PLACEHOLDER. Backend calls messages.success(request, "...") and it shows up here. #}
+{% comment %}
+  Message component (SCRUM-7). Backend calls messages.success(request, "...") and it shows up here.
+  Django's tags are info, success, warning and error; base.css styles each one (error = danger look).
+  role="status" makes screen readers announce the message politely; errors use role="alert".
+{% endcomment %}
 {% if messages %}
   <ul class="messages">
-    {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+    {% for message in messages %}
+      <li class="message message-{{ message.level_tag }}"
+          role="{% if message.level_tag == 'error' %}alert{% else %}status{% endif %}">
+        {{ message }}
+      </li>
+    {% endfor %}
   </ul>
 {% endif %}
