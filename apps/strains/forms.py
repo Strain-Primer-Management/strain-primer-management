@@ -5,7 +5,9 @@ from decimal import Decimal
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Strain
+from apps.plasmids.models import Plasmid
+
+from .models import Strain, StrainPlasmid
 
 # Allowed culturing temperature in degrees C. ONE place to change it (placeholder range:
 # to be confirmed with the lab).
@@ -85,3 +87,31 @@ class StrainForm(forms.ModelForm):
             seen.add(ancestor.pk)
             ancestor = ancestor.parent_strain
         return parent
+
+
+class StrainPlasmidLinkForm(forms.ModelForm):
+    """
+    "This strain carries this plasmid": the small form on a strain's detail page.
+
+    Fields: plasmid (a dropdown of all plasmids, required) and notes (optional).
+    Create it with `StrainPlasmidLinkForm(strain=strain)`; the strain is not a form field.
+    Linking the same plasmid twice is an error in form.non_field_errors (not a crash).
+    """
+
+    class Meta:
+        model = StrainPlasmid
+        fields = ["plasmid", "notes"]
+        widgets = {"notes": forms.Textarea(attrs={"rows": 2})}
+
+    def __init__(self, *args, strain, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.strain = strain
+        self.fields["plasmid"].queryset = Plasmid.objects.order_by("plasmid_name")
+
+    def clean(self):
+        """Reject a second link between the same strain and plasmid."""
+        cleaned = super().clean()
+        plasmid = cleaned.get("plasmid")
+        if plasmid and StrainPlasmid.objects.filter(strain=self.strain, plasmid=plasmid).exists():
+            raise ValidationError("This strain already carries this plasmid.")
+        return cleaned
