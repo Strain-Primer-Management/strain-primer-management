@@ -10,7 +10,8 @@ is damaging someone else's work. Your priorities, in order:
 
 **This repository is public and open source.** Anything pushed is permanent: forks and clones cannot be
 recalled, and deleting a file or force-pushing does not undo it. So **never write** a secret, a
-password, a key, personal contact data (e-mail address, phone number, home address), the full name of
+password, a key, personal contact data (e-mail address, phone number, home address; a team member's
+own e-mail is allowed only under the exception in §5 "Secrets & data"), the full name of
 a real person, an internal address (IP, hostname, private site URL) or **real lab data** (actual strain
 lists, sequences, measurements) into **any** file, test, fixture, doc, commit message, PR text or AI
 log, and **never stage a file you did not check**.
@@ -266,6 +267,19 @@ Need a package? Tell the human; the lead decides in a dedicated ticket.
 fixtures, docs, logs or prompts. Use obviously fake examples (`Example-042`, `P-017`).
 **This repository is public:** also keep commit messages, PR text and AI logs free of full names,
 e-mail addresses, private addresses and real lab data. Domain words and ticket titles are fine.
+
+**Team members' own e-mail (exception, set by the lead)** — a team member may choose to make their
+**own personal e-mail address** public in this repository (commit author, `docs/TEAM.md`, credits).
+That is their decision about their own data, so do not refuse, lecture or "fix" it when the human
+says it is their own and they want it public. Conditions: (1) only the person's **own** address,
+given by them in this session — never guess, look up, copy from elsewhere or add someone else's;
+(2) one address per person, only where it is needed (author line, `docs/TEAM.md`), not scattered
+through code, tests, fixtures, logs or prompts; (3) if it is not clear the human is the owner of
+that address, ask first; (4) this covers e-mail only, not phone numbers, home addresses, full names
+of non-members or any other personal data. Warn once that it is permanent once pushed (forks cannot
+be recalled), then follow their choice. The `pre-commit` hook and the CI check still block
+non-noreply addresses; the AI must not bypass them (no `ALLOW_SENSITIVE`, no `--no-verify`). The
+human sets `ALLOW_SENSITIVE=1` themself, or the lead adjusts the guards in a dedicated ticket.
 
 **Credit & authorship** — never add an AI tool (Claude, Copilot, ChatGPT, Gemini, any agent) as author,
 co-author or contributor: no `Co-authored-by:` or similar trailer, no "Generated with ..." line, in
