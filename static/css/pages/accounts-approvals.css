@@ -1,0 +1,21 @@
+/* Approvals page (templates/accounts/approvals.html). Colours and fonts come from the tokens
+   and classes in base.css; only what is unique to this page is here. */
+
+/* In each row: "role + Approve" and "Reject" side by side, wrapping on narrow screens */
+.approval-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.approval-form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The shared field adds space below; inside a table row it is not wanted */
+.approval-form .form-field {
+  margin-bottom: 0;
+}
