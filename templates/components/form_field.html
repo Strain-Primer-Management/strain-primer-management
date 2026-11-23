@@ -1,0 +1,20 @@
+{% comment %}
+  Form field component: one label + input + help text + errors, the same on every form (SCRUM-7).
+  Use: {% include "components/form_field.html" with field=form.username %}
+  Django already links the input to the help text and errors (aria-describedby), so the ids
+  below (<auto_id>_helptext and <auto_id>_error) must stay as they are.
+  The red look comes from the .form-field-invalid class; disabled inputs are styled in base.css.
+{% endcomment %}
+<div class="form-field{% if field.errors %} form-field-invalid{% endif %}">
+  <label class="form-label" for="{{ field.id_for_label }}">
+    {{ field.label }}
+    {% if field.field.required %}<span class="required-mark" aria-hidden="true">*</span><span class="visually-hidden">(required)</span>{% endif %}
+  </label>
+  {{ field }}
+  {% if field.help_text %}<p class="form-help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+  {% if field.errors %}
+    <ul class="form-errors" id="{{ field.auto_id }}_error">
+      {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+</div>
