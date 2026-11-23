@@ -1,0 +1,13 @@
+/* Plasmid form page (templates/plasmids/plasmid_form.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+.plasmid-form-card {
+  margin: var(--space-6) auto;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}

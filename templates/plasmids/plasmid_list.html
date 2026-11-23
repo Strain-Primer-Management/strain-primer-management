@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Plasmids · Strain DB{% endblock title %}
+{% block content %}
+  {% comment %}
+    Plasmid list (SCRUM-121). Context from plasmids:list: `page_obj`, `object_list` (the plasmids
+    of this page) and `is_paginated`. Each plasmid has id, plasmid_name, size_bp,
+    resistance_markers and copy_number (use get_copy_number_display for the label). The "Add
+    plasmid" button is only shown to users with the add permission; the view itself also checks it.
+  {% endcomment %}
+  {% url 'plasmids:create' as create_url %}
+  {% if perms.plasmids.add_plasmid %}
+    {% include "components/page_header.html" with title="Plasmids" action_url=create_url action_label="Add plasmid" %}
+  {% else %}
+    {% include "components/page_header.html" with title="Plasmids" %}
+  {% endif %}
+  {% if object_list %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Plasmid name</th>
+          <th scope="col">Size (bp)</th>
+          <th scope="col">Resistance markers</th>
+          <th scope="col">Copy number</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for plasmid in object_list %}
+          <tr>
+            <td>
+              <a href="{% url 'plasmids:detail' plasmid.pk %}">{{ plasmid.plasmid_name }}</a>
+            </td>
+            <td>{{ plasmid.size_bp|default_if_none:"–" }}</td>
+            <td>{{ plasmid.resistance_markers|default:"–" }}</td>
+            <td>{{ plasmid.get_copy_number_display|default:"–" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" with page_obj=page_obj %}
+  {% elif perms.plasmids.add_plasmid %}
+    {% include "components/empty_state.html" with message="No plasmids yet." action_url=create_url action_label="Add the first plasmid" %}
+  {% else %}
+    {% include "components/empty_state.html" with message="No plasmids yet." %}
+  {% endif %}
+{% endblock content %}
