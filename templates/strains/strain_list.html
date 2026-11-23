@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Strains · Strain DB{% endblock title %}
+{% block content %}
+  {% comment %}
+    Strain list (SCRUM-122). Context from strains:list: `page_obj`, `object_list` (the strains of
+    this page) and `is_paginated`. Each strain has strain_id, host_organism, genotype,
+    culturing_temp, culturing_medium and freezer_location. The "Add strain" button is only shown
+    to users with the add permission; the view itself also checks it.
+  {% endcomment %}
+  {% url 'strains:create' as create_url %}
+  {% if perms.strains.add_strain %}
+    {% include "components/page_header.html" with title="Strains" action_url=create_url action_label="Add strain" %}
+  {% else %}
+    {% include "components/page_header.html" with title="Strains" %}
+  {% endif %}
+  {% if object_list %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Strain ID</th>
+          <th scope="col">Host organism</th>
+          <th scope="col">Genotype</th>
+          <th scope="col">Culturing temp.</th>
+          <th scope="col">Medium</th>
+          <th scope="col">Freezer location</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for strain in object_list %}
+          <tr>
+            <td>
+              <a href="{% url 'strains:detail' strain.pk %}">{{ strain.strain_id }}</a>
+            </td>
+            <td>{{ strain.host_organism|default:"–" }}</td>
+            <td title="{{ strain.genotype }}">{{ strain.genotype|truncatechars:60|default:"–" }}</td>
+            <td>
+              {% if strain.culturing_temp is not None %}{{ strain.culturing_temp }} °C{% else %}–{% endif %}
+            </td>
+            <td>{{ strain.culturing_medium|default:"–" }}</td>
+            <td>{{ strain.freezer_location|default:"–" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" with page_obj=page_obj %}
+  {% elif perms.strains.add_strain %}
+    {% include "components/empty_state.html" with message="No strains yet." action_url=create_url action_label="Add the first strain" %}
+  {% else %}
+    {% include "components/empty_state.html" with message="No strains yet." %}
+  {% endif %}
+{% endblock content %}

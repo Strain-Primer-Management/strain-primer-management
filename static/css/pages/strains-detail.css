@@ -1,0 +1,7 @@
+/* Strain detail page (templates/strains/strain_detail.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+/* The detail card is wider than a form card because it holds a table */
+.strain-detail {
+  max-width: none;
+}

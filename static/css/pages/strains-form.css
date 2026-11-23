@@ -1,0 +1,6 @@
+/* Strain form page (templates/strains/strain_form.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+.strain-form-card {
+  margin: var(--space-6) auto;
+}

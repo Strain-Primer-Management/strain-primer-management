@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Strain {{ object.strain_id }} · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/strains-detail.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Strain detail (SCRUM-122). Context from strains:detail: `object` (the strain), `plasmid_links`
+    (one row per plasmid it carries: `plasmid` and `notes`), `parent` (a strain or None) and
+    `children` (the strains made from it). The lists are empty when there is nothing. The Edit
+    button is only shown to users with the change permission; the view itself also checks it.
+    Adding and removing plasmid links is a separate ticket, so `link_form` is not used here.
+  {% endcomment %}
+  {% url 'strains:update' object.pk as edit_url %}
+  {% with page_title="Strain "|add:object.strain_id %}
+    {% if perms.strains.change_strain %}
+      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
+    {% else %}
+      {% include "components/page_header.html" with title=page_title %}
+    {% endif %}
+  {% endwith %}
+  <div class="card strain-detail">
+    <dl class="detail-list">
+      <dt>Strain ID</dt>
+      <dd>{{ object.strain_id }}</dd>
+      <dt>Host organism</dt>
+      <dd>{{ object.host_organism|default:"–" }}</dd>
+      <dt>Genotype</dt>
+      <dd>{{ object.genotype|default:"–" }}</dd>
+      <dt>Culturing temperature</dt>
+      <dd>
+        {% if object.culturing_temp is not None %}{{ object.culturing_temp }} °C{% else %}–{% endif %}
+      </dd>
+      <dt>Culturing medium</dt>
+      <dd>{{ object.culturing_medium|default:"–" }}</dd>
+      <dt>Freezer location</dt>
+      <dd>{{ object.freezer_location|default:"–" }}</dd>
+      <dt>Biosafety level</dt>
+      <dd>{{ object.biosafety_level|default:"–" }}</dd>
+      <dt>Created</dt>
+      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
+      <dt>Last changed</dt>
+      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+    </dl>
+    <h2>Plasmids</h2>
+    {% if plasmid_links %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Plasmid</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for link in plasmid_links %}
+            <tr>
+              <td>
+                <a href="{% url 'plasmids:detail' link.plasmid.pk %}">{{ link.plasmid }}</a>
+              </td>
+              <td>{{ link.notes|default:"–" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="detail-empty">This strain carries no plasmids yet.</p>
+    {% endif %}
+    <h2>Parent strain</h2>
+    {% if parent %}
+      <p>
+        <a href="{% url 'strains:detail' parent.pk %}">{{ parent }}</a>
+      </p>
+    {% else %}
+      <p class="detail-empty">None</p>
+    {% endif %}
+    <h2>Child strains</h2>
+    {% if children %}
+      <ul>
+        {% for child in children %}
+          <li>
+            <a href="{% url 'strains:detail' child.pk %}">{{ child }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="detail-empty">No strains were made from this one yet.</p>
+    {% endif %}
+  </div>
+  <p>
+    <a href="{% url 'strains:list' %}">Back to all strains</a>
+  </p>
+{% endblock content %}
