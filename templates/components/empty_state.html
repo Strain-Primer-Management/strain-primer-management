@@ -1,0 +1,10 @@
+{% comment %}
+  Empty state (SCRUM-118): a friendly message shown instead of a table with no rows.
+  Use: {% include "components/empty_state.html" with message="No primers yet." %}
+  With a button: {% include "components/empty_state.html" with message="No primers yet." action_url=create_url action_label="Add the first primer" %}
+  The button shows only when action_url is given, so pass it only to users who may create records.
+{% endcomment %}
+<div class="empty-state">
+  <p class="empty-state-message">{{ message }}</p>
+  {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+</div>
