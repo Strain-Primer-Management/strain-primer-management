@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Approve sign-ups · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts-approvals.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Approvals page (SCRUM-126). Context from accounts:approvals: `pending_users` (the sign-ups
+    waiting, oldest first: username, email, first_name, last_name, signup_note, date_joined) and
+    `form` (ApproveUserForm; only its list of roles is used here). Each row has two POST forms:
+    Approve (accounts:approve with user_id and role) and Reject (accounts:reject with user_id).
+    Success and error messages come back through the messages component. Only users with both
+    approval permissions can open the page; the backend shows the 403 page to everyone else.
+  {% endcomment %}
+  {% include "components/page_header.html" with title="Approve sign-ups" %}
+  {% if pending_users %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">Note</th>
+          <th scope="col">Signed up</th>
+          <th scope="col">Decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for person in pending_users %}
+          <tr>
+            <td>{{ person.get_full_name|default:"–" }}</td>
+            <td>{{ person.username }}</td>
+            <td>{{ person.email|default:"–" }}</td>
+            <td title="{{ person.signup_note }}">{{ person.signup_note|truncatechars:80|default:"–" }}</td>
+            <td>{{ person.date_joined|date:"Y-m-d" }}</td>
+            <td>
+              <div class="approval-actions">
+                <form class="approval-form" method="post" action="{% url 'accounts:approve' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="user_id" value="{{ person.pk }}">
+                  <div class="form-field">
+                    <label class="visually-hidden" for="role-{{ person.pk }}">Role for {{ person.username }}</label>
+                    <select name="role" id="role-{{ person.pk }}">
+                      {% for value, label in form.role.field.choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Approve<span class="visually-hidden"> {{ person.username }}</span></button>
+                </form>
+                <form method="post" action="{% url 'accounts:reject' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="user_id" value="{{ person.pk }}">
+                  <button type="submit" class="btn btn-danger">Reject<span class="visually-hidden"> {{ person.username }}</span></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    {% include "components/empty_state.html" with message="Nobody is waiting." %}
+  {% endif %}
+{% endblock content %}
