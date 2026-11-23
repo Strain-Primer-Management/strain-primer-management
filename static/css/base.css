@@ -5,16 +5,17 @@
 
 :root {
   /* Colours */
-  --color-primary: #1d4ed8;
-  --color-primary-dark: #1e3a8a;
-  --color-text: #1f2937;
-  --color-text-muted: #4b5563;
-  --color-bg: #f3f4f6;
+  --color-primary: #0f766e;
+  --color-primary-dark: #115e59;
+  --color-primary-soft: #ccfbf1;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-bg: #f1f5f9;
   --color-surface: #ffffff;
-  --color-border: #d1d5db;
-  --color-header-bg: #1e3a8a;
-  --color-header-text: #ffffff;
-  --color-focus: #f59e0b;
+  --color-border: #e2e8f0;
+  --color-header-bg: #ffffff;
+  --color-header-text: #1e293b;
+  --color-focus: #2563eb;
   --color-info: #1d4ed8;
   --color-success: #15803d;
   --color-warning: #b45309;
@@ -32,6 +33,9 @@
   /* Corner radius and borders */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
+  --radius-pill: 62rem;
+  --shadow-sm: 0 1px 3px rgb(15 23 42 / 12%);
+  --accent-bar: 0.25rem;
   --border-width: 1px;
   --focus-width: 3px;
 
@@ -129,11 +133,10 @@ pre,
 
 /* Page frame: header, content, footer */
 .site-header {
+  border-top: var(--accent-bar) solid var(--color-primary);
+  border-bottom: var(--border-width) solid var(--color-border);
   background: var(--color-header-bg);
-  color: var(--color-header-text);
-}
-
-.site-header a {
+  box-shadow: var(--shadow-sm);
   color: var(--color-header-text);
 }
 
@@ -162,7 +165,7 @@ pre,
   margin-bottom: var(--space-4);
 }
 
-/* Navbar (templates/components/navbar.html), inside the dark header */
+/* Navbar (templates/components/navbar.html), inside the header */
 .navbar {
   display: flex;
   flex-wrap: wrap;
@@ -171,15 +174,33 @@ pre,
 }
 
 .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-primary-dark);
   font-size: var(--font-size-h3);
   font-weight: bold;
-  text-decoration: none;
+}
+
+/* The app name lines up with the page content, so it gets no pill padding */
+.navbar a.navbar-brand {
+  padding-left: 0;
+}
+
+/* Small round mark in front of the app name */
+.navbar-brand::before {
+  content: "";
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 var(--space-1) var(--color-primary-soft);
 }
 
 .navbar-links {
   display: flex;
   flex: 1;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -187,22 +208,23 @@ pre,
 
 .navbar a,
 .navbar-logout {
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
   color: var(--color-header-text);
+  font-weight: 500;
   text-decoration: none;
 }
 
 .navbar a:hover,
 .navbar-logout:hover {
-  background: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 
 /* The section you are in */
 .navbar a[aria-current="page"] {
   background: var(--color-primary);
-  font-weight: bold;
-  text-decoration: underline;
+  color: var(--color-surface);
 }
 
 .navbar-account {
@@ -214,13 +236,18 @@ pre,
 }
 
 .navbar-user {
+  padding-right: var(--space-3);
+  border-right: var(--border-width) solid var(--color-border);
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
 }
 
-/* "Log out" is a button (a POST form) that looks like the links next to it */
+/* "Log out" is a button (a POST form) styled as an outlined pill */
 .navbar-logout {
-  border: var(--border-width) solid var(--color-header-text);
+  border: var(--border-width) solid var(--color-primary);
   background: transparent;
+  color: var(--color-primary-dark);
   font: inherit;
+  font-weight: 500;
   cursor: pointer;
 }
