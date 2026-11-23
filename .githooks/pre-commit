@@ -9,19 +9,10 @@ if [ "$branch" = "main" ] && [ -z "$ALLOW_MAIN_COMMIT" ]; then
   exit 1
 fi
 
-# Public repository: block a private commit e-mail, secrets and real e-mail addresses.
+# Public repository: block secrets and keys. E-mail addresses are allowed on purpose (lead decision):
+# team members may commit with their personal e-mail.
 # LEAD override, false alarms only: ALLOW_SENSITIVE=1 git commit ...
 if [ -z "$ALLOW_SENSITIVE" ]; then
-  ident=$(git var GIT_AUTHOR_IDENT 2>/dev/null | sed 's/.*<\(.*\)>.*/\1/')
-  case "$ident" in
-    *@users.noreply.github.com|noreply@github.com) ;;
-    *)
-      echo "Blocked: your Git e-mail is not a GitHub noreply address. This repository is public," >&2
-      echo "so the e-mail would be visible to everyone. Run once (your id is on" >&2
-      echo "https://github.com/settings/emails):" >&2
-      echo '  git config --global user.email "<id>+<username>@users.noreply.github.com"' >&2
-      exit 1 ;;
-  esac
   # The same patterns run in CI (.github/scripts/check_sensitive.sh), so --no-verify does not help.
   if ! git diff --cached --no-color --unified=0 --diff-filter=AM -- . ':!LICENSE' ':!docs/TEAM_HANDBOOK.pdf' \
     | sh .github/scripts/check_sensitive.sh; then
