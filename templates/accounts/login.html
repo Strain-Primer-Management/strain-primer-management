@@ -1,12 +1,35 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Log in · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts-login.css' %}">
+{% endblock extra_css %}
 {% block content %}
-  {# PLACEHOLDER login page. Frontend team restyles it; keep the form fields and csrf_token. #}
-  <h1>Log in</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Log in</button>
-  </form>
+  {% comment %}
+    Login page (SCRUM-9). Context from the login view: `form` (username, password) and `next`.
+    Login errors (wrong password, waiting for approval, declined, disabled) are in
+    form.non_field_errors; the fields are the shared components/form_field.html.
+  {% endcomment %}
+  <div class="card login-card">
+    <h1>Log in</h1>
+    {% if form.non_field_errors %}
+      <ul class="messages">
+        {% for error in form.non_field_errors %}<li class="message message-error" role="alert">{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    <form method="post" id="login-form">
+      {% csrf_token %}
+      {% include "components/form_field.html" with field=form.username %}
+      {% include "components/form_field.html" with field=form.password %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-primary login-submit">Log in</button>
+    </form>
+    <p class="login-help">Forgot your password? Ask an admin.</p>
+    <p class="login-help">
+      No account yet? <a href="{% url 'accounts:register' %}">Request an account</a>
+    </p>
+  </div>
 {% endblock content %}
+{% block extra_js %}
+  <script src="{% static 'js/pages/accounts-login.js' %}" defer></script>
+{% endblock extra_js %}
