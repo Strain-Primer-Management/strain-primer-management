@@ -1,0 +1,11 @@
+{% comment %}
+  Page header for the list pages (SCRUM-118): the page title and, optionally, one action button.
+  Use: {% include "components/page_header.html" with title="Primers" %}
+  With a button: {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Add primer" %}
+  The button shows only when action_url is given. The page decides who sees it, for example by
+  wrapping the include in {% if perms.primers.add_primer %} (never show a button the user may not use).
+{% endcomment %}
+<div class="page-header">
+  <h1>{{ title }}</h1>
+  {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+</div>
