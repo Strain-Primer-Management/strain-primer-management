@@ -105,10 +105,10 @@ with your Claude account. When **Claude Code** shows its prompt, type `/exit` an
 
 ```bash
 git config --global user.name "Your Name"
-git config --global user.email "12345678+yourusername@users.noreply.github.com"
+git config --global user.email "you@example.com"
 ```
 
-Replace **Your Name** with the name you want shown on your work (the repository is public, so it is public). The email must be **GitHub's no-reply address**: copy it from <https://github.com/settings/emails> (it looks like `12345678+yourusername@users.noreply.github.com`) and tick *Keep my email addresses private* there. The project's commit hook refuses any other email, so your real address never becomes public. **Keep the quotes.**
+Replace **Your Name** with the name you want shown on your work and **you@example.com** with the email you want on your commits. The repository is public, so both are visible to everyone and cannot be removed once pushed. Use your personal email if you are fine with that. If you would rather keep it private, use **GitHub's no-reply address** instead (copy it from <https://github.com/settings/emails>; it looks like `12345678+yourusername@users.noreply.github.com`). **Keep the quotes.**
 
 - **You should see:** nothing is printed. That is normal.
 

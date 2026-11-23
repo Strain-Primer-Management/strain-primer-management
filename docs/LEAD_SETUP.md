@@ -141,7 +141,7 @@ already be clean. Going back to private later switches the protection off silent
    contributor, limits interactions to collaborators, pushes the single commit, creates the ruleset "Protect
    main", and invites the team). **Only the lead can bypass** the ruleset (a one-person team is the only entry in the
    bypass list); everyone else, including future admins, follows it. The local `pre-commit` hook and the CI step run the same
-   `check_sensitive.sh`: no secrets, real e-mails or a non-noreply commit e-mail (override
+   `check_sensitive.sh`: no secrets or keys (e-mail addresses are allowed on purpose; override
    `ALLOW_SENSITIVE=1`, lead only, false alarms only).
 5. **Prove it:** the script ends with the safe test (a second ruleset on `enforcement-test` with no bypass; the
    push must be **rejected**). `Active` alone proves nothing. Still to see once with your own eyes: the first

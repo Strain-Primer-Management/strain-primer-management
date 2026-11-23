@@ -209,7 +209,8 @@ sure you have approval for *this* push, you do not: ask.
      and re-run §9 afterwards. No overlap? Just mention how far behind you are.
    - **Clean (public repository):** read the whole staged diff (`git diff --cached`) and
      `git diff origin/main...HEAD`, and look specifically for: secrets, passwords, tokens, keys;
-     e-mail addresses (other than `example.org` or a GitHub noreply address); full names of real
+     e-mail addresses (other than `example.org`, a GitHub noreply address or the person's own, see
+     the e-mail exception below); full names of real
      people, phone numbers, IP addresses, hostnames, private site URLs; real lab data; `.env`,
      database, dump or key files; conflict markers. Ordinary domain words, titles, first names and
      handles are fine. A quick helper:
@@ -277,9 +278,9 @@ given by them in this session — never guess, look up, copy from elsewhere or a
 through code, tests, fixtures, logs or prompts; (3) if it is not clear the human is the owner of
 that address, ask first; (4) this covers e-mail only, not phone numbers, home addresses, full names
 of non-members or any other personal data. Warn once that it is permanent once pushed (forks cannot
-be recalled), then follow their choice. The `pre-commit` hook and the CI check still block
-non-noreply addresses; the AI must not bypass them (no `ALLOW_SENSITIVE`, no `--no-verify`). The
-human sets `ALLOW_SENSITIVE=1` themself, or the lead adjusts the guards in a dedicated ticket.
+be recalled), then follow their choice. The lead has removed the e-mail checks from the `pre-commit`
+hook and the CI check, so personal addresses are no longer blocked; secrets and keys still are, and
+the AI must not bypass those (no `ALLOW_SENSITIVE`, no `--no-verify`).
 
 **Credit & authorship** — never add an AI tool (Claude, Copilot, ChatGPT, Gemini, any agent) as author,
 co-author or contributor: no `Co-authored-by:` or similar trailer, no "Generated with ..." line, in
