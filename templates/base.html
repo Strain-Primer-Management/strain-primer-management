@@ -10,12 +10,17 @@
     {% block extra_css %}{% endblock extra_css %}
   </head>
   <body>
-    {# PLACEHOLDER layout. The frontend team owns and replaces everything in this file. #}
-    {% include "components/navbar.html" %}
-    <main>
-      {% include "components/messages.html" %}
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="container">{% include "components/navbar.html" %}</div>
+    </header>
+    <main id="main-content" class="site-main container" tabindex="-1">
+      <div class="message-area">{% include "components/messages.html" %}</div>
       {% block content %}{% endblock content %}
     </main>
+    <footer class="site-footer">
+      <div class="container">Strain DB · internal lab tool</div>
+    </footer>
     <script src="{% static 'js/app.js' %}" defer></script>
     {% block extra_js %}{% endblock extra_js %}
   </body>
