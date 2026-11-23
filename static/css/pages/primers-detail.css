@@ -1,0 +1,33 @@
+/* Primer detail page (templates/primers/primer_detail.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+/* The detail card is wider than a form card because it holds a table */
+.primer-detail {
+  max-width: none;
+}
+
+/* Field names on the left, values on the right */
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-5);
+  margin: 0 0 var(--space-5);
+}
+
+.detail-list dt {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+/* A long sequence wraps instead of stretching the page */
+.detail-sequence {
+  overflow-wrap: anywhere;
+}
+
+.detail-empty {
+  color: var(--color-text-muted);
+}

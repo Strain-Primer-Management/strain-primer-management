@@ -1,0 +1,22 @@
+/* Primer form page (templates/primers/primer_form.html). Colours and fonts come from the
+   tokens and classes in base.css; only what is unique to this page is here. */
+
+.primer-form-card {
+  margin: var(--space-6) auto;
+}
+
+/* The sequence help text sits right under its field, so the field's own bottom space is smaller */
+.sequence-field .form-field {
+  margin-bottom: var(--space-1);
+}
+
+.sequence-field .form-help {
+  margin-bottom: var(--space-4);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
