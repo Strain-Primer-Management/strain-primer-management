@@ -1,7 +1,9 @@
+from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 
 from .models import User
+from .roles import ROLES
 
 
 class RegisterForm(UserCreationForm):
@@ -54,3 +56,21 @@ class LoginForm(AuthenticationForm):
                 raise ValidationError(self.error_messages[status.value], code=status.value)
         if not user.is_active:
             raise ValidationError(self.error_messages["inactive"], code="inactive")
+
+
+class ApproveUserForm(forms.Form):
+    """
+    The "approve" button of the approvals page: which pending sign-up, and the role to give.
+
+    Fields: user_id (the pending user's id) and role (Student, Staff or Admin: the group
+    names of apps/accounts/roles.py, so the list is defined in one place).
+    """
+
+    user_id = forms.IntegerField(widget=forms.HiddenInput)
+    role = forms.ChoiceField(choices=[(name, name) for name in ROLES])
+
+
+class RejectUserForm(forms.Form):
+    """The "reject" button of the approvals page: which pending sign-up."""
+
+    user_id = forms.IntegerField(widget=forms.HiddenInput)

@@ -3,7 +3,13 @@ from django.contrib.auth.decorators import login_not_required
 from django.urls import path, reverse_lazy
 
 from .forms import LoginForm
-from .views import RegisterDoneView, RegisterView
+from .views import (
+    ApprovalsView,
+    ApproveUserView,
+    RegisterDoneView,
+    RegisterView,
+    RejectUserView,
+)
 
 app_name = "accounts"
 
@@ -24,6 +30,9 @@ urlpatterns = [
         login_not_required(RegisterDoneView.as_view()),
         name="register_done",
     ),
+    path("approvals/", ApprovalsView.as_view(), name="approvals"),
+    path("approvals/approve/", ApproveUserView.as_view(), name="approve"),
+    path("approvals/reject/", RejectUserView.as_view(), name="reject"),
     path(
         "password-change/",
         auth_views.PasswordChangeView.as_view(
