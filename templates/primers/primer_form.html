@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if object %}Edit primer{% else %}Add primer{% endif %} · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/primers-form.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Primer form, used for create and edit (SCRUM-120). Context from primers:create and
+    primers:update: `form` (primer_id, sequence, purpose, freezer_location and
+    form.purpose_suggestions for the datalist) and, on edit only, `object`. A duplicate primer ID
+    is not a field error: the backend puts it in form.non_field_errors, shown in the red box.
+    Length and Tm are calculated when the primer is saved, so they are shown read-only.
+  {% endcomment %}
+  <div class="card primer-form-card">
+    <h1>
+      {% if object %}
+        Edit primer {{ object.primer_id }}
+      {% else %}
+        Add primer
+      {% endif %}
+    </h1>
+    {% if form.non_field_errors %}
+      <ul class="messages">
+        {% for error in form.non_field_errors %}<li class="message message-error" role="alert">{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      {% include "components/form_field.html" with field=form.primer_id %}
+      <div class="sequence-field">
+        {% include "components/form_field.html" with field=form.sequence %}
+        <p class="form-help">Letters A, C, G, T. 5'- and -3' are removed automatically.</p>
+      </div>
+      {% include "components/form_field.html" with field=form.purpose %}
+      <datalist id="primer-purpose-options">
+        {% for suggestion in form.purpose_suggestions %}<option value="{{ suggestion }}"></option>{% endfor %}
+      </datalist>
+      {% include "components/form_field.html" with field=form.freezer_location %}
+      {% if object %}
+        <p class="form-help">
+          Length: {{ object.length_bp|default_if_none:"–" }} bp · Tm: {{ object.melting_temp_tm|default_if_none:"–" }} °C
+          (calculated again when you save)
+        </p>
+      {% endif %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save primer</button>
+        {% if object %}
+          <a class="btn btn-secondary" href="{% url 'primers:detail' object.pk %}">Cancel</a>
+        {% else %}
+          <a class="btn btn-secondary" href="{% url 'primers:list' %}">Cancel</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+{% endblock content %}
