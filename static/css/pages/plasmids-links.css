@@ -1,0 +1,9 @@
+/* Link management on the plasmid detail page (templates/plasmids/plasmid_detail.html). Colours
+   and fonts come from the tokens and classes in base.css; only what is unique to this page is
+   here. */
+
+/* The add form is narrower than the table card, like a normal form card */
+.plasmid-detail .link-form {
+  max-width: 36rem;
+  margin-top: var(--space-5);
+}

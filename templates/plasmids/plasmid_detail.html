@@ -3,6 +3,7 @@
 {% block title %}Plasmid {{ object.plasmid_name }} · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/plasmids-detail.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages/plasmids-links.css' %}">
 {% endblock extra_css %}
 {% block content %}
   {% comment %}
@@ -11,7 +12,9 @@
     and `notes`) and `strains` (the strains that carry it). Both lists are empty when nothing is
     linked. The Edit button is only shown to users with the change permission; the view itself
     also checks it. sequence_file and hessenbox_path are plain text for now (a later ticket makes
-    them a button). `link_form` is for the link-management ticket and is not used here.
+    them a button). SCRUM-123: users with the change permission also see the "Remove" buttons
+    (POST to plasmids:unlink_primer) and the "add a primer" form (`link_form`, POST to
+    plasmids:link_primer). A link that exists already comes back as link_form.non_field_errors.
   {% endcomment %}
   {% url 'plasmids:update' object.pk as edit_url %}
   {% with page_title="Plasmid "|add:object.plasmid_name %}
@@ -53,6 +56,9 @@
             <th scope="col">Orientation</th>
             <th scope="col">Binding position</th>
             <th scope="col">Notes</th>
+            {% if perms.plasmids.change_plasmid %}
+              <th scope="col">Action</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -64,12 +70,25 @@
               <td>{{ link.get_orientation_display|default:"–" }}</td>
               <td>{{ link.binding_position|default:"–" }}</td>
               <td>{{ link.notes|default:"–" }}</td>
+              {% if perms.plasmids.change_plasmid %}
+                <td>
+                  {% url 'plasmids:unlink_primer' object.pk link.pk as unlink_url %}
+                  {% include "components/link_remove_form.html" with action_url=unlink_url label=link.primer %}
+                </td>
+              {% endif %}
             </tr>
           {% endfor %}
         </tbody>
       </table>
+      {% if perms.plasmids.change_plasmid %}
+        <p class="form-help">This only removes the link. Both records stay.</p>
+      {% endif %}
     {% else %}
       <p class="detail-empty">No primers are linked to this plasmid yet.</p>
+    {% endif %}
+    {% if perms.plasmids.change_plasmid %}
+      {% url 'plasmids:link_primer' object.pk as link_url %}
+      {% include "components/link_form.html" with form=link_form action_url=link_url heading="Add a primer" submit_label="Add primer" %}
     {% endif %}
     <h2>Carried by strains</h2>
     {% if strains %}
