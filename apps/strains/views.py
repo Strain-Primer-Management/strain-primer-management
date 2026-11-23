@@ -12,19 +12,31 @@ URL name -> context:
   Needs strains.view_strain.
 - strains:detail (/strains/<id>/): `object` (the strain, all fields), `plasmid_links` (one row
   per plasmid it carries: `plasmid`, `notes`), `parent` (the parent strain or None) and
-  `children` (the strains made from it). The lists are empty when there is nothing. Needs
-  strains.view_strain.
+  `children` (the strains made from it) and `link_form` (the "add a plasmid" form, see below;
+  None when the user may not change strains). The lists are empty when there is nothing.
+  Needs strains.view_strain.
 - strains:create (/strains/new/) and strains:update (/strains/<id>/edit/): `form` (fields
   strain_id, host_organism, genotype, culturing_temp, culturing_medium, freezer_location,
   biosafety_level, parent_strain; plus `form.biosafety_suggestions`) and, on update only,
   `object`. A valid POST redirects to the detail page. Create needs strains.add_strain,
   update needs strains.change_strain.
+- strains:link_plasmid (POST /strains/<id>/link-plasmid/): the form fields are `plasmid` (the
+  plasmid's id) and `notes`. Valid: the link is saved, a message is shown, redirect to the
+  detail page. Invalid (e.g. the plasmid is linked already): the detail page is shown again
+  with the same context and `link_form` holding the errors (form.non_field_errors).
+  Needs strains.change_strain.
+- strains:unlink_plasmid (POST /strains/<id>/unlink-plasmid/<link_id>/): removes that link
+  row only; both the strain and the plasmid stay. `link_id` is the `id` of a row of
+  `plasmid_links`. Redirects to the detail page. Needs strains.change_strain. Both link URLs
+  accept POST only (send the CSRF token).
 Anonymous visitors go to the login page; a logged-in user without the permission gets a 403.
 (strains:index is the old placeholder page and is left unchanged.)
 """
 
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, DetailView, TemplateView, UpdateView, View
 
 from apps.core.mixins import (
     AuditedFormMixin,
@@ -33,8 +45,8 @@ from apps.core.mixins import (
     SuccessMessageMixin,
 )
 
-from .forms import StrainForm
-from .models import Strain
+from .forms import StrainForm, StrainPlasmidLinkForm
+from .models import Strain, StrainPlasmid
 
 
 class IndexView(TemplateView):
@@ -66,13 +78,18 @@ class StrainDetailView(PermissionRequiredMixin, DetailView):
         return super().get_queryset().select_related("parent_strain")
 
     def get_context_data(self, **kwargs):
-        """Add `plasmid_links`, `parent` and `children`."""
+        """Add `plasmid_links`, `parent`, `children` and `link_form`."""
         context = super().get_context_data(**kwargs)
         context["plasmid_links"] = self.object.strainplasmid_set.select_related("plasmid").order_by(
             "plasmid__plasmid_name", "id"
         )
         context["parent"] = self.object.parent_strain
         context["children"] = self.object.child_strains.order_by("strain_id")
+        # The "add a plasmid" form is only for people who may change strains. When the link
+        # view shows the page again after an error, it passes its own form (with the errors).
+        if "link_form" not in context:
+            may_change = self.request.user.has_perm("strains.change_strain")
+            context["link_form"] = StrainPlasmidLinkForm(strain=self.object) if may_change else None
         return context
 
 
@@ -103,3 +120,39 @@ class StrainUpdateView(PermissionRequiredMixin, StrainFormMixin, UpdateView):
 
     def get_success_message(self):
         return f"Strain {self.object.strain_id} was saved."
+
+
+class StrainLinkPlasmidView(StrainDetailView):
+    """Add a plasmid to a strain (POST). On errors the detail page is shown again."""
+
+    permission_required = "strains.change_strain"
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        """Save the link, or show the detail page again with the form errors."""
+        self.object = self.get_object()
+        form = StrainPlasmidLinkForm(request.POST, strain=self.object)
+        if not form.is_valid():
+            return self.render_to_response(self.get_context_data(link_form=form))
+        link = form.save(commit=False)
+        link.strain = self.object
+        link.created_by = link.updated_by = request.user
+        link.save()
+        messages.success(request, f"Plasmid {link.plasmid} was linked to {self.object}.")
+        return redirect("strains:detail", pk=self.object.pk)
+
+
+class StrainUnlinkPlasmidView(PermissionRequiredMixin, View):
+    """Remove one plasmid link (POST). The strain and the plasmid are kept."""
+
+    permission_required = "strains.change_strain"
+    http_method_names = ["post"]
+
+    def post(self, request, pk, link_pk):
+        """Delete only the link row, then go back to the strain."""
+        link = get_object_or_404(
+            StrainPlasmid.objects.select_related("plasmid"), pk=link_pk, strain_id=pk
+        )
+        link.delete()
+        messages.success(request, f"Plasmid {link.plasmid} is no longer linked to this strain.")
+        return redirect("strains:detail", pk=pk)
