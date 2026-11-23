@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Primer {{ object.primer_id }} · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/primers-detail.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Primer detail (SCRUM-120). Context from primers:detail: `object` (the primer) and `links`:
+    one row per linked plasmid with `plasmid`, `orientation`, `binding_position` and `notes`
+    (`links` is empty when there is none). The Edit button is only shown to users with the
+    change permission; the view itself also checks it.
+  {% endcomment %}
+  {% url 'primers:update' object.pk as edit_url %}
+  {% with page_title="Primer "|add:object.primer_id %}
+    {% if perms.primers.change_primer %}
+      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
+    {% else %}
+      {% include "components/page_header.html" with title=page_title %}
+    {% endif %}
+  {% endwith %}
+  <div class="card primer-detail">
+    <dl class="detail-list">
+      <dt>Primer ID</dt>
+      <dd>{{ object.primer_id }}</dd>
+      <dt>Sequence</dt>
+      <dd class="sequence detail-sequence">{{ object.sequence|default:"–" }}</dd>
+      <dt>Length (bp)</dt>
+      <dd>{{ object.length_bp|default_if_none:"–" }}</dd>
+      <dt>Tm (°C)</dt>
+      <dd>{{ object.melting_temp_tm|default_if_none:"–" }}</dd>
+      <dt>Purpose</dt>
+      <dd>{{ object.purpose|default:"–" }}</dd>
+      <dt>Freezer location</dt>
+      <dd>{{ object.freezer_location|default:"–" }}</dd>
+      <dt>Created</dt>
+      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
+      <dt>Last changed</dt>
+      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+    </dl>
+    <h2>Linked plasmids</h2>
+    {% if links %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Plasmid</th>
+            <th scope="col">Orientation</th>
+            <th scope="col">Binding position</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for link in links %}
+            <tr>
+              <td>
+                <a href="{% url 'plasmids:detail' link.plasmid.pk %}">{{ link.plasmid }}</a>
+              </td>
+              <td>{{ link.get_orientation_display|default:"–" }}</td>
+              <td>{{ link.binding_position|default:"–" }}</td>
+              <td>{{ link.notes|default:"–" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="detail-empty">No plasmids are linked to this primer yet.</p>
+    {% endif %}
+  </div>
+  <p>
+    <a href="{% url 'primers:list' %}">Back to all primers</a>
+  </p>
+{% endblock content %}
