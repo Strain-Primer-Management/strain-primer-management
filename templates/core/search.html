@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Search · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/core-search.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  {% comment %}
+    Global search results (SCRUM-137). Context from core:search: `q` (the typed text), `too_short`
+    (True when 1 character was typed) and `results` (a list of groups; only kinds the user may view
+    and that have matches). A group has `kind`, `label`, `total`, `list_url` and `items`; an item has
+    `record` (str(record) is its name) and `url`. The search box is the one in the top bar
+    (components/search_bar.html), which keeps `q`. The matches are highlighted by
+    static/js/pages/core-search.js (optional: the page works without it).
+  {% endcomment %}
+  {% include "components/page_header.html" with title="Search" %}
+  {% if too_short %}
+    <p class="message message-info" role="status">Type at least 2 characters to search.</p>
+  {% elif not q %}
+    <p class="message message-info" role="status">
+      Type a name in the search box at the top to find strains, plasmids and primers.
+    </p>
+  {% elif not results %}
+    <p class="search-summary">Results for “{{ q }}”</p>
+    {% include "components/empty_state.html" with message="No records match your search. Check the spelling or try fewer letters." %}
+  {% else %}
+    <p class="search-summary">Results for “{{ q }}”</p>
+    <div class="search-results" data-query="{{ q }}">
+      {% for group in results %}
+        <section class="card search-group" aria-labelledby="search-group-{{ group.kind }}">
+          <div class="search-group-header">
+            <h2 id="search-group-{{ group.kind }}">{{ group.label }}</h2>
+            <span class="search-count">{{ group.total }} result{{ group.total|pluralize }}</span>
+          </div>
+          <ul class="search-result-list">
+            {% for item in group.items %}
+              <li class="search-result">
+                <a class="search-result-name" data-highlight href="{{ item.url }}">{{ item.record }}</a>
+                {% if group.kind == "strains" %}
+                  {% if item.record.host_organism %}
+                    <span class="search-result-subtitle" data-highlight>{{ item.record.host_organism }}</span>
+                  {% endif %}
+                {% elif group.kind == "plasmids" %}
+                  {% if item.record.resistance_markers %}
+                    <span class="search-result-subtitle" data-highlight>{{ item.record.resistance_markers }}</span>
+                  {% endif %}
+                {% else %}
+                  {% if item.record.purpose %}
+                    <span class="search-result-subtitle" data-highlight>{{ item.record.purpose }}</span>
+                  {% endif %}
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+          <a class="search-see-all" href="{{ group.list_url }}">See all {{ group.total }}<span class="visually-hidden"> {{ group.label|lower }}</span></a>
+        </section>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock content %}
+{% block extra_js %}
+  <script src="{% static 'js/pages/core-search.js' %}" defer></script>
+{% endblock extra_js %}
