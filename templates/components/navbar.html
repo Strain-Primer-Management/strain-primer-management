@@ -21,6 +21,7 @@
              {% if section == "primers" %}aria-current="page"{% endif %}>Primers</a>
         </li>
       </ul>
+      {% include "components/search_bar.html" %}
       <div class="navbar-account">
         <span class="navbar-user">{{ user.get_username }}</span>
         <a href="{% url 'accounts:password_change' %}">Change password</a>

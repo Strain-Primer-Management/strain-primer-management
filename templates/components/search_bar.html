@@ -1,0 +1,17 @@
+{% comment %}
+  Search bar component (SCRUM-134): the search form in the top navigation, included by
+  components/navbar.html for logged-in users. It sends a GET request to core:search with the
+  text in `q`. It keeps the typed text through `q`, which the search page provides (on other pages
+  `q` is empty). The label is for screen readers only. It works with the keyboard and without JavaScript.
+  Use: {% include "components/search_bar.html" %}
+{% endcomment %}
+<form class="search-bar" method="get" action="{% url 'core:search' %}" role="search">
+  <label class="visually-hidden" for="search-bar-input">Search strains, plasmids and primers</label>
+  <input id="search-bar-input"
+         class="search-bar-input"
+         type="search"
+         name="q"
+         value="{{ q }}"
+         placeholder="Search records">
+  <button type="submit" class="btn btn-primary search-bar-button">Search</button>
+</form>

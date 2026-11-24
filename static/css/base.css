@@ -556,3 +556,34 @@ pre,
   gap: var(--space-3);
   margin-top: var(--space-5);
 }
+
+/* Search bar (components/search_bar.html), inside the navbar. On a wide screen it sits between the
+   section links and the account links; on a narrow screen it moves to its own row below the menu. */
+.search-bar {
+  display: flex;
+  flex: 0 1 calc(var(--space-7) * 6);
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.search-bar-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.search-bar-button {
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 48rem) {
+  .search-bar {
+    flex: 1 1 100%;
+    order: 3;
+  }
+}
