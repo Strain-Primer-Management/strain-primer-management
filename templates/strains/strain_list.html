@@ -40,6 +40,10 @@
     </table>
     {% include "components/pagination.html" with page_obj=page_obj %}
   {% else %}
-    {% include "components/empty_state.html" with message="No strains yet." action_url=create_url action_label="Create the first strain" %}
+    {% if active_filters %}
+      {% include "components/empty_state.html" with state="no_results" what="strains" %}
+    {% else %}
+      {% include "components/empty_state.html" with state="empty" what="strains" action_url=create_url action_label="Create the first strain" %}
+    {% endif %}
   {% endif %}
 {% endblock content %}

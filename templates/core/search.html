@@ -15,14 +15,12 @@
   {% endcomment %}
   {% include "components/page_header.html" with title="Search" %}
   {% if too_short %}
-    <p class="message message-info" role="status">Type at least 2 characters to search.</p>
+    {% include "components/empty_state.html" with state="too_short" %}
   {% elif not q %}
-    <p class="message message-info" role="status">
-      Type a name in the search box at the top to find strains, plasmids and primers.
-    </p>
+    {% include "components/empty_state.html" with message="Type a name in the search box at the top to find strains, plasmids and primers." %}
   {% elif not results %}
     <p class="search-summary">Results for “{{ q }}”</p>
-    {% include "components/empty_state.html" with message="No records match your search. Check the spelling or try fewer letters." %}
+    {% include "components/empty_state.html" with state="no_results" %}
   {% else %}
     <p class="search-summary">Results for “{{ q }}”</p>
     <div class="search-results" data-query="{{ q }}">

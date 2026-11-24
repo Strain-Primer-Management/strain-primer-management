@@ -24,5 +24,10 @@
          value="{{ q }}"
          placeholder="Search records">
   <button type="submit" class="btn btn-primary search-bar-button">Search</button>
+  {# SCRUM-139: the dropdown's states come from the shared component, so the wording is the same everywhere #}
+  <template data-state="too_short">{% include "components/empty_state.html" with state="too_short" %}</template>
+  <template data-state="loading">{% include "components/empty_state.html" with state="loading" %}</template>
+  <template data-state="no_results">{% include "components/empty_state.html" with state="no_results" %}</template>
+  <template data-state="error">{% include "components/empty_state.html" with state="error" message="Suggestions are not available. Press Enter to search." %}</template>
 </form>
 <script src="{% static 'js/pages/core-live-search.js' %}" defer></script>
