@@ -4,15 +4,11 @@
   {% comment %}
     Strain list (SCRUM-122). Context from strains:list: `page_obj`, `object_list` (the strains of
     this page) and `is_paginated`. Each strain has strain_id, host_organism, genotype,
-    culturing_temp, culturing_medium and freezer_location. The "Add strain" button is only shown
+    culturing_temp, culturing_medium and freezer_location. The "Create strain" button is only shown
     to users with the add permission; the view itself also checks it.
   {% endcomment %}
-  {% url 'strains:create' as create_url %}
-  {% if perms.strains.add_strain %}
-    {% include "components/page_header.html" with title="Strains" action_url=create_url action_label="Add strain" %}
-  {% else %}
-    {% include "components/page_header.html" with title="Strains" %}
-  {% endif %}
+  {% if perms.strains.add_strain %}{% url 'strains:create' as create_url %}{% endif %}
+  {% include "components/page_header.html" with title="Strains" action_url=create_url action_label="Create strain" %}
   {% if object_list %}
     <table class="data-table">
       <thead>
@@ -43,9 +39,7 @@
       </tbody>
     </table>
     {% include "components/pagination.html" with page_obj=page_obj %}
-  {% elif perms.strains.add_strain %}
-    {% include "components/empty_state.html" with message="No strains yet." action_url=create_url action_label="Add the first strain" %}
   {% else %}
-    {% include "components/empty_state.html" with message="No strains yet." %}
+    {% include "components/empty_state.html" with message="No strains yet." action_url=create_url action_label="Create the first strain" %}
   {% endif %}
 {% endblock content %}

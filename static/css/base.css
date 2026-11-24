@@ -446,6 +446,13 @@ pre,
   margin: 0;
 }
 
+/* The buttons of a page header (for example Edit and Delete) sit side by side */
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 /* Data table: put class="data-table" on a real <table> with <th scope="col"> headers.
    Zebra rows, hover highlight and a header that stays visible while the page scrolls. */
 .data-table {

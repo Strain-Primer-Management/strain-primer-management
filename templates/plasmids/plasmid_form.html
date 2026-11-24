@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{% if object %}Edit plasmid{% else %}Add plasmid{% endif %} · Strain DB{% endblock title %}
+{% block title %}{% if object %}Edit plasmid{% else %}Create plasmid{% endif %} · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/plasmids-form.css' %}">
 {% endblock extra_css %}
@@ -18,7 +18,7 @@
       {% if object %}
         Edit plasmid {{ object.plasmid_name }}
       {% else %}
-        Add plasmid
+        Create plasmid
       {% endif %}
     </h1>
     {% if form.non_field_errors %}
