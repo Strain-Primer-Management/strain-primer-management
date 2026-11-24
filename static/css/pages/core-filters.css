@@ -1,0 +1,48 @@
+/* Filter panel (templates/components/filter_panel.html), used on the primer, plasmid and strain
+   lists. Colours, spacing and form fields come from base.css; only the panel layout is here. */
+
+.filter-panel {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.filter-panel-title {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Visible keyboard focus on the Filters toggle */
+.filter-panel-title:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.filter-panel-form {
+  margin-top: var(--space-4);
+}
+
+/* As many columns as fit; one column on a narrow screen */
+.filter-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--space-4);
+}
+
+.filter-fields .form-field {
+  margin-bottom: 0;
+}
+
+/* "From" and "to" boxes side by side, in one grid cell */
+.filter-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.filter-panel .form-actions {
+  margin-top: var(--space-4);
+}

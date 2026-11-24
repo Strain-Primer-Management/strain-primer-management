@@ -1,0 +1,28 @@
+{% comment %}
+  Filter panel (SCRUM-135): the filter form above a list, with "Apply" and "Clear all".
+  Use: {% include "components/filter_panel.html" with form=filter_form %}
+  `filter_form` comes from the list view (a FilterForm from apps/core/filters.py). Every field of the
+  form is drawn with components/form_field.html, so a wrong value shows its error next to the field,
+  and the boxes keep what was typed (the form is bound to the address).
+  A field named "<x>_min" followed by "<x>_max" is drawn as a "from" and "to" pair side by side.
+  The panel is a <details> element: it can be collapsed without JavaScript. "Clear all" is a link to
+  "?" (the same page without any parameter). The current sort is kept when the filters are applied.
+  Page look: static/css/pages/core-filters.css (load it in the page's extra_css block).
+{% endcomment %}
+<details class="filter-panel" open>
+  <summary class="filter-panel-title">Filters</summary>
+  <form class="filter-panel-form" method="get">
+    <div class="filter-fields">
+      {% for field in form %}
+        {% if field.name|slice:"-4:" == "_min" %}<div class="filter-range">{% endif %}
+        {% include "components/form_field.html" with field=field %}
+        {% if field.name|slice:"-4:" == "_max" %}</div>{% endif %}
+      {% endfor %}
+    </div>
+    {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Apply</button>
+      <a class="btn btn-secondary" href="?">Clear all</a>
+    </div>
+  </form>
+</details>
