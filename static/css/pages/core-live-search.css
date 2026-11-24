@@ -1,0 +1,71 @@
+/* Live search dropdown (static/js/pages/core-live-search.js): the box under the search input.
+   Colours, spacing and fonts come from the tokens in base.css; only what is unique is here. */
+
+/* The dropdown is placed relative to the search bar */
+.search-bar {
+  position: relative;
+}
+
+.live-search-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  max-height: calc(var(--space-7) * 8);
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  font-size: var(--font-size-h3);
+}
+
+/* "Strains (22)": the name of a group of results */
+.live-search-heading {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+}
+
+/* One result: its name, and under it the key facts */
+.live-search-option a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.live-search-title {
+  display: block;
+  font-weight: 600;
+}
+
+.live-search-subtitle {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Under the mouse or chosen with the arrow keys */
+.live-search-option a:hover,
+.live-search-option.is-active a {
+  background: var(--color-primary-soft);
+}
+
+.live-search-all a {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* "Searching…", "No results" and the error message */
+.live-search-message {
+  padding: var(--space-3);
+  color: var(--color-text-muted);
+}
