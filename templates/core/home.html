@@ -1,6 +1,59 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/core-home.css' %}">
+{% endblock extra_css %}
 {% block content %}
-  {# PLACEHOLDER home page. #}
-  <h1>Strain DB</h1>
+  {% comment %}
+    Home dashboard (SCRUM-125). Context from core:home: `counts` (keys strains, plasmids, primers),
+    `recent` (same keys: up to 5 records, newest first; empty if the user may not view that kind) and
+    `pending_users` (sign-ups waiting; only filled for people who may approve them). The two loops
+    run over the dict keys, so the list and detail URL names are built from the key
+    ("strains" -> strains:list and strains:detail).
+  {% endcomment %}
+  {% include "components/page_header.html" with title="Strain DB" %}
   <p>Welcome, {{ user.get_username }}.</p>
+  {% if pending_users %}
+    <p class="message message-warning" role="status">
+      {% if pending_users|length == 1 %}
+        1 person is
+      {% else %}
+        {{ pending_users|length }} people are
+      {% endif %}
+      waiting for approval.
+      <a href="{% url 'accounts:approvals' %}">Review sign-ups</a>
+    </p>
+  {% endif %}
+  <div class="home-counts">
+    {% for key, count in counts.items %}
+      {% with list_url=key|add:":list" %}
+        <a class="card home-count" href="{% url list_url %}">
+          <span class="home-count-number">{{ count }}</span>
+          <span class="home-count-label">{{ key|capfirst }}</span>
+        </a>
+      {% endwith %}
+    {% endfor %}
+  </div>
+  <h2>Recently changed</h2>
+  <div class="home-recent">
+    {% for key, records in recent.items %}
+      <section class="card home-recent-card">
+        <h3>{{ key|capfirst }}</h3>
+        {% if records %}
+          {% with detail_url=key|add:":detail" %}
+            <ul class="home-recent-list">
+              {% for record in records %}
+                <li>
+                  <a href="{% url detail_url record.pk %}">{{ record }}</a>
+                  <span class="home-date">{{ record.updated_at|date:"Y-m-d" }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endwith %}
+        {% else %}
+          <p class="detail-empty">Nothing here yet.</p>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </div>
 {% endblock content %}
