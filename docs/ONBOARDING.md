@@ -108,7 +108,7 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-Replace **Your Name** with the name you want shown on your work and **you@example.com** with the email you want on your commits. The repository is public, so both are visible to everyone and cannot be removed once pushed. Use your personal email if you are fine with that. If you would rather keep it private, use **GitHub's no-reply address** instead (copy it from <https://github.com/settings/emails>; it looks like `12345678+yourusername@users.noreply.github.com`). **Keep the quotes.**
+Replace **Your Name** with the name you want shown on your work and **you@example.com** with the email you want on your commits. The repository is public, so both are visible to everyone and cannot be removed once pushed. Use your personal email if you are fine with that. If you would rather keep it private, use **GitHub's no-reply address** instead (copy the whole address from <https://github.com/settings/emails>; its shape is `<your-number>+<your-username>@users.noreply.github.com`, and the number is personal to your account). **Never type a number you did not copy from that page**: a wrong number makes GitHub show your work under a stranger's account. **Keep the quotes.**
 
 - **You should see:** nothing is printed. That is normal.
 
