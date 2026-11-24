@@ -8,9 +8,30 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.functions import Lower
 
+from apps.core.filters import search_words
 from apps.core.models import AuditedModel
 
 from .sequence import clean_sequence, melting_temp
+
+
+class PrimerQuerySet(models.QuerySet):
+    """The search and filter questions for primers. Each one ignores an empty value."""
+
+    def search(self, text):
+        """Every word in the ID, purpose, sequence or freezer location (case ignored)."""
+        return search_words(self, text, ["primer_id", "purpose", "sequence", "freezer_location"])
+
+    def with_purpose(self, purpose):
+        """Purpose exactly this, case ignored ("PCR" does not find "qPCR")."""
+        return self.filter(purpose__iexact=purpose) if purpose else self
+
+    def has_plasmid(self, answer):
+        """True: linked to at least one plasmid. False: linked to none. None: all primers."""
+        if answer is None:
+            return self
+        if answer:
+            return self.filter(plasmidprimerlink__isnull=False).distinct()
+        return self.filter(plasmidprimerlink__isnull=True)
 
 
 class Primer(AuditedModel):
@@ -37,6 +58,8 @@ class Primer(AuditedModel):
         max_digits=5, decimal_places=1, null=True, blank=True, editable=False
     )
     extra_data = models.JSONField(default=dict, blank=True)
+
+    objects = PrimerQuerySet.as_manager()
 
     class Meta:
         constraints = [

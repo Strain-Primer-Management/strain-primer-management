@@ -1,7 +1,9 @@
-"""The primer form. Sequence rules live in sequence.py; uniqueness lives on the model."""
+"""The primer forms. Sequence rules live in sequence.py; uniqueness lives on the model."""
 
 from django import forms
 from django.core.exceptions import ValidationError
+
+from apps.core.filters import FilterForm
 
 from .models import Primer
 from .sequence import clean_sequence as clean_bases
@@ -48,3 +50,31 @@ class PrimerForm(forms.ModelForm):
         if not sequence:
             raise ValidationError("Enter a sequence.", code="required")
         return sequence
+
+
+class PrimerFilterForm(FilterForm):
+    """
+    The search box and filters above the primer list (GET parameters, all optional).
+
+    - q: words to find in primer_id, purpose, sequence or freezer_location (all words must match).
+    - purpose: exactly this purpose, case ignored.
+    - has_plasmid: "yes" (linked to a plasmid), "no" (linked to none) or empty (all).
+    """
+
+    q = forms.CharField(required=False, label="Search")
+    purpose = forms.CharField(required=False, label="Purpose")
+    has_plasmid = forms.TypedChoiceField(
+        required=False,
+        label="Linked to a plasmid",
+        choices=[("", "Any"), ("yes", "Yes"), ("no", "No")],
+        coerce=lambda answer: answer == "yes",
+        empty_value=None,
+    )
+
+    def filter_queryset(self, queryset, values):
+        """Apply the search and each filter that has a valid value."""
+        return (
+            queryset.search(values.get("q"))
+            .with_purpose(values.get("purpose"))
+            .has_plasmid(values.get("has_plasmid"))
+        )

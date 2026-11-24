@@ -1,10 +1,11 @@
-"""The strain form. Uniqueness lives on the model; the range and suggestions are set here."""
+"""The strain forms. Uniqueness lives on the model; the range and suggestions are set here."""
 
 from decimal import Decimal
 
 from django import forms
 from django.core.exceptions import ValidationError
 
+from apps.core.filters import FilterForm
 from apps.plasmids.models import Plasmid
 
 from .models import Strain, StrainPlasmid
@@ -115,3 +116,53 @@ class StrainPlasmidLinkForm(forms.ModelForm):
         if plasmid and StrainPlasmid.objects.filter(strain=self.strain, plasmid=plasmid).exists():
             raise ValidationError("This strain already carries this plasmid.")
         return cleaned
+
+
+class StrainFilterForm(FilterForm):
+    """
+    The search box and filters above the strain list (GET parameters, all optional).
+
+    - q: words to find in strain_id, host_organism, genotype or freezer_location (all words
+      must match).
+    - host: host organism contains this text, case ignored.
+    - biosafety_level: exactly this level, case ignored.
+    - temp_min, temp_max: culturing temperature range in °C, both included (same limits as the
+      strain form).
+    - plasmid: the id of a plasmid; only strains that carry it.
+    - parent: the id of a strain; only strains made directly from it.
+    """
+
+    q = forms.CharField(required=False, label="Search")
+    host = forms.CharField(required=False, label="Host organism")
+    biosafety_level = forms.CharField(required=False, label="Biosafety level")
+    temp_min = forms.DecimalField(
+        required=False,
+        min_value=CULTURING_TEMP_MIN,
+        max_value=CULTURING_TEMP_MAX,
+        decimal_places=1,
+        label="Temperature from (°C)",
+    )
+    temp_max = forms.DecimalField(
+        required=False,
+        min_value=CULTURING_TEMP_MIN,
+        max_value=CULTURING_TEMP_MAX,
+        decimal_places=1,
+        label="Temperature to (°C)",
+    )
+    plasmid = forms.ModelChoiceField(
+        required=False, queryset=Plasmid.objects.order_by("plasmid_name"), label="Plasmid"
+    )
+    parent = forms.ModelChoiceField(
+        required=False, queryset=Strain.objects.order_by("strain_id"), label="Parent strain"
+    )
+
+    def filter_queryset(self, queryset, values):
+        """Apply the search and each filter that has a valid value."""
+        return (
+            queryset.search(values.get("q"))
+            .with_host(values.get("host"))
+            .with_biosafety_level(values.get("biosafety_level"))
+            .temp_between(values.get("temp_min"), values.get("temp_max"))
+            .carrying(values.get("plasmid"))
+            .with_parent(values.get("parent"))
+        )

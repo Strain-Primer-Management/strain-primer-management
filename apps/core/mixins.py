@@ -91,6 +91,30 @@ class RecordListView(PermissionRequiredMixin, ListView):
             model = Primer
             permission_required = "primers.view_primer"
             ordering = ["-created_at", "-id"]
+
+    Search and filters: set `filter_form_class` to a FilterForm (apps/core/filters.py). The
+    rows are then filtered by the GET parameters, and the context also gets `filter_form`
+    (the bound form: values and errors), `result_count` (matching rows on all pages) and
+    `active_filters` (see FilterForm.active_filters).
     """
 
     paginate_by = PAGE_SIZE
+    filter_form_class = None
+
+    def get_queryset(self):
+        """The rows in the view's ordering, filtered by the GET parameters if there is a form."""
+        queryset = super().get_queryset()
+        self.filter_form = None
+        if self.filter_form_class is not None:
+            self.filter_form = self.filter_form_class(self.request.GET)
+            queryset = self.filter_form.apply(queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """Add `filter_form`, `result_count` and `active_filters` when there is a filter form."""
+        context = super().get_context_data(**kwargs)
+        if self.filter_form is not None:
+            context["filter_form"] = self.filter_form
+            context["result_count"] = context["paginator"].count
+            context["active_filters"] = self.filter_form.active_filters(self.request)
+        return context

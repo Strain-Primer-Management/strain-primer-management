@@ -9,6 +9,14 @@ URL name -> context:
 - plasmids:list (/plasmids/list/): `page_obj`, `object_list`, `is_paginated`. Newest first,
   25 per page (`?page=2`). Each row has plasmid_name, size_bp, resistance_markers, copy_number
   (use `get_copy_number_display` for the label). Needs plasmids.view_plasmid.
+  Search and filters (GET parameters, all optional; see PlasmidFilterForm): `q` (words that
+  must all be found in plasmid_name, resistance_markers or description), `resistance` (text
+  inside resistance_markers), `copy_number` (`high`, `medium` or `low`), `size_min` and
+  `size_max` (bp, both included). Example: /plasmids/list/?resistance=amp&size_max=5000.
+  Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
+  field error and only that filter is skipped), `result_count` (matching plasmids on all
+  pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
+  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
 - plasmids:detail (/plasmids/<id>/): `object` (the plasmid, all fields), `primer_links` (one row
   per primer link: `primer`, `orientation`, `binding_position`, `notes`) and `strains` (the
   strains that carry it) and `link_form` (the "add a primer" form, see below; None when the
@@ -51,7 +59,7 @@ from apps.core.mixins import (
 from apps.primers.models import Primer
 from apps.strains.models import Strain
 
-from .forms import PlasmidForm, PlasmidPrimerLinkForm
+from .forms import PlasmidFilterForm, PlasmidForm, PlasmidPrimerLinkForm
 from .models import Plasmid, PlasmidPrimerLink
 
 
@@ -66,11 +74,12 @@ class IndexView(TemplateView):
 
 
 class PlasmidListView(RecordListView):
-    """All plasmids, newest first, 25 per page."""
+    """Plasmids, newest first, 25 per page, narrowed by the search and filters in the address."""
 
     model = Plasmid
     permission_required = "plasmids.view_plasmid"
     ordering = ["-created_at", "-id"]
+    filter_form_class = PlasmidFilterForm
 
 
 class PlasmidDetailView(PermissionRequiredMixin, DetailView):
