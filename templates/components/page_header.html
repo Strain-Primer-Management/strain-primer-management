@@ -1,11 +1,18 @@
 {% comment %}
-  Page header for the list pages (SCRUM-118): the page title and, optionally, one action button.
+  Page header for the record pages (SCRUM-118, SCRUM-127): the page title and, optionally, up to two buttons.
   Use: {% include "components/page_header.html" with title="Primers" %}
-  With a button: {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Add primer" %}
-  The button shows only when action_url is given. The page decides who sees it, for example by
-  wrapping the include in {% if perms.primers.add_primer %} (never show a button the user may not use).
+  With a button: {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Create primer" %}
+  With Edit and Delete: add danger_url=delete_url danger_label="Delete" (shown as a red button).
+  Each button shows only when its address is given. The page decides who sees it: set the address
+  only for users who may use it, for example {% if perms.primers.add_primer %}{% url 'primers:create' as create_url %}{% endif %}
+  (never show a button the user may not use).
 {% endcomment %}
 <div class="page-header">
   <h1>{{ title }}</h1>
-  {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+  {% if action_url or danger_url %}
+    <div class="page-actions">
+      {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+      {% if danger_url %}<a class="btn btn-danger" href="{{ danger_url }}">{{ danger_label }}</a>{% endif %}
+    </div>
+  {% endif %}
 </div>

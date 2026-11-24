@@ -9,15 +9,15 @@
     {% if user.is_authenticated %}
       <ul class="navbar-links">
         <li>
-          <a href="{% url 'strains:index' %}"
+          <a href="{% url 'strains:list' %}"
              {% if section == "strains" %}aria-current="page"{% endif %}>Strains</a>
         </li>
         <li>
-          <a href="{% url 'plasmids:index' %}"
+          <a href="{% url 'plasmids:list' %}"
              {% if section == "plasmids" %}aria-current="page"{% endif %}>Plasmids</a>
         </li>
         <li>
-          <a href="{% url 'primers:index' %}"
+          <a href="{% url 'primers:list' %}"
              {% if section == "primers" %}aria-current="page"{% endif %}>Primers</a>
         </li>
       </ul>

@@ -4,15 +4,11 @@
   {% comment %}
     Plasmid list (SCRUM-121). Context from plasmids:list: `page_obj`, `object_list` (the plasmids
     of this page) and `is_paginated`. Each plasmid has id, plasmid_name, size_bp,
-    resistance_markers and copy_number (use get_copy_number_display for the label). The "Add
+    resistance_markers and copy_number (use get_copy_number_display for the label). The "Create
     plasmid" button is only shown to users with the add permission; the view itself also checks it.
   {% endcomment %}
-  {% url 'plasmids:create' as create_url %}
-  {% if perms.plasmids.add_plasmid %}
-    {% include "components/page_header.html" with title="Plasmids" action_url=create_url action_label="Add plasmid" %}
-  {% else %}
-    {% include "components/page_header.html" with title="Plasmids" %}
-  {% endif %}
+  {% if perms.plasmids.add_plasmid %}{% url 'plasmids:create' as create_url %}{% endif %}
+  {% include "components/page_header.html" with title="Plasmids" action_url=create_url action_label="Create plasmid" %}
   {% if object_list %}
     <table class="data-table">
       <thead>
@@ -37,9 +33,7 @@
       </tbody>
     </table>
     {% include "components/pagination.html" with page_obj=page_obj %}
-  {% elif perms.plasmids.add_plasmid %}
-    {% include "components/empty_state.html" with message="No plasmids yet." action_url=create_url action_label="Add the first plasmid" %}
   {% else %}
-    {% include "components/empty_state.html" with message="No plasmids yet." %}
+    {% include "components/empty_state.html" with message="No plasmids yet." action_url=create_url action_label="Create the first plasmid" %}
   {% endif %}
 {% endblock content %}

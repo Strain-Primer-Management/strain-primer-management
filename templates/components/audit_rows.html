@@ -1,0 +1,9 @@
+{% comment %}
+  "Created" and "Last changed" rows of a detail page (SCRUM-127): when and by whom. Put it inside the
+  <dl class="detail-list"> of the page. It reads the page's `object` (every record has the audit fields).
+  Use: {% include "components/audit_rows.html" %}
+{% endcomment %}
+<dt>Created</dt>
+<dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
+<dt>Last changed</dt>
+<dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{% if object %}Edit primer{% else %}Add primer{% endif %} · Strain DB{% endblock title %}
+{% block title %}{% if object %}Edit primer{% else %}Create primer{% endif %} · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/primers-form.css' %}">
 {% endblock extra_css %}
@@ -17,7 +17,7 @@
       {% if object %}
         Edit primer {{ object.primer_id }}
       {% else %}
-        Add primer
+        Create primer
       {% endif %}
     </h1>
     {% if form.non_field_errors %}

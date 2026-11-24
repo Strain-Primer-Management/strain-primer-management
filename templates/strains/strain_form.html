@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{% if object %}Edit strain{% else %}Add strain{% endif %} · Strain DB{% endblock title %}
+{% block title %}{% if object %}Edit strain{% else %}Create strain{% endif %} · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/strains-form.css' %}">
 {% endblock extra_css %}
@@ -18,7 +18,7 @@
       {% if object %}
         Edit strain {{ object.strain_id }}
       {% else %}
-        Add strain
+        Create strain
       {% endif %}
     </h1>
     {% if form.non_field_errors %}

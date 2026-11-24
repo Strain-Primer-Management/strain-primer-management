@@ -10,14 +10,12 @@
     one row per linked plasmid with `plasmid`, `orientation`, `binding_position` and `notes`
     (`links` is empty when there is none). The Edit button is only shown to users with the
     change permission; the view itself also checks it.
+    SCRUM-127: the Delete button (to the delete page) is only shown to users with the delete permission.
   {% endcomment %}
-  {% url 'primers:update' object.pk as edit_url %}
+  {% if perms.primers.change_primer %}{% url 'primers:update' object.pk as edit_url %}{% endif %}
+  {% if perms.primers.delete_primer %}{% url 'primers:delete' object.pk as delete_url %}{% endif %}
   {% with page_title="Primer "|add:object.primer_id %}
-    {% if perms.primers.change_primer %}
-      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
-    {% else %}
-      {% include "components/page_header.html" with title=page_title %}
-    {% endif %}
+    {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" danger_url=delete_url danger_label="Delete" %}
   {% endwith %}
   <div class="card primer-detail">
     <dl class="detail-list">
@@ -33,10 +31,7 @@
       <dd>{{ object.purpose|default:"–" }}</dd>
       <dt>Freezer location</dt>
       <dd>{{ object.freezer_location|default:"–" }}</dd>
-      <dt>Created</dt>
-      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
-      <dt>Last changed</dt>
-      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+      {% include "components/audit_rows.html" %}
     </dl>
     <h2>Linked plasmids</h2>
     {% if links %}
