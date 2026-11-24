@@ -18,7 +18,11 @@ URL name -> context:
   Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
   field error and only that filter is skipped), `result_count` (matching strains on all
   pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
-  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
+  Sorting: `sort` = strain_id, host_organism, culturing_temp, culturing_medium or
+  freezer_location, with a leading `-` for descending (e.g. `?sort=-culturing_temp`); anything
+  else keeps newest first.
+  Context `sort_links` (per sortable field: `url`, `direction`) and `querystring_without_page`
+  (for page links that keep search, filters and sort); see RecordListView in apps/core.
 - strains:detail (/strains/<id>/): `object` (the strain, all fields), `plasmid_links` (one row
   per plasmid it carries: `plasmid`, `notes`), `parent` (the parent strain or None) and
   `children` (the strains made from it) and `link_form` (the "add a plasmid" form, see below;
@@ -82,6 +86,13 @@ class StrainListView(RecordListView):
     permission_required = "strains.view_strain"
     ordering = ["-created_at", "-id"]
     filter_form_class = StrainFilterForm
+    sort_fields = [
+        "strain_id",
+        "host_organism",
+        "culturing_temp",
+        "culturing_medium",
+        "freezer_location",
+    ]
 
 
 class StrainDetailView(PermissionRequiredMixin, DetailView):
