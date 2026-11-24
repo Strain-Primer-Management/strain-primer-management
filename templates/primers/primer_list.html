@@ -4,15 +4,11 @@
   {% comment %}
     Primer list (SCRUM-120). Context from primers:list: `page_obj`, `object_list` (the primers of
     this page) and `is_paginated`. Each primer has id, primer_id, sequence, purpose,
-    freezer_location, length_bp and melting_temp_tm. The "Add primer" button is only shown to
+    freezer_location, length_bp and melting_temp_tm. The "Create primer" button is only shown to
     users with the add permission; the view itself also checks it.
   {% endcomment %}
-  {% url 'primers:create' as create_url %}
-  {% if perms.primers.add_primer %}
-    {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Add primer" %}
-  {% else %}
-    {% include "components/page_header.html" with title="Primers" %}
-  {% endif %}
+  {% if perms.primers.add_primer %}{% url 'primers:create' as create_url %}{% endif %}
+  {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Create primer" %}
   {% if object_list %}
     <table class="data-table">
       <thead>
@@ -43,9 +39,7 @@
       </tbody>
     </table>
     {% include "components/pagination.html" with page_obj=page_obj %}
-  {% elif perms.primers.add_primer %}
-    {% include "components/empty_state.html" with message="No primers yet." action_url=create_url action_label="Add the first primer" %}
   {% else %}
-    {% include "components/empty_state.html" with message="No primers yet." %}
+    {% include "components/empty_state.html" with message="No primers yet." action_url=create_url action_label="Create the first primer" %}
   {% endif %}
 {% endblock content %}

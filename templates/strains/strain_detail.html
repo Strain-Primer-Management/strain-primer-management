@@ -10,18 +10,17 @@
     Strain detail (SCRUM-122). Context from strains:detail: `object` (the strain), `plasmid_links`
     (one row per plasmid it carries: `plasmid` and `notes`), `parent` (a strain or None) and
     `children` (the strains made from it). The lists are empty when there is nothing. The Edit
-    button is only shown to users with the change permission; the view itself also checks it.
+    button is only shown to users with the change permission and the Delete button only to users with
+    the delete permission; the view itself also checks it.
     SCRUM-123: users with the change permission also see the "Remove" buttons (POST to
     strains:unlink_plasmid) and the "add a plasmid" form (`link_form`, POST to
     strains:link_plasmid). A link that exists already comes back as link_form.non_field_errors.
+    SCRUM-127: the Delete button (to the delete page) is only shown to users with the delete permission.
   {% endcomment %}
-  {% url 'strains:update' object.pk as edit_url %}
+  {% if perms.strains.change_strain %}{% url 'strains:update' object.pk as edit_url %}{% endif %}
+  {% if perms.strains.delete_strain %}{% url 'strains:delete' object.pk as delete_url %}{% endif %}
   {% with page_title="Strain "|add:object.strain_id %}
-    {% if perms.strains.change_strain %}
-      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
-    {% else %}
-      {% include "components/page_header.html" with title=page_title %}
-    {% endif %}
+    {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" danger_url=delete_url danger_label="Delete" %}
   {% endwith %}
   <div class="card strain-detail">
     <dl class="detail-list">
@@ -41,10 +40,7 @@
       <dd>{{ object.freezer_location|default:"–" }}</dd>
       <dt>Biosafety level</dt>
       <dd>{{ object.biosafety_level|default:"–" }}</dd>
-      <dt>Created</dt>
-      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
-      <dt>Last changed</dt>
-      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+      {% include "components/audit_rows.html" %}
     </dl>
     <h2>Plasmids</h2>
     {% if plasmid_links %}

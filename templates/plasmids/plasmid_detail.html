@@ -15,14 +15,12 @@
     them a button). SCRUM-123: users with the change permission also see the "Remove" buttons
     (POST to plasmids:unlink_primer) and the "add a primer" form (`link_form`, POST to
     plasmids:link_primer). A link that exists already comes back as link_form.non_field_errors.
+    SCRUM-127: the Delete button (to the delete page) is only shown to users with the delete permission.
   {% endcomment %}
-  {% url 'plasmids:update' object.pk as edit_url %}
+  {% if perms.plasmids.change_plasmid %}{% url 'plasmids:update' object.pk as edit_url %}{% endif %}
+  {% if perms.plasmids.delete_plasmid %}{% url 'plasmids:delete' object.pk as delete_url %}{% endif %}
   {% with page_title="Plasmid "|add:object.plasmid_name %}
-    {% if perms.plasmids.change_plasmid %}
-      {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" %}
-    {% else %}
-      {% include "components/page_header.html" with title=page_title %}
-    {% endif %}
+    {% include "components/page_header.html" with title=page_title action_url=edit_url action_label="Edit" danger_url=delete_url danger_label="Delete" %}
   {% endwith %}
   <div class="card plasmid-detail">
     <dl class="detail-list">
@@ -42,10 +40,7 @@
       <dd class="detail-text">{{ object.hessenbox_path|default:"–" }}</dd>
       <dt>Description</dt>
       <dd class="detail-text">{{ object.description|default:"–"|linebreaksbr }}</dd>
-      <dt>Created</dt>
-      <dd>{{ object.created_at|date:"Y-m-d H:i" }} by {{ object.created_by|default:"unknown" }}</dd>
-      <dt>Last changed</dt>
-      <dd>{{ object.updated_at|date:"Y-m-d H:i" }} by {{ object.updated_by|default:"unknown" }}</dd>
+      {% include "components/audit_rows.html" %}
     </dl>
     <h2>Primers</h2>
     {% if primer_links %}
