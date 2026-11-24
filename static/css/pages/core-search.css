@@ -1,0 +1,64 @@
+/* Global search results (templates/core/search.html). Colours, spacing and cards come from
+   base.css; only what is unique to this page is here. */
+
+.search-summary {
+  color: var(--color-text-muted);
+}
+
+/* One card per kind; full width, because the base card is narrow (it is made for forms) */
+.search-group {
+  max-width: none;
+}
+
+.search-group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.search-group-header h2 {
+  margin: 0;
+}
+
+.search-count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.search-result-list {
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.search-result {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.search-result-name {
+  font-weight: 600;
+}
+
+.search-result-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.search-see-all {
+  font-weight: 600;
+}
+
+/* The matched text, added by core-search.js. Bold as well as coloured, so it does not rely on colour. */
+.search-results mark {
+  padding: 0 var(--space-1);
+  color: var(--color-text);
+  font-weight: bold;
+  background: var(--color-warning-bg);
+  border-bottom: var(--focus-width) solid var(--color-warning);
+}
