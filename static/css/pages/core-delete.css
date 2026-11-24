@@ -1,0 +1,20 @@
+/* Delete confirmation page (templates/core/confirm_delete.html). Colours, spacing and buttons
+   come from base.css; only what is unique to this page is here. */
+
+.delete-list {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-5);
+}
+
+/* The one checkbox: input and text side by side, the whole row is clickable */
+.delete-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  cursor: pointer;
+}

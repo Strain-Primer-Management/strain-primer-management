@@ -1,0 +1,4 @@
+{% extends "core/confirm_delete.html" %}
+{% comment %}Plasmid delete page (SCRUM-124): all the markup is in core/confirm_delete.html.{% endcomment %}
+{% block record_kind %}plasmid{% endblock record_kind %}
+{% block cancel_url %}{% url 'plasmids:detail' object.pk %}{% endblock cancel_url %}

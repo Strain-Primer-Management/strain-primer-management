@@ -1,0 +1,4 @@
+{% extends "core/confirm_delete.html" %}
+{% comment %}Primer delete page (SCRUM-124): all the markup is in core/confirm_delete.html.{% endcomment %}
+{% block record_kind %}primer{% endblock record_kind %}
+{% block cancel_url %}{% url 'primers:detail' object.pk %}{% endblock cancel_url %}
