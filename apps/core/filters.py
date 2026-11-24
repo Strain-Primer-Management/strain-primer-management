@@ -1,9 +1,11 @@
 """
-Search and filter helpers shared by the list pages (shared backend code).
+Search, filter and address helpers shared by the list pages (shared backend code).
 
 - search_words(): the one rule for the search box, used by every model's `search()` method.
 - FilterForm: base class for the filter form of a list page (GET parameters in, filtered
   queryset and "active filter" chips out).
+- url_with(): this page's address with some GET parameters changed, the ONE place that builds
+  "page 3", "sort by size" and "remove this filter" links.
 """
 
 from functools import reduce
@@ -11,6 +13,23 @@ from operator import or_
 
 from django import forms
 from django.db.models import Q
+
+
+def url_with(request, **changes):
+    """
+    Return this page's address with the GET parameters in `changes` set; None removes one.
+
+    Every other parameter is kept. Example on /strains/list/?q=coli&page=2:
+    url_with(request, sort="-strain_id", page=None) -> "/strains/list/?q=coli&sort=-strain_id".
+    """
+    params = request.GET.copy()
+    for name, value in changes.items():
+        if value is None:
+            params.pop(name, None)
+        else:
+            params[name] = value
+    query = params.urlencode()
+    return f"{request.path}?{query}" if query else request.path
 
 
 def search_words(queryset, text, fields):
@@ -56,15 +75,11 @@ class FilterForm(forms.Form):
         for name, value in self.cleaned_data.items():
             if value in (None, ""):
                 continue
-            params = request.GET.copy()
-            params.pop(name, None)
-            params.pop("page", None)
-            query = params.urlencode()
             chips.append(
                 {
                     "label": self.fields[name].label,
                     "value": self.display_value(name, value),
-                    "remove_url": f"{request.path}?{query}" if query else request.path,
+                    "remove_url": url_with(request, **{name: None, "page": None}),
                 }
             )
         return chips
