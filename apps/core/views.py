@@ -73,6 +73,40 @@ SEARCH_MIN_LENGTH = 2
 SEARCH_RESULTS_PER_KIND = 10
 
 
+def search_groups(user, q, limit):
+    """
+    The grouping rules of the global search, shared by core:search and core:search_api.
+
+    One group (see the module docstring) per kind the user may view that has matches, using
+    each model's search(), with at most `limit` items. A `q` shorter than SEARCH_MIN_LENGTH
+    searches nothing and gives an empty list.
+    """
+    if len(q) < SEARCH_MIN_LENGTH:
+        return []
+    groups = []
+    for key, (model, permission) in KINDS.items():
+        if not user.has_perm(permission):
+            continue
+        # Same order as the list pages, so "see all" continues where this page stops.
+        matches = model.objects.search(q).order_by("-created_at", "-id")
+        total = matches.count()
+        if total == 0:
+            continue
+        groups.append(
+            {
+                "kind": key,
+                "label": key.capitalize(),
+                "items": [
+                    {"record": record, "url": reverse(f"{key}:detail", args=[record.pk])}
+                    for record in matches[:limit]
+                ],
+                "total": total,
+                "list_url": f"{reverse(f'{key}:list')}?{urlencode({'q': q})}",
+            }
+        )
+    return groups
+
+
 class SearchView(TemplateView):
     """One search box for all three kinds; results grouped by kind (see the module docstring)."""
 
@@ -84,30 +118,5 @@ class SearchView(TemplateView):
         q = self.request.GET.get("q", "").strip()
         context["q"] = q
         context["too_short"] = 0 < len(q) < SEARCH_MIN_LENGTH
-        context["results"] = self.search_groups(q) if len(q) >= SEARCH_MIN_LENGTH else []
+        context["results"] = search_groups(self.request.user, q, SEARCH_RESULTS_PER_KIND)
         return context
-
-    def search_groups(self, q):
-        """One group per kind the user may view that has matches, using each model's search()."""
-        groups = []
-        for key, (model, permission) in KINDS.items():
-            if not self.request.user.has_perm(permission):
-                continue
-            # Same order as the list pages, so "see all" continues where this page stops.
-            matches = model.objects.search(q).order_by("-created_at", "-id")
-            total = matches.count()
-            if total == 0:
-                continue
-            groups.append(
-                {
-                    "kind": key,
-                    "label": key.capitalize(),
-                    "items": [
-                        {"record": record, "url": reverse(f"{key}:detail", args=[record.pk])}
-                        for record in matches[:SEARCH_RESULTS_PER_KIND]
-                    ],
-                    "total": total,
-                    "list_url": f"{reverse(f'{key}:list')}?{urlencode({'q': q})}",
-                }
-            )
-        return groups
