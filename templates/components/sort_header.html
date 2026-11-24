@@ -1,0 +1,19 @@
+{% comment %}
+  Sortable column header (SCRUM-136): a <th> whose title is a link that sorts the list by this column.
+  Use inside <tr>: {% include "components/sort_header.html" with label="Size (bp)" link=sort_links.size_bp %}
+  `sort_links` comes from the list view: one entry per sortable field with `url` (the address that sorts
+  by it, keeping search and filters) and `direction` ("asc", "desc" or None). Columns that cannot be
+  sorted stay a plain <th scope="col">. The current column shows an arrow, `aria-sort` and a hidden
+  text for screen readers ("sorted ascending"). Look: static/css/pages/core-sorting.css.
+{% endcomment %}
+<th scope="col"
+    {% if link.direction == "asc" %}aria-sort="ascending"{% elif link.direction == "desc" %}aria-sort="descending"{% endif %}>
+  <a class="sort-link" href="{{ link.url }}">
+    {{ label }}
+    {% if link.direction == "asc" %}
+      <span class="sort-arrow" aria-hidden="true">▲</span><span class="visually-hidden">(sorted ascending)</span>
+    {% elif link.direction == "desc" %}
+      <span class="sort-arrow" aria-hidden="true">▼</span><span class="visually-hidden">(sorted descending)</span>
+    {% endif %}
+  </a>
+</th>

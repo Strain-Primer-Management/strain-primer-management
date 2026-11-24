@@ -3,6 +3,7 @@
 {% block title %}Plasmids · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/core-filters.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages/core-sorting.css' %}">
 {% endblock extra_css %}
 {% block content %}
   {% comment %}
@@ -14,13 +15,14 @@
   {% if perms.plasmids.add_plasmid %}{% url 'plasmids:create' as create_url %}{% endif %}
   {% include "components/page_header.html" with title="Plasmids" action_url=create_url action_label="Create plasmid" %}
   {% include "components/filter_panel.html" with form=filter_form %}
+  {% include "components/filter_chips.html" with chips=active_filters %}
   {% if object_list %}
     <table class="data-table">
       <thead>
         <tr>
-          <th scope="col">Plasmid name</th>
-          <th scope="col">Size (bp)</th>
-          <th scope="col">Resistance markers</th>
+          {% include "components/sort_header.html" with label="Plasmid name" link=sort_links.plasmid_name %}
+          {% include "components/sort_header.html" with label="Size (bp)" link=sort_links.size_bp %}
+          {% include "components/sort_header.html" with label="Resistance markers" link=sort_links.resistance_markers %}
           <th scope="col">Copy number</th>
         </tr>
       </thead>
