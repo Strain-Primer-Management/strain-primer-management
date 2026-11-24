@@ -15,7 +15,10 @@ URL name -> context:
   Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
   field error and only that filter is skipped), `result_count` (matching primers on all
   pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
-  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
+  Sorting: `sort` = primer_id, purpose, freezer_location, length_bp or melting_temp_tm, with a
+  leading `-` for descending (e.g. `?sort=-length_bp`); anything else keeps newest first.
+  Context `sort_links` (per sortable field: `url`, `direction`) and `querystring_without_page`
+  (for page links that keep search, filters and sort); see RecordListView in apps/core.
 - primers:detail (/primers/<id>/): `object` (the primer) and `links`: the plasmids it binds,
   one row per link with `plasmid`, `orientation`, `binding_position` (and `notes`). `links` is
   empty when there is none. Needs primers.view_primer.
@@ -64,6 +67,7 @@ class PrimerListView(RecordListView):
     permission_required = "primers.view_primer"
     ordering = ["-created_at", "-id"]
     filter_form_class = PrimerFilterForm
+    sort_fields = ["primer_id", "purpose", "freezer_location", "length_bp", "melting_temp_tm"]
 
 
 class PrimerDetailView(PermissionRequiredMixin, DetailView):

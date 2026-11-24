@@ -16,7 +16,10 @@ URL name -> context:
   Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
   field error and only that filter is skipped), `result_count` (matching plasmids on all
   pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
-  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
+  Sorting: `sort` = plasmid_name, size_bp or resistance_markers, with a leading `-` for
+  descending (e.g. `?sort=-size_bp`); anything else keeps newest first.
+  Context `sort_links` (per sortable field: `url`, `direction`) and `querystring_without_page`
+  (for page links that keep search, filters and sort); see RecordListView in apps/core.
 - plasmids:detail (/plasmids/<id>/): `object` (the plasmid, all fields), `primer_links` (one row
   per primer link: `primer`, `orientation`, `binding_position`, `notes`) and `strains` (the
   strains that carry it) and `link_form` (the "add a primer" form, see below; None when the
@@ -80,6 +83,7 @@ class PlasmidListView(RecordListView):
     permission_required = "plasmids.view_plasmid"
     ordering = ["-created_at", "-id"]
     filter_form_class = PlasmidFilterForm
+    sort_fields = ["plasmid_name", "size_bp", "resistance_markers"]
 
 
 class PlasmidDetailView(PermissionRequiredMixin, DetailView):
