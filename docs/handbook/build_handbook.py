@@ -652,8 +652,10 @@ def build_story():
                     "<b>you@example.com</b> with the email you want on your commits. The repository is public, "
                     "so both are visible to everyone and cannot be removed once pushed. Use your personal email "
                     "if you are fine with that. If you would rather keep it private, use <b>GitHub's no-reply "
-                    "address</b> instead (copy it from <font face='Courier'>github.com/settings/emails</font>; it "
-                    "looks like <font face='Courier'>12345678+yourusername@users.noreply.github.com</font>). "
+                    "address</b> instead (copy the whole address from <font face='Courier'>github.com/settings/emails</font>; "
+                    "its shape is <font face='Courier'>&lt;your-number&gt;+&lt;your-username&gt;@users.noreply.github.com</font>, "
+                    "and the number is personal to your account). <b>Never type a number you did not copy from that "
+                    "page</b>: a wrong number makes GitHub show your work under a stranger's account. "
                     "<b>Keep the quotes.</b>"
                 )
             ],
