@@ -1,5 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Primers · Strain DB{% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/core-filters.css' %}">
+{% endblock extra_css %}
 {% block content %}
   {% comment %}
     Primer list (SCRUM-120). Context from primers:list: `page_obj`, `object_list` (the primers of
@@ -9,6 +13,7 @@
   {% endcomment %}
   {% if perms.primers.add_primer %}{% url 'primers:create' as create_url %}{% endif %}
   {% include "components/page_header.html" with title="Primers" action_url=create_url action_label="Create primer" %}
+  {% include "components/filter_panel.html" with form=filter_form %}
   {% if object_list %}
     <table class="data-table">
       <thead>
