@@ -46,3 +46,40 @@
 .filter-panel .form-actions {
   margin-top: var(--space-4);
 }
+
+/* Active-filter chips (components/filter_chips.html): one pill per filter, with a remove link */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+}
+
+.filter-chip-remove {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.filter-chip-remove:hover {
+  color: var(--color-danger);
+}
+
+/* Visible keyboard focus on the remove link */
+.filter-chip-remove:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}

@@ -3,6 +3,7 @@
 {% block title %}Strains · Strain DB{% endblock title %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/core-filters.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages/core-sorting.css' %}">
 {% endblock extra_css %}
 {% block content %}
   {% comment %}
@@ -14,16 +15,17 @@
   {% if perms.strains.add_strain %}{% url 'strains:create' as create_url %}{% endif %}
   {% include "components/page_header.html" with title="Strains" action_url=create_url action_label="Create strain" %}
   {% include "components/filter_panel.html" with form=filter_form %}
+  {% include "components/filter_chips.html" with chips=active_filters %}
   {% if object_list %}
     <table class="data-table">
       <thead>
         <tr>
-          <th scope="col">Strain ID</th>
-          <th scope="col">Host organism</th>
+          {% include "components/sort_header.html" with label="Strain ID" link=sort_links.strain_id %}
+          {% include "components/sort_header.html" with label="Host organism" link=sort_links.host_organism %}
           <th scope="col">Genotype</th>
-          <th scope="col">Culturing temp.</th>
-          <th scope="col">Medium</th>
-          <th scope="col">Freezer location</th>
+          {% include "components/sort_header.html" with label="Culturing temp." link=sort_links.culturing_temp %}
+          {% include "components/sort_header.html" with label="Medium" link=sort_links.culturing_medium %}
+          {% include "components/sort_header.html" with label="Freezer location" link=sort_links.freezer_location %}
         </tr>
       </thead>
       <tbody>

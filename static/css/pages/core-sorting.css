@@ -1,0 +1,23 @@
+/* Sortable column headers (templates/components/sort_header.html), used on the primer, plasmid and
+   strain lists. Colours and spacing come from base.css; only the link and arrow look is here. */
+
+/* The header link looks like the header text; the underline appears on hover and focus */
+.sort-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sort-link:hover {
+  text-decoration: underline;
+}
+
+/* Visible keyboard focus on the column title */
+.sort-link:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.sort-arrow {
+  margin-left: var(--space-1);
+  font-size: var(--font-size-sm);
+}

@@ -1,0 +1,20 @@
+{% comment %}
+  Active-filter chips (SCRUM-136): one small chip per filter in use, each with a link that removes it.
+  Use: {% include "components/filter_chips.html" with chips=active_filters %}
+  `active_filters` comes from the list view: a list of `label`, `value` and `remove_url` (this page
+  without that filter; the other search, filters and sort are kept). Shows nothing when no filter is
+  in use. The remove link says "Remove filter <label>: <value>" to screen readers; the visible "x" is
+  hidden from them. Look: static/css/pages/core-filters.css.
+{% endcomment %}
+{% if chips %}
+  <ul class="filter-chips" aria-label="Active filters">
+    {% for chip in chips %}
+      <li class="filter-chip">
+        <span>{{ chip.label }}: {{ chip.value }}</span>
+        <a class="filter-chip-remove" href="{{ chip.remove_url }}">
+          <span aria-hidden="true">×</span><span class="visually-hidden">Remove filter {{ chip.label }}: {{ chip.value }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
