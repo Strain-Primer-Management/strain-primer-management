@@ -557,33 +557,43 @@ pre,
   margin-top: var(--space-5);
 }
 
-/* Search bar (components/search_bar.html), inside the navbar. On a wide screen it sits between the
-   section links and the account links; on a narrow screen it moves to its own row below the menu. */
+/* Search bar (components/search_bar.html), inside the navbar. A big, easy-to-read box on its own
+   full-width row under the menu, on every screen size. */
 .search-bar {
   display: flex;
-  flex: 0 1 calc(var(--space-7) * 6);
+  flex: 1 1 100%;
   gap: var(--space-2);
   min-width: 0;
+  order: 3;
 }
 
 .search-bar-input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-2) var(--space-4);
-  border: var(--border-width) solid var(--color-border);
+  padding: var(--space-3) var(--space-5);
+  border: var(--focus-width) solid var(--color-border);
   border-radius: var(--radius-pill);
-  background: var(--color-surface);
+  background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
+  font-size: var(--font-size-h3);
+}
+
+.search-bar-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-bar-input:hover {
+  border-color: var(--color-primary);
+}
+
+.search-bar-input:focus {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
 }
 
 .search-bar-button {
+  padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-pill);
-}
-
-@media (max-width: 48rem) {
-  .search-bar {
-    flex: 1 1 100%;
-    order: 3;
-  }
+  font-size: var(--font-size-h3);
 }
