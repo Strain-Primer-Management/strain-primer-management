@@ -1,0 +1,63 @@
+/* Home dashboard (templates/core/home.html). Colours, spacing and cards come from base.css;
+   only what is unique to this page is here. */
+
+/* The three count cards and the three "recent" cards sit in a row and wrap on narrow windows */
+.home-counts,
+.home-recent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.home-count,
+.home-recent-card {
+  flex: 1 1 calc(var(--space-7) * 4);
+  max-width: none;
+  margin-bottom: 0;
+}
+
+/* A count card is one big link: the number, then the name of the list */
+.home-count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.home-count:hover {
+  border-color: var(--color-primary);
+}
+
+.home-count-number {
+  color: var(--color-primary);
+  font-size: calc(var(--font-size-h1) * 1.5);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.home-count-label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.home-recent-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-recent-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.home-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
