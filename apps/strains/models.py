@@ -3,8 +3,44 @@
 from django.db import models
 from django.db.models.functions import Lower
 
+from apps.core.filters import search_words
 from apps.core.models import AuditedModel
 from apps.plasmids.models import Plasmid
+
+
+class StrainQuerySet(models.QuerySet):
+    """The search and filter questions for strains. Each one ignores an empty value."""
+
+    def search(self, text):
+        """Every word in the ID, host organism, genotype or freezer location (case ignored)."""
+        return search_words(
+            self, text, ["strain_id", "host_organism", "genotype", "freezer_location"]
+        )
+
+    def with_host(self, host):
+        """Host organism contains this text ("E. coli" finds "E. coli K-12")."""
+        return self.filter(host_organism__icontains=host) if host else self
+
+    def with_biosafety_level(self, level):
+        """Biosafety level exactly this, case ignored ("BSL-1" does not find "BSL-12")."""
+        return self.filter(biosafety_level__iexact=level) if level else self
+
+    def temp_between(self, lowest, highest):
+        """Culturing temperature from `lowest` to `highest` °C, both included (None = no limit)."""
+        rows = self
+        if lowest is not None:
+            rows = rows.filter(culturing_temp__gte=lowest)
+        if highest is not None:
+            rows = rows.filter(culturing_temp__lte=highest)
+        return rows
+
+    def carrying(self, plasmid):
+        """Strains that carry this plasmid."""
+        return self.filter(plasmids=plasmid) if plasmid else self
+
+    def with_parent(self, parent):
+        """Strains made directly from this parent strain."""
+        return self.filter(parent_strain=parent) if parent else self
 
 
 class Strain(AuditedModel):
@@ -45,6 +81,8 @@ class Strain(AuditedModel):
         Plasmid, through="StrainPlasmid", blank=True, related_name="strains"
     )
     extra_data = models.JSONField(default=dict, blank=True)
+
+    objects = StrainQuerySet.as_manager()
 
     class Meta:
         constraints = [

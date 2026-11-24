@@ -1,8 +1,9 @@
-"""The plasmid form. Choices and uniqueness rules live on the model."""
+"""The plasmid forms (edit, link and filter). Choices and uniqueness rules live on the model."""
 
 from django import forms
 from django.core.exceptions import ValidationError
 
+from apps.core.filters import FilterForm
 from apps.primers.models import Primer
 
 from .models import Plasmid, PlasmidPrimerLink
@@ -76,3 +77,33 @@ class PlasmidPrimerLinkForm(forms.ModelForm):
         ):
             raise ValidationError("This exact plasmid-primer link already exists.")
         return cleaned
+
+
+class PlasmidFilterForm(FilterForm):
+    """
+    The search box and filters above the plasmid list (GET parameters, all optional).
+
+    - q: words to find in plasmid_name, resistance_markers or description (all words must match).
+    - resistance: resistance markers contain this text, case ignored.
+    - copy_number: high, medium or low (the model's choices).
+    - size_min, size_max: size range in bp, both included; whole numbers of at least 1.
+    """
+
+    q = forms.CharField(required=False, label="Search")
+    resistance = forms.CharField(required=False, label="Resistance marker")
+    copy_number = forms.ChoiceField(
+        required=False,
+        label="Copy number",
+        choices=[("", "Any"), *Plasmid.CopyNumber.choices],
+    )
+    size_min = forms.IntegerField(required=False, min_value=1, label="Size from (bp)")
+    size_max = forms.IntegerField(required=False, min_value=1, label="Size to (bp)")
+
+    def filter_queryset(self, queryset, values):
+        """Apply the search and each filter that has a valid value."""
+        return (
+            queryset.search(values.get("q"))
+            .with_resistance(values.get("resistance"))
+            .with_copy_number(values.get("copy_number"))
+            .size_between(values.get("size_min"), values.get("size_max"))
+        )
