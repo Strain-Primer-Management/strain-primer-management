@@ -10,6 +10,15 @@ URL name -> context:
   25 per page (`?page=2`). Each row has strain_id, host_organism, genotype (shorten it in the
   template, e.g. `|truncatechars:60`), culturing_temp, culturing_medium, freezer_location.
   Needs strains.view_strain.
+  Search and filters (GET parameters, all optional; see StrainFilterForm): `q` (words that
+  must all be found in strain_id, host_organism, genotype or freezer_location), `host` (text
+  inside host_organism), `biosafety_level` (exact, case ignored), `temp_min` and `temp_max`
+  (°C, both included), `plasmid` (a plasmid id: strains that carry it) and `parent` (a strain
+  id: strains made from it). Example: /strains/list/?q=recA&host=coli&temp_min=30.
+  Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
+  field error and only that filter is skipped), `result_count` (matching strains on all
+  pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
+  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
 - strains:detail (/strains/<id>/): `object` (the strain, all fields), `plasmid_links` (one row
   per plasmid it carries: `plasmid`, `notes`), `parent` (the parent strain or None) and
   `children` (the strains made from it) and `link_form` (the "add a plasmid" form, see below;
@@ -52,7 +61,7 @@ from apps.core.mixins import (
 )
 from apps.plasmids.models import Plasmid
 
-from .forms import StrainForm, StrainPlasmidLinkForm
+from .forms import StrainFilterForm, StrainForm, StrainPlasmidLinkForm
 from .models import Strain, StrainPlasmid
 
 
@@ -67,11 +76,12 @@ class IndexView(TemplateView):
 
 
 class StrainListView(RecordListView):
-    """All strains, newest first, 25 per page."""
+    """Strains, newest first, 25 per page, narrowed by the search and filters in the address."""
 
     model = Strain
     permission_required = "strains.view_strain"
     ordering = ["-created_at", "-id"]
+    filter_form_class = StrainFilterForm
 
 
 class StrainDetailView(PermissionRequiredMixin, DetailView):

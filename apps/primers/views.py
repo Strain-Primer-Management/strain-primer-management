@@ -9,6 +9,13 @@ URL name -> context:
 - primers:list (GET /primers/list/): `page_obj`, `object_list`, `is_paginated`. Newest first,
   25 per page (`?page=2`). Each row has id, primer_id, sequence, purpose, freezer_location,
   length_bp, melting_temp_tm. Needs primers.view_primer.
+  Search and filters (GET parameters, all optional; see PrimerFilterForm): `q` (words that must
+  all be found in primer_id, purpose, sequence or freezer_location), `purpose` (exact, case
+  ignored), `has_plasmid` (`yes` or `no`). Example: /primers/list/?q=box+1&has_plasmid=yes.
+  Extra context: `filter_form` (the bound form with its values and errors; a wrong value is a
+  field error and only that filter is skipped), `result_count` (matching primers on all
+  pages) and `active_filters` (one dict per filter in use: `label`, `value`, `remove_url`).
+  Sorting (`sort`) and keeping the search on page 2 come with the sorting ticket.
 - primers:detail (/primers/<id>/): `object` (the primer) and `links`: the plasmids it binds,
   one row per link with `plasmid`, `orientation`, `binding_position` (and `notes`). `links` is
   empty when there is none. Needs primers.view_primer.
@@ -36,7 +43,7 @@ from apps.core.mixins import (
 )
 from apps.plasmids.models import Plasmid
 
-from .forms import PrimerForm
+from .forms import PrimerFilterForm, PrimerForm
 from .models import Primer
 
 
@@ -51,11 +58,12 @@ class IndexView(TemplateView):
 
 
 class PrimerListView(RecordListView):
-    """All primers, newest first, 25 per page."""
+    """Primers, newest first, 25 per page, narrowed by the search and filters in the address."""
 
     model = Primer
     permission_required = "primers.view_primer"
     ordering = ["-created_at", "-id"]
+    filter_form_class = PrimerFilterForm
 
 
 class PrimerDetailView(PermissionRequiredMixin, DetailView):

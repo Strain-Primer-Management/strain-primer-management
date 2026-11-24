@@ -3,8 +3,34 @@
 from django.db import models
 from django.db.models.functions import Lower
 
+from apps.core.filters import search_words
 from apps.core.models import AuditedModel
 from apps.primers.models import Primer
+
+
+class PlasmidQuerySet(models.QuerySet):
+    """The search and filter questions for plasmids. Each one ignores an empty value."""
+
+    def search(self, text):
+        """Every word in the name, resistance markers or description (case ignored)."""
+        return search_words(self, text, ["plasmid_name", "resistance_markers", "description"])
+
+    def with_resistance(self, marker):
+        """Resistance markers contain this text ("Ampicillin" finds "Ampicillin, Kanamycin")."""
+        return self.filter(resistance_markers__icontains=marker) if marker else self
+
+    def with_copy_number(self, copy_number):
+        """Copy number exactly this choice ("high", "medium" or "low")."""
+        return self.filter(copy_number=copy_number) if copy_number else self
+
+    def size_between(self, smallest, largest):
+        """Size from `smallest` to `largest` bp, both included. Either bound may be None."""
+        rows = self
+        if smallest is not None:
+            rows = rows.filter(size_bp__gte=smallest)
+        if largest is not None:
+            rows = rows.filter(size_bp__lte=largest)
+        return rows
 
 
 class Plasmid(AuditedModel):
@@ -38,6 +64,8 @@ class Plasmid(AuditedModel):
     promoter_type = models.CharField(max_length=255, blank=True, db_index=True)
     description = models.TextField(blank=True)
     extra_data = models.JSONField(default=dict, blank=True)
+
+    objects = PlasmidQuerySet.as_manager()
 
     class Meta:
         constraints = [
