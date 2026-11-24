@@ -3,8 +3,32 @@
   Use: {% include "components/empty_state.html" with message="No primers yet." %}
   With a button: {% include "components/empty_state.html" with message="No primers yet." action_url=create_url action_label="Add the first primer" %}
   The button shows only when action_url is given, so pass it only to users who may create records.
+
+  SCRUM-139: the standard wording of every search and list state lives here, once. Pass `state`:
+    empty      "No <what> yet."                  (a list with nothing in it; with the button)
+    no_results "No <what> match your search. ..." (a search or filter found nothing)
+    too_short  "Type at least 2 characters to search."
+    loading    "Searching…" with a spinner
+    error      "Something went wrong. Please try again." (or your own `message`)
+  `what` is the plural name ("strains"); it defaults to "records". Without `state`, `message` is shown
+  as before. The dropdown (static/js/pages/core-live-search.js) clones these states from the
+  <template> elements in components/search_bar.html, so it shows the same text and style.
 {% endcomment %}
-<div class="empty-state">
-  <p class="empty-state-message">{{ message }}</p>
+<div class="empty-state{% if state %} empty-state-{{ state }}{% endif %}">
+  <p class="empty-state-message">
+    {% if state == "empty" %}
+      No {{ what|default:"records" }} yet.
+    {% elif state == "no_results" %}
+      No {{ what|default:"records" }} match your search. Check the spelling or try fewer letters.
+    {% elif state == "too_short" %}
+      Type at least 2 characters to search.
+    {% elif state == "loading" %}
+      <span class="spinner" aria-hidden="true"></span>Searching…
+    {% elif state == "error" %}
+      {{ message|default:"Something went wrong. Please try again." }}
+    {% else %}
+      {{ message }}
+    {% endif %}
+  </p>
   {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
 </div>

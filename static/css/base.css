@@ -505,6 +505,42 @@ pre,
   margin-top: var(--space-2);
 }
 
+/* State variants (SCRUM-139): an error looks like the other error messages */
+.empty-state-error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.empty-state-error .empty-state-message {
+  color: var(--color-danger-dark);
+}
+
+/* Loading spinner (state "loading"): a ring that turns. Plain CSS, no image. */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: var(--space-2);
+  border: calc(var(--border-width) * 2) solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  vertical-align: -0.125em;
+  animation: spinner-turn 0.8s linear infinite;
+}
+
+@keyframes spinner-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* People who asked for less motion get a still ring; the word "Searching…" stays next to it */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
 /* Pagination (components/pagination.html): Previous, "Page X of Y", Next */
 .pagination {
   display: flex;

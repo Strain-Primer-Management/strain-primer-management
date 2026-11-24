@@ -64,8 +64,16 @@
   font-weight: 600;
 }
 
-/* "Searching…", "No results" and the error message */
-.live-search-message {
+/* A state in the dropdown ("Searching…", too short, no results, error). It is the shared state
+   component (components/empty_state.html, styled in base.css), shown small and without the box. */
+.live-search-list .empty-state {
   padding: var(--space-3);
-  color: var(--color-text-muted);
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.live-search-list .empty-state-message {
+  margin: 0;
+  font-size: var(--font-size-base);
 }

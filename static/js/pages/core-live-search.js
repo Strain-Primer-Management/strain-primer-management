@@ -70,17 +70,21 @@ function initLiveSearch() {
     }
   }
 
-  // A line of text that is not a result: "Searching…", "No results" or the error message.
-  function showMessage(text) {
+  // A state that is not a result: "too_short", "loading", "no_results" or "error". The wording and
+  // the look come from the shared component (components/empty_state.html), which search_bar.html
+  // renders into <template> elements, so the dropdown says the same as the pages. Returns the text.
+  function showState(name) {
     list.replaceChildren();
     options = [];
     setActive(-1);
+    const template = form.querySelector(`template[data-state='${name}']`);
     const item = document.createElement("li");
     item.className = "live-search-message";
     item.setAttribute("role", "presentation");
-    item.textContent = text;
+    item.append(template.content.cloneNode(true));
     list.append(item);
     open();
+    return item.textContent.replace(/\s+/g, " ").trim();
   }
 
   function makeOption(index, href) {
@@ -101,8 +105,7 @@ function initLiveSearch() {
     options = [];
     const total = data.groups.reduce((sum, group) => sum + group.total, 0);
     if (total === 0) {
-      showMessage(`No results for "${q}"`);
-      announce("No results");
+      announce(showState("no_results"));
       return;
     }
     data.groups.forEach((group) => {
@@ -142,7 +145,7 @@ function initLiveSearch() {
     if (controller) controller.abort(); // only the newest request counts
     const mine = new AbortController();
     controller = mine;
-    showMessage("Searching…");
+    showState("loading");
     try {
       const url = `${form.dataset.apiUrl}?${new URLSearchParams({ q })}`;
       const response = await fetch(url, {
@@ -157,8 +160,7 @@ function initLiveSearch() {
       render(data, q);
     } catch (error) {
       if (error.name === "AbortError") return;
-      showMessage("Suggestions are not available. Press Enter to search.");
-      announce("Suggestions are not available. Press Enter to search.");
+      announce(showState("error"));
     }
   }
 
@@ -166,9 +168,13 @@ function initLiveSearch() {
     clearTimeout(timer);
     if (controller) controller.abort();
     const q = input.value.trim();
-    if (q.length < MIN_LENGTH) {
+    if (q.length === 0) {
       close();
       announce("");
+      return;
+    }
+    if (q.length < MIN_LENGTH) {
+      announce(showState("too_short"));
       return;
     }
     timer = setTimeout(() => search(q), DEBOUNCE_MS);
