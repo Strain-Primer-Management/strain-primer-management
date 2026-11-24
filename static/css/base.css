@@ -570,13 +570,13 @@ pre,
 .search-bar-input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-6);
   border: var(--focus-width) solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h2);
 }
 
 .search-bar-input::placeholder {
@@ -593,7 +593,7 @@ pre,
 }
 
 .search-bar-button {
-  padding: var(--space-3) var(--space-6);
+  padding: var(--space-4) var(--space-6);
   border-radius: var(--radius-pill);
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h2);
 }
