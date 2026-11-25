@@ -116,6 +116,12 @@ LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:home"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
+# Sessions: logged out 2 hours after the LAST request (idle timeout). SAVE_EVERY_REQUEST
+# pushes the expiry forward on each request, so active users are not kicked out.
+# All sessions are also deleted on every server start (manage.py expire_sessions).
+SESSION_COOKIE_AGE = 2 * 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},

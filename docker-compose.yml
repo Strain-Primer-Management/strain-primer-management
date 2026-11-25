@@ -25,7 +25,7 @@ services:
         GID: ${GID:-1000}
     # Migrations are applied automatically on every start. After switching to a branch with
     # different migrations, reset your local DB (README -> "Reset my database").
-    command: sh -c "python manage.py migrate --noinput && python manage.py setup_roles && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate --noinput && python manage.py setup_roles && python manage.py expire_sessions && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app  # your edits appear instantly, the dev server reloads by itself
     ports:
